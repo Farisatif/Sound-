@@ -1,0 +1,64 @@
+{
+  "popularArtists": [
+    {
+      "id": 1,
+      "name": "Eminem",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/69824-2.png",
+      "genre": "Hip Hop",
+      "followers": 45200000,
+      "verified": true,
+      "monthlyListeners": 58000000,
+      "topSongs": ["Lose Yourself", "Stan", "The Real Slim Shady"]
+    },
+    {
+      "id": 2,
+      "name": "The Weeknd",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/69824-3.png",
+      "genre": "R&B",
+      "followers": 38900000,
+      "verified": true,
+      "monthlyListeners": 85000000,
+      "topSongs": ["Blinding Lights", "The Hills", "Can't Feel My Face"]
+    },
+    {
+      "id": 3,
+      "name": "Adele",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/69824-4.png",
+      "genre": "Pop",
+      "followers": 42100000,
+      "verified": true,
+      "monthlyListeners": 45000000,
+      "topSongs": ["Someone Like You", "Hello", "Rolling in the Deep"]
+    },
+    {
+      "id": 4,
+      "name": "Lana Del Rey",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/69824-5.png",
+      "genre": "Alternative Pop",
+      "followers": 28500000,
+      "verified": true,
+      "monthlyListeners": 52000000,
+      "topSongs": ["Video Games", "Summertime Sadness", "Young and Beautiful"]
+    },
+    {
+      "id": 5,
+      "name": "Harry Styles",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/69824-6.png",
+      "genre": "Pop Rock",
+      "followers": 35700000,
+      "verified": true,
+      "monthlyListeners": 67000000,
+      "topSongs": ["As It Was", "Watermelon Sugar", "Adore You"]
+    },
+    {
+      "id": 6,
+      "name": "Billie Eilish",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/69824-7.png",
+      "genre": "Alternative Pop",
+      "followers": 41200000,
+      "verified": true,
+      "monthlyListeners": 73000000,
+      "topSongs": ["Bad Guy", "Happier Than Ever", "Therefore I Am"]
+    }
+  ]
+}

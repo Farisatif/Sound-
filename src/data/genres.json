@@ -1,0 +1,52 @@
+{
+  "genres": [
+    {
+      "id": 1,
+      "name": "Pop",
+      "description": "Popular music with catchy melodies and mainstream appeal",
+      "color": "#FF6B6B",
+      "popularArtists": ["Adele", "Harry Styles", "Dua Lipa"],
+      "subgenres": ["Dance Pop", "Electropop", "Indie Pop", "Pop Rock"]
+    },
+    {
+      "id": 2,
+      "name": "Hip Hop",
+      "description": "Rhythmic music featuring rap vocals and strong beats",
+      "color": "#4ECDC4",
+      "popularArtists": ["Eminem", "Drake", "Jack Harlow"],
+      "subgenres": ["Trap", "Conscious Hip Hop", "Alternative Hip Hop", "Pop Rap"]
+    },
+    {
+      "id": 3,
+      "name": "R&B",
+      "description": "Rhythm and blues with soulful vocals and smooth grooves",
+      "color": "#45B7D1",
+      "popularArtists": ["The Weeknd", "SZA", "Frank Ocean"],
+      "subgenres": ["Contemporary R&B", "Neo Soul", "Alternative R&B"]
+    },
+    {
+      "id": 4,
+      "name": "Rock",
+      "description": "Guitar-driven music with strong rhythms and powerful vocals",
+      "color": "#F7DC6F",
+      "popularArtists": ["Måneskin", "Arctic Monkeys", "Foo Fighters"],
+      "subgenres": ["Alternative Rock", "Indie Rock", "Pop Rock", "Hard Rock"]
+    },
+    {
+      "id": 5,
+      "name": "Electronic",
+      "description": "Music created using electronic instruments and technology",
+      "color": "#BB8FCE",
+      "popularArtists": ["Alan Walker", "Calvin Harris", "Marshmello"],
+      "subgenres": ["EDM", "House", "Techno", "Ambient", "Dubstep"]
+    },
+    {
+      "id": 6,
+      "name": "Alternative",
+      "description": "Non-mainstream music with experimental and indie elements",
+      "color": "#85C1E9",
+      "popularArtists": ["The Neighbourhood", "Lana Del Rey", "Billie Eilish"],
+      "subgenres": ["Indie Alternative", "Alternative Pop", "Alternative Rock"]
+    }
+  ]
+}

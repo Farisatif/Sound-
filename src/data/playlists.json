@@ -1,0 +1,86 @@
+{
+  "moodPlaylists": [
+    {
+      "id": 1,
+      "title": "Sad Playlist",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-15.png",
+      "description": "When you need to feel your emotions",
+      "mood": "melancholic",
+      "tracks": 45,
+      "duration": "2h 48m",
+      "followers": 1250000,
+      "tags": ["sad", "emotional", "heartbreak", "indie"],
+      "color": "#4A5568"
+    },
+    {
+      "id": 2,
+      "title": "Chill Playlist",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-16.png",
+      "description": "Relax and unwind with these smooth vibes",
+      "mood": "relaxed",
+      "tracks": 38,
+      "duration": "2h 15m",
+      "followers": 2100000,
+      "tags": ["chill", "relaxing", "ambient", "lo-fi"],
+      "color": "#38B2AC"
+    },
+    {
+      "id": 3,
+      "title": "Workout Playlist",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-17.png",
+      "description": "High-energy tracks to fuel your workout",
+      "mood": "energetic",
+      "tracks": 52,
+      "duration": "3h 12m",
+      "followers": 1850000,
+      "tags": ["workout", "energetic", "motivation", "pump-up"],
+      "color": "#E53E3E"
+    },
+    {
+      "id": 4,
+      "title": "Love Playlist",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-18.png",
+      "description": "Romantic songs for special moments",
+      "mood": "romantic",
+      "tracks": 41,
+      "duration": "2h 35m",
+      "followers": 3200000,
+      "tags": ["love", "romantic", "date night", "ballads"],
+      "color": "#ED64A6"
+    },
+    {
+      "id": 5,
+      "title": "Happy Playlist",
+      "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-19.png",
+      "description": "Uplifting songs to brighten your day",
+      "mood": "happy",
+      "tracks": 47,
+      "duration": "2h 58m",
+      "followers": 2750000,
+      "tags": ["happy", "uplifting", "feel-good", "positive"],
+      "color": "#F6E05E"
+    }
+  ],
+  "userPlaylists": [
+    {
+      "id": 6,
+      "title": "My Favorites",
+      "description": "Your most loved tracks",
+      "isPrivate": false,
+      "tracks": 23,
+      "duration": "1h 32m",
+      "createdAt": "2023-01-15",
+      "updatedAt": "2023-12-10"
+    },
+    {
+      "id": 7,
+      "title": "Recently Played",
+      "description": "Your recent listening history",
+      "isPrivate": true,
+      "tracks": 67,
+      "duration": "4h 15m",
+      "createdAt": "2023-12-01",
+      "updatedAt": "2023-12-10"
+    }
+  ]
+}
