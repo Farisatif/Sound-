@@ -6,6 +6,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card, CardContent } from '../../components/ui/card';
 import { ArrowLeftIcon, MailIcon, CheckCircleIcon } from 'lucide-react';
+import { FooterSection } from '../Home/sections/FooterSection/FooterSection';
 
 export const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -180,6 +181,7 @@ export const ForgotPassword: React.FC = () => {
           </CardContent>
         </Card>
       </motion.div>
+      
 
       {/* Footer */}
       <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -190,5 +192,7 @@ export const ForgotPassword: React.FC = () => {
         </div>
       </div>
     </div>
+  
+    
   );
 };
