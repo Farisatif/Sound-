@@ -7,6 +7,7 @@ import { Card, CardContent } from '../../components/ui/card';
 import { ArrowLeftIcon, MailIcon, PhoneIcon, MapPinIcon, SendIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+
 export const Contact: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

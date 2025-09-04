@@ -5,6 +5,8 @@ import { Button } from '../../components/ui/button';
 import { PlayIcon, HeartIcon, TrashIcon, ArrowLeftIcon } from 'lucide-react';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useNavigate } from 'react-router-dom';
+import { FooterSection } from '../Home/sections/FooterSection/FooterSection';
+
 
 export const Favorites: React.FC = () => {
   const { favorites, removeFromFavorites } = useFavorites();
@@ -108,10 +110,13 @@ export const Favorites: React.FC = () => {
                   </CardContent>
                 </Card>
               </motion.div>
+              
             ))}
           </div>
         )}
+         <FooterSection />
       </div>
     </motion.div>
+    
   );
 };
