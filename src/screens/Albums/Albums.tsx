@@ -4,7 +4,6 @@ import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { PlayIcon, HeartIcon, MoreHorizontalIcon } from 'lucide-react';
 import { useAlbums } from '../../hooks/useData';
-import { FooterSection } from '../Home/sections/FooterSection/FooterSection';
 
 export const Albums: React.FC = () => {
   const { albums, loading } = useAlbums();
@@ -131,10 +130,6 @@ export const Albums: React.FC = () => {
           </Button>
         </motion.div>
 
-        {/* Footer */}
-        <div className="mt-12">
-          <FooterSection />
-        </div>
       </div>
     </motion.div>
   );

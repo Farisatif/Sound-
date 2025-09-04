@@ -19,6 +19,7 @@ export interface Song {
   rank?: string;
   album?: string;
   plays?: number;
+  path: string;
 }
 
 export interface Artist {

@@ -1,7 +1,5 @@
 import { motion } from "framer-motion";
-import { FooterSection } from "./sections/FooterSection/FooterSection";
 import { HeroSection } from "./sections/HeroSection/HeroSection";
-import { MoodPlaylistSection } from "./sections/MoodPlaylistSection/MoodPlaylistSection";
 import { NewReleaseSongsSection } from "./sections/NewReleaseSongsSection/NewReleaseSongsSection";
 import { PopularArtistsSection } from "./sections/PopularArtistsSection/PopularArtistsSection";
 import { TrendingSongsSection } from "./sections/TrendingSongsSection/TrendingSongsSection";
@@ -24,8 +22,6 @@ export const Home = (): JSX.Element => {
       <NewReleaseSongsSection />
       <TrendingSongsSection />
       <PopularArtistsSection />
-      <MoodPlaylistSection />
-      <FooterSection />
     </motion.main>
   );
 };

@@ -173,22 +173,7 @@ export const Login: React.FC = () => {
       </motion.div>
       </div>
 
-      {/* Footer */}
-      <div className="p-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link to="/about" className="text-white/70 hover:text-white text-sm">
-              About Us
-            </Link>
-            <Link to="/contact" className="text-white/70 hover:text-white text-sm">
-              Contact
-            </Link>
-          </div>
-          <p className="text-white/50 text-sm">
-            © 2024 SoundBlast. All rights reserved.
-          </p>
-        </div>
-      </div>
+
     </div>
   );
 };

@@ -4,7 +4,6 @@ import { Button } from '../../components/ui/button';
 import { Card, CardContent } from '../../components/ui/card';
 import { ArrowLeftIcon, MusicIcon, UsersIcon, HeartIcon, StarIcon, Import } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { FooterSection } from '../Home/sections/FooterSection/FooterSection';
 
 
 export const About: React.FC = () => {
@@ -175,7 +174,7 @@ export const About: React.FC = () => {
           </div>
           
         </motion.div>
-        <FooterSection />
+
       </div>
       
     </motion.div>

@@ -81,9 +81,9 @@
   ],
   "edges": [
     {
-      "id": "src/screens/Login/Login.tsx:25:6-to-src/components/Layout/Layout.tsx",
-      "source": "src/screens/Login/Login.tsx",
-      "target": "src/components/Layout/Layout.tsx",
+      "id": "src\\screens\\Login\\Login.tsx:25:6-to-src\\components\\Layout\\Layout.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
@@ -92,14 +92,14 @@
           "endLine": 25,
           "column": 6,
           "endColumn": 19,
-          "sourceFile": "src/screens/Login/Login.tsx"
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Login/Login.tsx:36:10-to-src/components/Layout/Layout.tsx",
-      "source": "src/screens/Login/Login.tsx",
-      "target": "src/components/Layout/Layout.tsx",
+      "id": "src\\screens\\Login\\Login.tsx:36:10-to-src\\components\\Layout\\Layout.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
@@ -108,14 +108,14 @@
           "endLine": 46,
           "column": 10,
           "endColumn": 17,
-          "sourceFile": "src/screens/Login/Login.tsx"
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Login/Login.tsx:48:12-to-src/screens/Signup/Signup.tsx",
-      "source": "src/screens/Login/Login.tsx",
-      "target": "src/screens/Signup/Signup.tsx",
+      "id": "src\\screens\\Login\\Login.tsx:48:12-to-src\\screens\\Signup\\Signup.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\screens\\Signup\\Signup.tsx",
       "data": {
         "viaRoute": "/signup",
         "trigger": {
@@ -124,14 +124,14 @@
           "endLine": 52,
           "column": 12,
           "endColumn": 19,
-          "sourceFile": "src/screens/Login/Login.tsx"
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Login/Login.tsx:159:18-to-src/screens/ForgotPassword/ForgotPassword.tsx",
-      "source": "src/screens/Login/Login.tsx",
-      "target": "src/screens/ForgotPassword/ForgotPassword.tsx",
+      "id": "src\\screens\\Login\\Login.tsx:159:18-to-src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
       "data": {
         "viaRoute": "/forgot-password",
         "trigger": {
@@ -140,14 +140,14 @@
           "endLine": 161,
           "column": 18,
           "endColumn": 25,
-          "sourceFile": "src/screens/Login/Login.tsx"
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Login/Login.tsx:164:20-to-src/screens/Signup/Signup.tsx",
-      "source": "src/screens/Login/Login.tsx",
-      "target": "src/screens/Signup/Signup.tsx",
+      "id": "src\\screens\\Login\\Login.tsx:164:20-to-src\\screens\\Signup\\Signup.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\screens\\Signup\\Signup.tsx",
       "data": {
         "viaRoute": "/signup",
         "trigger": {
@@ -156,46 +156,14 @@
           "endLine": 166,
           "column": 20,
           "endColumn": 27,
-          "sourceFile": "src/screens/Login/Login.tsx"
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Login/Login.tsx:180:12-to-src/screens/About/About.tsx",
-      "source": "src/screens/Login/Login.tsx",
-      "target": "src/screens/About/About.tsx",
-      "data": {
-        "viaRoute": "/about",
-        "trigger": {
-          "element": "<Link to=\"/about\" className=\"text-white/70 hover:text-white text-sm\">\n              About Us\n            </Link>",
-          "line": 180,
-          "endLine": 182,
-          "column": 12,
-          "endColumn": 19,
-          "sourceFile": "src/screens/Login/Login.tsx"
-        }
-      }
-    },
-    {
-      "id": "src/screens/Login/Login.tsx:183:12-to-src/screens/Contact/Contact.tsx",
-      "source": "src/screens/Login/Login.tsx",
-      "target": "src/screens/Contact/Contact.tsx",
-      "data": {
-        "viaRoute": "/contact",
-        "trigger": {
-          "element": "<Link to=\"/contact\" className=\"text-white/70 hover:text-white text-sm\">\n              Contact\n            </Link>",
-          "line": 183,
-          "endLine": 185,
-          "column": 12,
-          "endColumn": 19,
-          "sourceFile": "src/screens/Login/Login.tsx"
-        }
-      }
-    },
-    {
-      "id": "src/screens/Signup/Signup.tsx:32:6-to-src/components/Layout/Layout.tsx",
-      "source": "src/screens/Signup/Signup.tsx",
-      "target": "src/components/Layout/Layout.tsx",
+      "id": "src\\screens\\Signup\\Signup.tsx:32:6-to-src\\components\\Layout\\Layout.tsx",
+      "source": "src\\screens\\Signup\\Signup.tsx",
+      "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
@@ -204,14 +172,14 @@
           "endLine": 32,
           "column": 6,
           "endColumn": 19,
-          "sourceFile": "src/screens/Signup/Signup.tsx"
+          "sourceFile": "src\\screens\\Signup\\Signup.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Signup/Signup.tsx:43:10-to-src/components/Layout/Layout.tsx",
-      "source": "src/screens/Signup/Signup.tsx",
-      "target": "src/components/Layout/Layout.tsx",
+      "id": "src\\screens\\Signup\\Signup.tsx:43:10-to-src\\components\\Layout\\Layout.tsx",
+      "source": "src\\screens\\Signup\\Signup.tsx",
+      "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
@@ -220,14 +188,14 @@
           "endLine": 53,
           "column": 10,
           "endColumn": 17,
-          "sourceFile": "src/screens/Signup/Signup.tsx"
+          "sourceFile": "src\\screens\\Signup\\Signup.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Signup/Signup.tsx:55:12-to-src/screens/Login/Login.tsx",
-      "source": "src/screens/Signup/Signup.tsx",
-      "target": "src/screens/Login/Login.tsx",
+      "id": "src\\screens\\Signup\\Signup.tsx:55:12-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\Signup\\Signup.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
@@ -236,14 +204,14 @@
           "endLine": 59,
           "column": 12,
           "endColumn": 19,
-          "sourceFile": "src/screens/Signup/Signup.tsx"
+          "sourceFile": "src\\screens\\Signup\\Signup.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Signup/Signup.tsx:211:18-to-src/screens/Login/Login.tsx",
-      "source": "src/screens/Signup/Signup.tsx",
-      "target": "src/screens/Login/Login.tsx",
+      "id": "src\\screens\\Signup\\Signup.tsx:211:18-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\Signup\\Signup.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
@@ -252,142 +220,110 @@
           "endLine": 213,
           "column": 18,
           "endColumn": 25,
-          "sourceFile": "src/screens/Signup/Signup.tsx"
+          "sourceFile": "src\\screens\\Signup\\Signup.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Signup/Signup.tsx:226:12-to-src/screens/About/About.tsx",
-      "source": "src/screens/Signup/Signup.tsx",
-      "target": "src/screens/About/About.tsx",
-      "data": {
-        "viaRoute": "/about",
-        "trigger": {
-          "element": "<Link to=\"/about\" className=\"text-white/70 hover:text-white text-sm\">\n              About Us\n            </Link>",
-          "line": 226,
-          "endLine": 228,
-          "column": 12,
-          "endColumn": 19,
-          "sourceFile": "src/screens/Signup/Signup.tsx"
-        }
-      }
-    },
-    {
-      "id": "src/screens/Signup/Signup.tsx:229:12-to-src/screens/Contact/Contact.tsx",
-      "source": "src/screens/Signup/Signup.tsx",
-      "target": "src/screens/Contact/Contact.tsx",
-      "data": {
-        "viaRoute": "/contact",
-        "trigger": {
-          "element": "<Link to=\"/contact\" className=\"text-white/70 hover:text-white text-sm\">\n              Contact\n            </Link>",
-          "line": 229,
-          "endLine": 231,
-          "column": 12,
-          "endColumn": 19,
-          "sourceFile": "src/screens/Signup/Signup.tsx"
-        }
-      }
-    },
-    {
-      "id": "src/screens/ForgotPassword/ForgotPassword.tsx:32:10-to-src/components/Layout/Layout.tsx",
-      "source": "src/screens/ForgotPassword/ForgotPassword.tsx",
-      "target": "src/components/Layout/Layout.tsx",
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:31:10-to-src\\components\\Layout\\Layout.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
           "element": "<Link to=\"/\" className=\"flex items-center gap-2\">\n            <img\n              className=\"w-[40px] h-[38px] object-cover\"\n              alt=\"SoundBlast\"\n              src=\"https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png\"\n            />\n            <h1 className=\"text-xl font-bold\">\n              <span className=\"text-white\">Sound</span>\n              <span className=\"text-[#ee0faf]\">Blast</span>\n            </h1>\n          </Link>",
-          "line": 32,
-          "endLine": 42,
+          "line": 31,
+          "endLine": 41,
           "column": 10,
           "endColumn": 17,
-          "sourceFile": "src/screens/ForgotPassword/ForgotPassword.tsx"
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
         }
       }
     },
     {
-      "id": "src/screens/ForgotPassword/ForgotPassword.tsx:44:12-to-src/screens/Login/Login.tsx",
-      "source": "src/screens/ForgotPassword/ForgotPassword.tsx",
-      "target": "src/screens/Login/Login.tsx",
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:43:12-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
           "element": "<Link to=\"/login\">\n              <Button variant=\"ghost\" className=\"text-white hover:text-[#ee0faf]\">\n                Sign In\n              </Button>\n            </Link>",
-          "line": 44,
-          "endLine": 48,
+          "line": 43,
+          "endLine": 47,
           "column": 12,
           "endColumn": 19,
-          "sourceFile": "src/screens/ForgotPassword/ForgotPassword.tsx"
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
         }
       }
     },
     {
-      "id": "src/screens/ForgotPassword/ForgotPassword.tsx:49:12-to-src/screens/Signup/Signup.tsx",
-      "source": "src/screens/ForgotPassword/ForgotPassword.tsx",
-      "target": "src/screens/Signup/Signup.tsx",
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:48:12-to-src\\screens\\Signup\\Signup.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\screens\\Signup\\Signup.tsx",
       "data": {
         "viaRoute": "/signup",
         "trigger": {
           "element": "<Link to=\"/signup\">\n              <Button className=\"bg-[#ee0faf] hover:bg-[#ee0faf]/90\">\n                Sign Up\n              </Button>\n            </Link>",
-          "line": 49,
-          "endLine": 53,
+          "line": 48,
+          "endLine": 52,
           "column": 12,
           "endColumn": 19,
-          "sourceFile": "src/screens/ForgotPassword/ForgotPassword.tsx"
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
         }
       }
     },
     {
-      "id": "src/screens/ForgotPassword/ForgotPassword.tsx:74:14-to-src/screens/Login/Login.tsx",
-      "source": "src/screens/ForgotPassword/ForgotPassword.tsx",
-      "target": "src/screens/Login/Login.tsx",
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:73:14-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
           "element": "<Link to=\"/login\">\n                <Button\n                  variant=\"ghost\"\n                  size=\"icon\"\n                  className=\"text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10 mb-4\"\n                >\n                  <ArrowLeftIcon className=\"w-5 h-5\" />\n                </Button>\n              </Link>",
-          "line": 74,
-          "endLine": 82,
+          "line": 73,
+          "endLine": 81,
           "column": 14,
           "endColumn": 21,
-          "sourceFile": "src/screens/ForgotPassword/ForgotPassword.tsx"
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
         }
       }
     },
     {
-      "id": "src/screens/ForgotPassword/ForgotPassword.tsx:140:22-to-src/screens/Login/Login.tsx",
-      "source": "src/screens/ForgotPassword/ForgotPassword.tsx",
-      "target": "src/screens/Login/Login.tsx",
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:139:22-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
           "element": "<Link to=\"/login\" className=\"text-[#ee0faf] hover:text-[#ee0faf]/80 font-medium\">\n                        Sign in\n                      </Link>",
-          "line": 140,
-          "endLine": 142,
+          "line": 139,
+          "endLine": 141,
           "column": 22,
           "endColumn": 29,
-          "sourceFile": "src/screens/ForgotPassword/ForgotPassword.tsx"
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
         }
       }
     },
     {
-      "id": "src/screens/ForgotPassword/ForgotPassword.tsx:170:18-to-src/screens/Login/Login.tsx",
-      "source": "src/screens/ForgotPassword/ForgotPassword.tsx",
-      "target": "src/screens/Login/Login.tsx",
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:169:18-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
           "element": "<Link to=\"/login\" className=\"block\">\n                    <Button\n                      variant=\"ghost\"\n                      className=\"w-full text-white hover:text-[#ee0faf]\"\n                    >\n                      Back to Sign In\n                    </Button>\n                  </Link>",
-          "line": 170,
-          "endLine": 177,
+          "line": 169,
+          "endLine": 176,
           "column": 18,
           "endColumn": 25,
-          "sourceFile": "src/screens/ForgotPassword/ForgotPassword.tsx"
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Home/sections/SignUpSection/SignUpSection.tsx:50:4-to-src/screens/Login/Login.tsx",
-      "source": "src/components/Layout/Layout.tsx",
-      "target": "src/screens/Login/Login.tsx",
+      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:50:4-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\components\\Layout\\Layout.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
@@ -396,14 +332,14 @@
           "endLine": 50,
           "column": 4,
           "endColumn": 22,
-          "sourceFile": "src/screens/Home/sections/SignUpSection/SignUpSection.tsx"
+          "sourceFile": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx"
         }
       }
     },
     {
-      "id": "src/screens/Home/sections/SignUpSection/SignUpSection.tsx:157:10-to-src/components/Layout/Layout.tsx",
-      "source": "src/components/Layout/Layout.tsx",
-      "target": "src/components/Layout/Layout.tsx",
+      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:157:10-to-src\\components\\Layout\\Layout.tsx",
+      "source": "src\\components\\Layout\\Layout.tsx",
+      "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
@@ -412,7 +348,7 @@
           "endLine": 161,
           "column": 10,
           "endColumn": 17,
-          "sourceFile": "src/screens/Home/sections/SignUpSection/SignUpSection.tsx"
+          "sourceFile": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx"
         }
       }
     }

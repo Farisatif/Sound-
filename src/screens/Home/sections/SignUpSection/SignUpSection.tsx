@@ -56,7 +56,7 @@ export const SignUpSection = (): JSX.Element => {
     return false;
   };
 
-  // Close sidebar when clicking outside on mobile
+  // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.getElementById('mobile-sidebar');
@@ -77,17 +77,17 @@ export const SignUpSection = (): JSX.Element => {
     };
   }, [isOpen]);
 
-  // Close sidebar when route changes on mobile
+  // Close sidebar when route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
   return (
     <>
-      {/* Mobile Hamburger Button */}
+      {/* Hamburger Button */}
       <button
         id="hamburger-button"
-        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-[#ee0faf] rounded-lg text-white shadow-lg hover:bg-[#ee0faf]/90 transition-all duration-200"
+        className="fixed top-2 left-2 z-50 p-2 bg-[#ee0faf]/70 rounded-lg text-white shadow-lg hover:bg-[#ee0faf]/90 transition-all duration-200"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
@@ -116,7 +116,7 @@ export const SignUpSection = (): JSX.Element => {
         </AnimatePresence>
       </button>
 
-      {/* Mobile Overlay */}
+      {/* Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -124,7 +124,7 @@ export const SignUpSection = (): JSX.Element => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/50 z-40"
             onClick={() => setIsOpen(false)}
           />
         )}
@@ -135,14 +135,13 @@ export const SignUpSection = (): JSX.Element => {
         id="mobile-sidebar"
         initial={{ x: -100, opacity: 0 }}
         animate={{ 
-          x: 0, 
-          opacity: 1,
+          x: isOpen ? 0 : -300, 
+          opacity: isOpen ? 1 : 0,
         }}
         transition={{ duration: 0.6 }}
-        className={`sidebar-scroll flex flex-col w-[280px] sm:w-[320px] lg:w-[320px] items-start gap-4 lg:gap-6 px-4 lg:px-8 pt-16 lg:pt-12 pb-6 lg:pb-12 bg-[#0e010b] border-r-2 [border-right-style:solid] border-[#ee0faf] shadow-[8px_0px_24.2px_#ee0faf26] h-screen fixed top-0 z-40 overflow-y-auto
-          ${isOpen ? "left-0" : "-left-full"} lg:left-0 transition-all duration-300 ease-in-out`}
+        className="sidebar-scroll flex flex-col w-[280px] sm:w-[320px] lg:w-[320px] items-start gap-4 px-4 pt-16 pb-6 bg-[#0e010b] border-r-2 border-[#ee0faf] shadow-[8px_0px_24.2px_#ee0faf26] h-screen fixed top-0 z-50 overflow-y-auto"
       >
-        {/* Logo Section */}
+        {/* Logo */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -150,18 +149,18 @@ export const SignUpSection = (): JSX.Element => {
           className="flex items-center gap-3 w-full"
         >
           <img
-            className="w-12 h-12 lg:w-16 lg:h-16 object-cover rounded-lg"
+            className="w-12 h-12 object-cover rounded-lg"
             alt="SoundBlast Logo"
             src="https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png"
           />
           <Link to="/" className="flex-1">
-            <h1 className="bg-[linear-gradient(91deg,rgba(238,16,176,1)_0%,rgba(14,158,239,0.92)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] text-xl lg:text-2xl font-bold hover:scale-105 transition-transform duration-200">
+            <h1 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xl font-bold hover:scale-105 transition-transform duration-200">
               SoundBlast
             </h1>
           </Link>
         </motion.div>
 
-        {/* User Welcome Section */}
+        {/* User Welcome */}
         {user && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -174,14 +173,13 @@ export const SignUpSection = (): JSX.Element => {
           </motion.div>
         )}
 
-        {/* Menu Section */}
+        {/* Menu */}
         <div className="w-full">
           <div className="flex items-center gap-2.5 w-full mb-3">
             <div className="text-xs font-medium opacity-60 text-[#ee0faf] uppercase tracking-wider">
               Menu
             </div>
           </div>
-
           <motion.div 
             className="flex flex-col items-start gap-1 w-full"
             initial={{ opacity: 0 }}
@@ -224,14 +222,13 @@ export const SignUpSection = (): JSX.Element => {
           </motion.div>
         </div>
 
-        {/* Library Section */}
+        {/* Library */}
         <div className="w-full">
           <div className="flex items-center gap-2.5 w-full mb-3">
             <div className="text-xs font-medium opacity-60 text-[#ee0faf] uppercase tracking-wider">
               Library
             </div>
           </div>
-          
           <div className="flex flex-col gap-1 w-full">
             {libraryItems.map((item, index) => (
               <motion.div
@@ -256,14 +253,13 @@ export const SignUpSection = (): JSX.Element => {
           </div>
         </div>
 
-        {/* Playlist Section */}
+        {/* Playlist */}
         <div className="w-full">
           <div className="flex items-center gap-2.5 w-full mb-3">
             <div className="text-xs font-medium opacity-60 text-[#ee0faf] uppercase tracking-wider">
               Playlist & Favorites
             </div>
           </div>
-          
           <div className="flex flex-col gap-1 w-full">
             {playlistItems.map((item, index) => (
               <motion.div
@@ -297,7 +293,7 @@ export const SignUpSection = (): JSX.Element => {
           </div>
         </div>
 
-        {/* Logout Button */}
+        {/* Logout */}
         {user && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}

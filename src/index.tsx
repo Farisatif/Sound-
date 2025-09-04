@@ -17,7 +17,7 @@ import { Favorites } from "./screens/Favorites/Favorites";
 import { About } from "./screens/About/About";
 import { Contact } from "./screens/Contact/Contact";
 import { MusicPlayer as MusicPlayerScreen } from "./screens/MusicPlayer/MusicPlayer";
-import { MusicPlayer } from "./components/MusicPlayer/MusicPlayer";
+import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSection";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -31,13 +31,13 @@ const App = () => {
         <MusicPlayerProvider>
           <Router>
             <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/player/:songId" element={<MusicPlayerScreen />} />
-              <Route path="/" element={<Layout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/player/:songId" element={<MusicPlayerScreen />} />
+                <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="discover" element={<Discover />} />
                 <Route path="albums" element={<Albums />} />
@@ -48,7 +48,7 @@ const App = () => {
                 <Route path="most-played" element={<div className="text-white p-8 min-h-screen flex items-center justify-center"><h1 className="text-2xl">Most Played - Coming Soon</h1></div>} />
               </Route>
             </Routes>
-            <MusicPlayer />
+            <FooterSection />
           </Router>
         </MusicPlayerProvider>
       </FavoritesProvider>

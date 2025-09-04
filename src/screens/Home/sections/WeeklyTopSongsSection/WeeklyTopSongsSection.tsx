@@ -1,5 +1,4 @@
 import { ChevronRightIcon, PlayIcon } from "lucide-react";
-import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/ui/button";
@@ -15,24 +14,31 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-16">
-        <div className="text-white">Loading...</div>
+        <div className="text-white">Loading ...</div>
       </div>
     );
   }
 
   const handlePlaySong = (song: any, index: number) => {
-    playSong(song, songs.weeklyTopSongs);
+    // Map weeklyTopSongs to ensure each song has a 'url' property
+    const topSongsWithUrl = songs.weeklyTopSongs.map((s: any) => ({
+      id: s.id,
+      title: s.title,
+      artist: s.artist,
+      url: s.url ?? "", // Provide a default or actual url
+    }));
+    playSong(song, topSongsWithUrl);
   };
 
   return (
     <motion.section 
-      className="flex flex-col w-full items-start relative px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
+      className="flex flex-col w-[100%] m-1 items-start relative px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
-      <div className="flex flex-col items-start gap-4 sm:gap-6 relative self-stretch w-full">
+      <div className="flex flex-col items-start gap-2 sm:gap-4 relative self-stretch w-[100%]">
         <motion.div 
           className="flex flex-wrap items-center gap-2 sm:gap-4 relative self-stretch w-full"
           initial={{ opacity: 0, y: 20 }}
@@ -48,7 +54,7 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 relative self-stretch w-full">
           {/* Songs Grid - Responsive */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 flex-1 w-full">
+          <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6 flex-1 w-full">
             {songs.weeklyTopSongs.slice(0, 5).map((song, index) => (
               <motion.div
                 key={song.id}

@@ -5,7 +5,6 @@ import { Button } from '../../components/ui/button';
 import { PlayIcon, HeartIcon, TrashIcon, ArrowLeftIcon } from 'lucide-react';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useNavigate } from 'react-router-dom';
-import { FooterSection } from '../Home/sections/FooterSection/FooterSection';
 
 
 export const Favorites: React.FC = () => {
@@ -114,7 +113,7 @@ export const Favorites: React.FC = () => {
             ))}
           </div>
         )}
-         <FooterSection />
+    
       </div>
     </motion.div>
     

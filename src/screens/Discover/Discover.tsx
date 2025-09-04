@@ -5,13 +5,14 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { SearchIcon, FilterIcon, PlayIcon } from 'lucide-react';
 import { useSongs, useGenres } from '../../hooks/useData';
-import { FooterSection } from '../Home/sections/FooterSection/FooterSection';
+import { useNavigate } from "react-router-dom";
 
 export const Discover: React.FC = () => {
   const { songs, loading: songsLoading } = useSongs();
   const { genres, loading: genresLoading } = useGenres();
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedGenre, setSelectedGenre] = React.useState<string>('all');
+const navigate = useNavigate();
 
   if (songsLoading || genresLoading) {
     return (
@@ -150,11 +151,12 @@ export const Discover: React.FC = () => {
                         className="w-full h-40 object-cover rounded-lg"
                       />
                       <Button
-                        size="icon"
-                        className="absolute bottom-2 right-2 bg-[#ee0faf] hover:bg-[#ee0faf]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      >
-                        <PlayIcon className="w-4 h-4" />
-                      </Button>
+                    onClick={() => navigate(`/player/${song.id}`)}
+                    size="icon"
+                    className="absolute inset-0  opacity-0  transition-opacity duration-300 rounded-[5px] w-full h-full"
+                  >
+                    
+                  </Button>
                     </div>
                     <h3 className="font-semibold text-white truncate">{song.title}</h3>
                     <p className="text-white/70 text-sm truncate">{song.artist}</p>
@@ -166,7 +168,7 @@ export const Discover: React.FC = () => {
           </div>
         </motion.div>
       </div>
-      <FooterSection />
+ 
     </motion.div>
     
   );

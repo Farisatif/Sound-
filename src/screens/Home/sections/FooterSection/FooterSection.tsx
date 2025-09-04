@@ -21,7 +21,7 @@ const footerColumns = [
 
 export const FooterSection = (): JSX.Element => {
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
+    <footer className="relative p-1 bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
       <div className="w-full bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/background.png)] bg-cover bg-center">
         <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
           

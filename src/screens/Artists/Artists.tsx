@@ -4,7 +4,6 @@ import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { PlayIcon, HeartIcon, UserPlusIcon, CheckIcon } from 'lucide-react';
 import { useArtists } from '../../hooks/useData';
-import { FooterSection } from '../Home/sections/FooterSection/FooterSection';
 
 
 export const Artists: React.FC = () => {
@@ -155,7 +154,6 @@ export const Artists: React.FC = () => {
             Load More Artists
           </Button>
         </motion.div>
-          <FooterSection />
       </div>
     </motion.div>
   );

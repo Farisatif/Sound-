@@ -3,13 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent } from '../../components/ui/card';
 import { Slider } from '../../components/ui/slider';
-import { 
-  PlayIcon, 
-  PauseIcon, 
-  SkipBackIcon, 
-  SkipForwardIcon, 
-  VolumeXIcon, 
-  Volume1Icon, 
+import {
+  PlayIcon,
+  PauseIcon,
+  SkipBackIcon,
+  SkipForwardIcon,
+  VolumeXIcon,
+  Volume1Icon,
   Volume2Icon,
   HeartIcon,
   RepeatIcon,
@@ -26,7 +26,7 @@ export const MusicPlayer: React.FC = () => {
   const navigate = useNavigate();
   const { songs, loading } = useSongs();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
-  
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -34,7 +34,7 @@ export const MusicPlayer: React.FC = () => {
   const [isRepeat, setIsRepeat] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Get all songs from different categories
@@ -101,7 +101,7 @@ export const MusicPlayer: React.FC = () => {
   };
 
   const playNext = () => {
-    const nextIndex = isShuffle 
+    const nextIndex = isShuffle
       ? Math.floor(Math.random() * allSongs.length)
       : (currentIndex + 1) % allSongs.length;
     navigate(`/player/${allSongs[nextIndex].id}`);
@@ -176,7 +176,7 @@ export const MusicPlayer: React.FC = () => {
         >
           <ArrowLeftIcon className="w-6 h-6" />
         </Button>
-        
+
         <div className="text-center">
           <p className="text-white/70 text-sm">Playing from</p>
           <p className="text-white font-medium">Your Library</p>
@@ -313,9 +313,8 @@ export const MusicPlayer: React.FC = () => {
             onClick={toggleFavorite}
             variant="ghost"
             size="icon"
-            className={`hover:text-[#ee0faf] ${
-              isFavorite(currentSong.id) ? 'text-[#ee0faf]' : 'text-white'
-            }`}
+            className={`hover:text-[#ee0faf] ${isFavorite(currentSong.id) ? 'text-[#ee0faf]' : 'text-white'
+              }`}
           >
             <HeartIcon className={`w-6 h-6 ${isFavorite(currentSong.id) ? 'fill-current' : ''}`} />
           </Button>
@@ -349,7 +348,7 @@ export const MusicPlayer: React.FC = () => {
         preload="metadata"
       >
         {/* Note: In a real app, you would have actual audio files */}
-        <source src="#" type="audio/mpeg" />
+        <source src={currentSong.path} type="audio/mpeg" />
       </audio>
     </motion.div>
   );

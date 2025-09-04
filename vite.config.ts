@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins,
-    publicDir: "./static",
+    publicDir: "./public",
     base: "./",
     css: {
       postcss: {

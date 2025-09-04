@@ -1,5 +1,15 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
-import { Song } from '../hooks/useData';
+
+// تعريف نوع الأغنية
+export interface Song {
+  id: number;
+  title: string;
+  artist: string;
+  url: string;
+}
+
+// استيراد الملف الصوتي من src/songs
+import song1 from '../../public/songs/EdSheeran.mp3';
 
 interface MusicPlayerContextType {
   currentSong: Song | null;
@@ -29,20 +39,15 @@ export const useMusicPlayer = () => {
   return context;
 };
 
-// Sample audio URLs for demo purposes
-const getSampleAudioUrl = (songId: number): string => {
-  // Using free sample audio files for demo
-  const sampleUrls = [
-    'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-    'https://www.soundjay.com/misc/sounds/bell-ringing-04.wav',
-    'https://www.soundjay.com/misc/sounds/bell-ringing-03.wav',
-    'https://www.soundjay.com/misc/sounds/bell-ringing-02.wav',
-    'https://www.soundjay.com/misc/sounds/bell-ringing-01.wav',
-  ];
-  
-  // For demo, we'll use a placeholder audio or generate a simple tone
-  return `data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT`;
-};
+// قائمة الأغاني (مثال)
+const songs: Song[] = [
+  {
+    id: 1,
+    title: 'Ed Sheeran - Demo',
+    artist: 'Ed Sheeran',
+    url: song1, // الرابط جاي من import
+  },
+];
 
 export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
@@ -50,29 +55,29 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [volume, setVolumeState] = useState(0.7);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [playlist, setPlaylist] = useState<Song[]>([]);
+  const [playlist, setPlaylist] = useState<Song[]>(songs); // هنا ضفت القائمة
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio();
       audioRef.current.volume = volume;
-      
+
       audioRef.current.addEventListener('loadedmetadata', () => {
         setDuration(audioRef.current?.duration || 0);
       });
-      
+
       audioRef.current.addEventListener('timeupdate', () => {
         setCurrentTime(audioRef.current?.currentTime || 0);
       });
-      
+
       audioRef.current.addEventListener('ended', () => {
         nextSong();
       });
     }
-    
+
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -84,21 +89,19 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const playSong = (song: Song, newPlaylist?: Song[]) => {
     if (newPlaylist) {
       setPlaylist(newPlaylist);
-      const index = newPlaylist.findIndex(s => s.id === song.id);
+      const index = newPlaylist.findIndex((s) => s.id === song.id);
       setCurrentIndex(index >= 0 ? index : 0);
     }
-    
+
     setCurrentSong(song);
-    
+
     if (audioRef.current) {
-      // For demo purposes, we'll use a sample audio URL
-      audioRef.current.src = getSampleAudioUrl(song.id);
+      audioRef.current.src = song.url; // هنا يستخدم الملف الصوتي الصحيح
       audioRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch((error) => {
         console.error('Error playing audio:', error);
-        // Fallback: just update the UI without actual audio
-        setIsPlaying(true);
+        setIsPlaying(false);
       });
     }
   };
@@ -183,4 +186,3 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     </MusicPlayerContext.Provider>
   );
 };
-
