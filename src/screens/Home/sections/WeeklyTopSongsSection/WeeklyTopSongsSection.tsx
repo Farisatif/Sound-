@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { useSongs } from "../../../../hooks/useData";
+import { useMusicPlayer } from "../../../../context/MusicPlayerContext";
 
 export const WeeklyTopSongsSection = (): JSX.Element => {
   const { songs, loading } = useSongs();
+  const { playSong } = useMusicPlayer();
   const navigate = useNavigate();
 
   if (loading) {
@@ -17,35 +19,37 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
       </div>
     );
   }
+
+  const handlePlaySong = (song: any, index: number) => {
+    playSong(song, songs.weeklyTopSongs);
+  };
+
   return (
     <motion.section 
-      className="flex flex-col w-full items-start relative px-4 py-8"
+      className="flex flex-col w-full items-start relative px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
-      <div className="flex flex-col items-start gap-1 relative self-stretch w-full flex-[0_0_auto]">
+      <div className="flex flex-col items-start gap-4 sm:gap-6 relative self-stretch w-full">
         <motion.div 
-          className="flex flex-wrap items-center gap-[10px_10px] p-2.5 relative self-stretch w-full flex-[0_0_auto]"
+          className="flex flex-wrap items-center gap-2 sm:gap-4 relative self-stretch w-full"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="relative w-fit mt-[-1.00px] font-h1 font-[number:var(--h1-font-weight)] text-transparent text-[length:var(--h1-font-size)] tracking-[var(--h1-letter-spacing)] leading-[var(--h1-line-height)] [font-style:var(--h1-font-style)]">
-            <span className="text-white font-h1 [font-style:var(--h1-font-style)] font-[number:var(--h1-font-weight)] tracking-[var(--h1-letter-spacing)] leading-[var(--h1-line-height)] text-[length:var(--h1-font-size)]">
-              Weekly Top{" "}
-            </span>
-            <span className="text-[#ee0faf] font-h1 [font-style:var(--h1-font-style)] font-[number:var(--h1-font-weight)] tracking-[var(--h1-letter-spacing)] leading-[var(--h1-line-height)] text-[length:var(--h1-font-size)]">
-              Songs
-            </span>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+            <span className="text-white">Weekly Top </span>
+            <span className="text-[#ee0faf]">Songs</span>
           </h2>
         </motion.div>
 
-        <div className="flex flex-wrap items-center gap-[24px_24px] px-1 py-0 relative self-stretch w-full flex-[0_0_auto]">
-          <div className="flex items-center gap-3 md:gap-6 relative flex-1 grow overflow-x-auto">
-            {songs.weeklyTopSongs.map((song, index) => (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 relative self-stretch w-full">
+          {/* Songs Grid - Responsive */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 flex-1 w-full">
+            {songs.weeklyTopSongs.slice(0, 5).map((song, index) => (
               <motion.div
                 key={song.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -53,33 +57,32 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
-                className="flex-shrink-0"
+                className="w-full"
               >
-                <Card className="w-[180px] bg-[#1e1e1e] rounded-[10px] border-none hover:bg-[#2a2a2a] transition-all duration-300 cursor-pointer">
-                  <CardContent className="flex flex-col items-start gap-2 p-[15px_15px_4px_15px]">
-                    <div className="flex items-center gap-2.5 relative self-stretch w-full flex-[0_0_auto] group">
+                <Card className="w-full bg-[#1e1e1e] rounded-lg border-none hover:bg-[#2a2a2a] transition-all duration-300 cursor-pointer group">
+                  <CardContent className="flex flex-col items-start gap-2 p-3 sm:p-4">
+                    <div className="relative w-full aspect-square group">
                       <motion.img
-                        className="relative flex-1 grow h-[150px] rounded-[10px] object-cover"
+                        className="w-full h-full rounded-lg object-cover"
                         alt="Album cover"
                         src={song.image}
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.3 }}
                       />
                       <Button
-                        onClick={() => navigate(`/player/${song.id}`)}
+                        onClick={() => handlePlaySong(song, index)}
                         size="icon"
-                        className="absolute bottom-2 right-2 bg-[#ee0faf] hover:bg-[#ee0faf]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-12 h-12"
+                        className="absolute bottom-2 right-2 bg-[#ee0faf] hover:bg-[#ee0faf]/90 opacity-0 group-hover:opacity-100 transition-all duration-300 w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 shadow-lg hover:scale-110"
                       >
-                        <PlayIcon className="w-6 h-6" />
+                        <PlayIcon className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 ml-0.5" />
                       </Button>
                     </div>
 
-                    <div className="flex flex-col w-full h-12 items-start gap-1 relative">
-                      <div className="relative self-stretch mt-[-1.00px] font-h4 font-[number:var(--h4-font-weight)] text-white text-[length:var(--h4-font-size)] tracking-[var(--h4-letter-spacing)] leading-[var(--h4-line-height)] [font-style:var(--h4-font-style)] truncate">
+                    <div className="flex flex-col w-full gap-1">
+                      <div className="text-white text-xs sm:text-sm lg:text-base font-medium truncate">
                         {song.title}
                       </div>
-
-                      <div className="relative self-stretch opacity-80 font-text-small font-[number:var(--text-small-font-weight)] text-white text-[length:var(--text-small-font-size)] tracking-[var(--text-small-letter-spacing)] leading-[var(--text-small-line-height)] [font-style:var(--text-small-font-style)] truncate">
+                      <div className="text-gray-400 text-xs sm:text-sm truncate">
                         {song.artist}
                       </div>
                     </div>
@@ -89,8 +92,9 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
             ))}
           </div>
 
+          {/* View All Button */}
           <motion.div 
-            className="flex flex-wrap max-w-[62px] items-start justify-center gap-[4px_4px] relative flex-1 grow"
+            className="flex sm:flex-col items-center justify-center gap-2 w-full sm:w-auto"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
@@ -98,10 +102,11 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
           >
             <Button
               variant="ghost"
-              className="flex flex-col items-center gap-1 p-0 h-auto bg-transparent hover:bg-transparent transition-all duration-200 hover:scale-110"
+              onClick={() => navigate('/discover')}
+              className="flex flex-row sm:flex-col items-center gap-2 sm:gap-1 p-3 sm:p-4 h-auto bg-transparent hover:bg-[#ee0faf]/10 transition-all duration-200 hover:scale-105 group"
             >
-              <ChevronRightIcon className="w-[62px] h-[62px] text-white" />
-              <span className="font-h4 font-[number:var(--h4-font-weight)] text-white text-[length:var(--h4-font-size)] tracking-[var(--h4-letter-spacing)] leading-[var(--h4-line-height)] [font-style:var(--h4-font-style)]">
+              <ChevronRightIcon className="w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-white group-hover:text-[#ee0faf] transition-colors" />
+              <span className="text-white text-sm sm:text-base font-medium group-hover:text-[#ee0faf] transition-colors">
                 View All
               </span>
             </Button>
