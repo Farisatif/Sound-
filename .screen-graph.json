@@ -209,15 +209,15 @@
       }
     },
     {
-      "id": "src\\screens\\Signup\\Signup.tsx:211:18-to-src\\screens\\Login\\Login.tsx",
+      "id": "src\\screens\\Signup\\Signup.tsx:209:18-to-src\\screens\\Login\\Login.tsx",
       "source": "src\\screens\\Signup\\Signup.tsx",
       "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
           "element": "<Link to=\"/login\" className=\"text-[#ee0faf] hover:text-[#ee0faf]/80 font-medium\">\n                    Sign in\n                  </Link>",
-          "line": 211,
-          "endLine": 213,
+          "line": 209,
+          "endLine": 211,
           "column": 18,
           "endColumn": 25,
           "sourceFile": "src\\screens\\Signup\\Signup.tsx"
@@ -337,15 +337,15 @@
       }
     },
     {
-      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:157:10-to-src\\components\\Layout\\Layout.tsx",
+      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:156:10-to-src\\components\\Layout\\Layout.tsx",
       "source": "src\\components\\Layout\\Layout.tsx",
       "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
-          "element": "<Link to=\"/\" className=\"flex-1\">\n            <h1 className=\"bg-[linear-gradient(91deg,rgba(238,16,176,1)_0%,rgba(14,158,239,0.92)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] text-xl lg:text-2xl font-bold hover:scale-105 transition-transform duration-200\">\n              SoundBlast\n            </h1>\n          </Link>",
-          "line": 157,
-          "endLine": 161,
+          "element": "<Link to=\"/\" className=\"flex-1\">\n            <h1 className=\"bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xl font-bold hover:scale-105 transition-transform duration-200\">\n              SoundBlast\n            </h1>\n          </Link>",
+          "line": 156,
+          "endLine": 160,
           "column": 10,
           "endColumn": 17,
           "sourceFile": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx"

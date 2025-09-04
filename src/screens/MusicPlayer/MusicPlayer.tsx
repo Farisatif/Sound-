@@ -172,9 +172,9 @@ export const MusicPlayer: React.FC = () => {
           onClick={() => navigate(-1)}
           variant="ghost"
           size="icon"
-          className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10"
+          className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/20"
         >
-          <ArrowLeftIcon className="w-6 h-6" />
+          <ArrowLeftIcon className="w-8 h-6" />
         </Button>
 
         <div className="text-center">
@@ -200,11 +200,11 @@ export const MusicPlayer: React.FC = () => {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="mb-8"
         >
-          <div className="relative">
+          <div className="relative flex items-center justify-center w-full sm:w-80 sm:h-80 lg:w-96 lg:h-96">
             <img
               src={currentSong.image}
               alt={currentSong.title}
-              className="w-80 h-80 rounded-2xl shadow-2xl object-cover"
+              className="w-[100%] h-[100%] rounded-2xl shadow-2xl object-cover"
             />
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent" />
           </div>

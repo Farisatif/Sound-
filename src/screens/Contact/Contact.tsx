@@ -251,12 +251,12 @@ export const Contact: React.FC = () => {
               transition={{ delay: 1.0, duration: 0.5 }}
             >
               <h3 className="text-xl font-bold mb-4 text-white">Follow Us</h3>
-              <div className="flex gap-4">
+              <div className="flex gap-4 bg-black">
                 {['Facebook', 'Twitter', 'Instagram', 'YouTube'].map((platform, index) => (
                   <Button
                     key={platform}
                     variant="outline"
-                    className="border-[#ee0faf] text-[#ee0faf] hover:bg-[#ee0faf]/10"
+                    className=" bg-[#ee0faf] text-[#ee0faf] hover:bg-[#ee0faf]/80 text-white"
                   >
                     {platform}
                   </Button>

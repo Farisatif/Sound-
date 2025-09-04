@@ -4,11 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { useSongs } from "../../../../hooks/useData";
-import { useMusicPlayer } from "../../../../context/MusicPlayerContext";
 
 export const WeeklyTopSongsSection = (): JSX.Element => {
   const { songs, loading } = useSongs();
-  const { playSong } = useMusicPlayer();
   const navigate = useNavigate();
 
   if (loading) {
@@ -19,16 +17,6 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
     );
   }
 
-  const handlePlaySong = (song: any, index: number) => {
-    // Map weeklyTopSongs to ensure each song has a 'url' property
-    const topSongsWithUrl = songs.weeklyTopSongs.map((s: any) => ({
-      id: s.id,
-      title: s.title,
-      artist: s.artist,
-      url: s.url ?? "", // Provide a default or actual url
-    }));
-    playSong(song, topSongsWithUrl);
-  };
 
   return (
     <motion.section 
@@ -76,7 +64,7 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
                         transition={{ duration: 0.3 }}
                       />
                       <Button
-                        onClick={() => handlePlaySong(song, index)}
+                        onClick={() => navigate(`/player/${song.id}`)}
                         size="icon"
                         className="absolute bottom-2 right-2 bg-[#ee0faf] hover:bg-[#ee0faf]/90 opacity-0 group-hover:opacity-100 transition-all duration-300 w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 shadow-lg hover:scale-110"
                       >
