@@ -17,7 +17,10 @@ import { Favorites } from "./screens/Favorites/Favorites";
 import { About } from "./screens/About/About";
 import { Contact } from "./screens/Contact/Contact";
 import { MusicPlayer as MusicPlayerScreen } from "./screens/MusicPlayer/MusicPlayer";
-import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSection";
+import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSection";import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -31,13 +34,13 @@ const App = () => {
         <MusicPlayerProvider>
           <Router>
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/player/:songId" element={<MusicPlayerScreen />} />
-                <Route path="/" element={<Layout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/player/:songId" element={<MusicPlayerScreen />} />
+              <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="discover" element={<Discover />} />
                 <Route path="albums" element={<Albums />} />
@@ -58,6 +61,6 @@ const App = () => {
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
-    <Home />
-  </StrictMode>,
+    <App />
+  </StrictMode>
 );
