@@ -7,6 +7,7 @@ import { WeeklyTopSongsSection } from "./sections/WeeklyTopSongsSection/WeeklyTo
 import "../../index.css"
 export const Home = (): JSX.Element => {
   return (
+    
     <motion.main 
       className="bg-black
       

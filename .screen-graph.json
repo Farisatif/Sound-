@@ -337,17 +337,17 @@
       }
     },
     {
-      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:156:10-to-src\\components\\Layout\\Layout.tsx",
+      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:91:12-to-src\\components\\Layout\\Layout.tsx",
       "source": "src\\components\\Layout\\Layout.tsx",
       "target": "src\\components\\Layout\\Layout.tsx",
       "data": {
         "viaRoute": "/",
         "trigger": {
-          "element": "<Link to=\"/\" className=\"flex-1\">\n            <h1 className=\"bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xl font-bold hover:scale-105 transition-transform duration-200\">\n              SoundBlast\n            </h1>\n          </Link>",
-          "line": 156,
-          "endLine": 160,
-          "column": 10,
-          "endColumn": 17,
+          "element": "<Link to=\"/\" className=\"block\">\r\n              <h1 className=\"bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-lg sm:text-xl font-bold hover:scale-105 transition-transform duration-200\">\r\n                SoundBlast\r\n              </h1>\r\n            </Link>",
+          "line": 91,
+          "endLine": 95,
+          "column": 12,
+          "endColumn": 19,
           "sourceFile": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx"
         }
       }

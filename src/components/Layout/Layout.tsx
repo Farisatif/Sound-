@@ -15,6 +15,7 @@ export const Layout: React.FC = () => {
           [background:conic-gradient(from_226deg_at_50%_50%,rgba(81,55,108,0.43)_6%,rgba(159,36,109,0.45)_42%,rgba(159,36,109,0.44)_44%,rgba(229,41,150,0.45)_58%,rgba(27,79,144,0.43)_75%,rgba(42,64,108,0.42)_87%)] 
           pointer-events-none "
       />
+      
 
       {/* Sidebar */}
       <SignUpSection isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />

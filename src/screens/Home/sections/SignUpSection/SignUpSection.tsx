@@ -28,14 +28,14 @@ const menuItems = [
 ];
 
 const libraryItems = [
-  { icon: <ClockIcon className="w-4 h-4" />, label: "Recently Added", isActive: false },
-  { icon: <TrendingUpIcon className="w-4 h-4" />, label: "Most played", isActive: false },
+  { icon: <ClockIcon className="w-4 h-4" />, label: "Recently Added", path: "/recent" },
+  { icon: <TrendingUpIcon className="w-4 h-4" />, label: "Most played", path: "/most-played" },
 ];
 
 const playlistItems = [
-  { icon: <HeartIcon className="w-4 h-4" />, label: "Your favorites", isActive: false },
-  { icon: <ListIcon className="w-4 h-4" />, label: "Your playlist", isActive: false },
-  { icon: <PlusIcon className="w-4 h-4" />, label: "Add playlist", isActive: false, isSpecial: true },
+  { icon: <HeartIcon className="w-4 h-4" />, label: "Favorites", path: "/favorites" },
+  { icon: <ListIcon className="w-4 h-4" />, label: "Playlists", path: "/playlists" },
+  { icon: <PlusIcon className="w-4 h-4" />, label: "Add playlist", path: "/playlists/create", isSpecial: true },
 ];
 
 export const SignUpSection = (): JSX.Element => {
@@ -50,71 +50,110 @@ export const SignUpSection = (): JSX.Element => {
     navigate('/login');
   };
 
-  const isActive = (path: string) => {
-    if (path === "/" && location.pathname === "/") return true;
-    if (path !== "/" && location.pathname.startsWith(path)) return true;
-    return false;
-  };
+  const isActive = (path: string) => location.pathname === path;
 
-  // Close sidebar when clicking outside
+  // إغلاق السايدبار عند الضغط برة
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.getElementById('mobile-sidebar');
       const hamburger = document.getElementById('hamburger-button');
-      
-      if (isOpen && sidebar && !sidebar.contains(event.target as Node) && 
+      if (isOpen && sidebar && !sidebar.contains(event.target as Node) &&
           hamburger && !hamburger.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  // Close sidebar when route changes
+  // إغلاق السايدبار عند تغيير الصفحة
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
   return (
-    <>
-      {/* Hamburger Button */}
-      <button
-        id="hamburger-button"
-        className="fixed top-2 left-2 z-50 p-2 bg-[#ee0faf]/70 rounded-lg text-white shadow-lg hover:bg-[#ee0faf]/90 transition-all duration-200"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle menu"
-      >
-        <AnimatePresence mode="wait">
-          {isOpen ? (
-            <motion.div
-              key="close"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <XIcon className="w-5 h-5" />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="menu"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <MenuIcon className="w-5 h-5" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </button>
+    <div className="w-full h-full absolute pb-16"> {/* margin-bottom */}
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 h-14 bg-black/95 border-b border-white/10 backdrop-blur z-50">
+        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          {/* Logo */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="flex items-center gap-3"
+          >
+            <img
+              className="w-10 h-10 object-cover rounded-lg"
+              alt="SoundBlast Logo"
+              src="https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png"
+            />
+            <Link to="/" className="block">
+              <h1 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-lg sm:text-xl font-bold hover:scale-105 transition-transform duration-200">
+                SoundBlast
+              </h1>
+            </Link>
+          </motion.div>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            {menuItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-2 px-1 pb-1 border-b-2 transition ${
+                  isActive(item.path)
+                    ? "border-[#ee0faf] text-[#ee0faf]"
+                    : "border-transparent text-white hover:text-[#ee0faf] hover:border-[#ee0faf]"
+                }`}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            ))}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="text-red-400 hover:text-red-300 transition"
+                title="Logout"
+              >
+                Logout
+              </button>
+            )}
+          </nav>
+
+          {/* Hamburger */}
+          <button
+            id="hamburger-button"
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#ee0faf]/70 text-white shadow-lg hover:bg-[#ee0faf]/90 transition"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <AnimatePresence mode="wait">
+              {isOpen ? (
+                <motion.div
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <XIcon className="w-5 h-5" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <MenuIcon className="w-5 h-5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
+      </header>
 
       {/* Overlay */}
       <AnimatePresence>
@@ -123,7 +162,7 @@ export const SignUpSection = (): JSX.Element => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             className="fixed inset-0 bg-black/50 z-40"
             onClick={() => setIsOpen(false)}
           />
@@ -131,189 +170,101 @@ export const SignUpSection = (): JSX.Element => {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.nav 
+      <motion.nav
         id="mobile-sidebar"
         initial={{ x: -100, opacity: 0 }}
-        animate={{ 
-          x: isOpen ? 0 : -300, 
+        animate={{
+          x: isOpen ? 0 : -300,
           opacity: isOpen ? 1 : 0,
         }}
-        transition={{ duration: 0.6 }}
-        className="sidebar-scroll flex flex-col w-[280px] sm:w-[320px] lg:w-[320px] items-start gap-4 px-4 pt-16 pb-6 bg-[#0e010b] border-r-2 border-[#ee0faf] shadow-[8px_0px_24.2px_#ee0faf26] h-screen fixed top-0 z-50 overflow-y-auto"
+        transition={{ duration: 0.45 }}
+        className="sidebar-scroll flex flex-col w-[280px] sm:w-[320px] items-start gap-4 px-4 pt-4 pb-6
+                   bg-[#0e010b] border-r-2 border-[#ee0faf] shadow-[8px_0px_24.2px_#ee0faf26]
+                   fixed left-0 top-14 h-[calc(100vh-56px)] z-50 overflow-y-auto"
       >
-        {/* Logo */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex items-center gap-3 w-full"
-        >
-          <img
-            className="w-12 h-12 object-cover rounded-lg"
-            alt="SoundBlast Logo"
-            src="https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png"
-          />
-          <Link to="/" className="flex-1">
-            <h1 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xl font-bold hover:scale-105 transition-transform duration-200">
-              SoundBlast
-            </h1>
-          </Link>
-        </motion.div>
-
-        {/* User Welcome */}
         {user && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="w-full p-3 bg-[#ee0faf]/10 rounded-lg border border-[#ee0faf]/20"
-          >
+          <div className="w-full p-3 bg-[#ee0faf]/10 rounded-lg border border-[#ee0faf]/20">
             <p className="text-white text-sm">Welcome back,</p>
             <p className="text-[#ee0faf] font-medium truncate">{user.name}</p>
-          </motion.div>
+          </div>
         )}
 
         {/* Menu */}
-        <div className="w-full">
-          <div className="flex items-center gap-2.5 w-full mb-3">
-            <div className="text-xs font-medium opacity-60 text-[#ee0faf] uppercase tracking-wider">
-              Menu
-            </div>
-          </div>
-          <motion.div 
-            className="flex flex-col items-start gap-1 w-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            {menuItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 + index * 0.1, duration: 0.3 }}
-                className="w-full"
-              >
-                <Link to={item.path}>
-                  <Button
-                    variant={isActive(item.path) ? "default" : "ghost"}
-                    className={`flex h-11 items-center justify-start gap-3 px-3 py-2 w-full transition-all duration-200 hover:scale-[1.02] ${
-                      isActive(item.path)
-                        ? "bg-[#ee0faf] hover:bg-[#ee0faf]/90 rounded-lg text-white"
-                        : "bg-transparent hover:bg-[#ee0faf]/10 text-white hover:text-white"
-                    }`}
-                  >
-                    {item.label === "Home" ? (
-                      <img
-                        className="w-5 h-5"
-                        alt="Home"
-                        src="https://c.animaapp.com/mecm5afmnFTEcQ/img/group.png"
-                      />
-                    ) : (
-                      item.icon
-                    )}
-                    <span className="flex-1 text-sm font-medium text-left">
-                      {item.label}
-                    </span>
-                  </Button>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+        {menuItems.map((item) => (
+          <Link key={item.path} to={item.path} className="w-full">
+            <Button
+              variant="ghost"
+              className={`flex items-center gap-3 w-full justify-start h-11 px-3 py-2 rounded-lg transition-all duration-200 ${
+                isActive(item.path)
+                  ? "bg-[#ee0faf]/20 text-[#ee0faf] border-b-2 border-[#ee0faf]"
+                  : "text-white hover:bg-[#ee0faf]/10"
+              }`}
+            >
+              {item.icon}
+              <span className="text-sm font-medium">{item.label}</span>
+            </Button>
+          </Link>
+        ))}
 
         {/* Library */}
-        <div className="w-full">
-          <div className="flex items-center gap-2.5 w-full mb-3">
-            <div className="text-xs font-medium opacity-60 text-[#ee0faf] uppercase tracking-wider">
-              Library
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 w-full">
-            {libraryItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
-              >
-                <Link to={`/${item.label.toLowerCase().replace(' ', '-')}`}>
-                  <Button
-                    variant="ghost"
-                    className="gap-3 flex items-center w-full justify-start bg-transparent hover:bg-[#ee0faf]/10 h-11 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-[1.02] text-white hover:text-white"
-                  >
-                    {item.icon}
-                    <span className="flex-1 text-sm font-medium text-left">
-                      {item.label}
-                    </span>
-                  </Button>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+        {libraryItems.map((item) => (
+          <Link key={item.path} to={item.path} className="w-full">
+            <Button
+              variant="ghost"
+              className={`flex items-center gap-3 w-full justify-start h-11 px-3 py-2 rounded-lg ${
+                isActive(item.path)
+                  ? "bg-[#ee0faf]/20 text-[#ee0faf] border-b-2 border-[#ee0faf]"
+                  : "text-white hover:bg-[#ee0faf]/10"
+              }`}
+            >
+              {item.icon}
+              <span className="text-sm font-medium">{item.label}</span>
+            </Button>
+          </Link>
+        ))}
 
-        {/* Playlist */}
-        <div className="w-full">
-          <div className="flex items-center gap-2.5 w-full mb-3">
-            <div className="text-xs font-medium opacity-60 text-[#ee0faf] uppercase tracking-wider">
-              Playlist & Favorites
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 w-full">
-            {playlistItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.0 + index * 0.1, duration: 0.3 }}
+        {/* Playlists */}
+        {playlistItems.map((item) => (
+          <Link key={item.path} to={item.path} className="w-full">
+            <Button
+              variant="ghost"
+              className={`flex items-center gap-3 w-full justify-start h-11 px-3 py-2 rounded-lg ${
+                isActive(item.path)
+                  ? "bg-[#ee0faf]/20 text-[#ee0faf] border-b-2 border-[#ee0faf]"
+                  : "text-white hover:bg-[#ee0faf]/10"
+              }`}
+            >
+              {item.icon}
+              <span
+                className={`text-sm font-medium ${
+                  item.isSpecial ? "text-[#0d9eef]" : ""
+                }`}
               >
-                <Link to={
-                  item.label === "Your favorites" ? "/favorites" :
-                  item.label === "Your playlist" ? "/playlists" :
-                  item.label === "Add playlist" ? "/playlists" : "#"
-                }>
-                  <Button
-                    variant="ghost"
-                    className="flex items-center gap-3 w-full justify-start bg-transparent hover:bg-[#ee0faf]/10 h-11 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-[1.02]"
-                  >
-                    {item.icon}
-                    <span className={`flex-1 text-sm font-medium text-left ${item.isSpecial ? "text-[#0d9eef]" : "text-white"}`}>
-                      {item.label}
-                      {item.label === "Your favorites" && favorites.length > 0 && (
-                        <span className="ml-2 bg-[#ee0faf] text-white text-xs px-2 py-1 rounded-full">
-                          {favorites.length}
-                        </span>
-                      )}
-                    </span>
-                  </Button>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                {item.label}
+                {item.label === "Favorites" && favorites.length > 0 && (
+                  <span className="ml-2 bg-[#ee0faf] text-white text-xs px-2 py-1 rounded-full">
+                    {favorites.length}
+                  </span>
+                )}
+              </span>
+            </Button>
+          </Link>
+        ))}
 
         {/* Logout */}
         {user && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.5 }}
-            className="mt-auto w-full pt-4 border-t border-[#ee0faf]/20"
-          >
+          <div className="mt-auto w-full pt-4 border-t border-[#ee0faf]/20">
             <Button
               onClick={handleLogout}
               variant="ghost"
-              className="flex items-center gap-3 w-full justify-start bg-transparent hover:bg-red-500/10 h-11 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-[1.02] text-red-400 hover:text-red-300"
+              className="flex items-center gap-3 w-full justify-start h-11 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10"
             >
               <LogOutIcon className="w-4 h-4" />
-              <span className="flex-1 text-sm font-medium text-left">
-                Logout
-              </span>
+              <span className="text-sm font-medium">Logout</span>
             </Button>
-          </motion.div>
+          </div>
         )}
       </motion.nav>
-    </>
+    </div>
   );
 };
