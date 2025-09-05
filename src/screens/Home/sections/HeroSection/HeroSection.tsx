@@ -1,197 +1,118 @@
-import React from 'react';
 import { HeartIcon, MusicIcon } from "lucide-react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Avatar, AvatarImage } from "../../../../components/ui/avatar";
+import React from "react";
 import { Button } from "../../../../components/ui/button";
-import { useAuth } from "../../../../context/AuthContext";
-import { useSongs, useGenres } from '../../../../hooks/useData';
 
 export const HeroSection = (): JSX.Element => {
-  const { user } = useAuth();
-    const { loading: songsLoading } = useSongs();
-    const { loading: genresLoading } = useGenres();
-    if (songsLoading || genresLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
-    );
-  }
   const userAvatars = [
-    { src: "https://c.animaapp.com/mecm5afmnFTEcQ/img/ellipse-2.png", className: "w-8 h-8 sm:w-10 sm:h-10 relative" },
-    { src: "https://c.animaapp.com/mecm5afmnFTEcQ/img/ellipse-3.png", className: "w-8 h-8 sm:w-10 sm:h-10 relative -ml-2 sm:-ml-3" },
-    { src: "https://c.animaapp.com/mecm5afmnFTEcQ/img/ellipse-4.png", className: "w-8 h-8 sm:w-10 sm:h-10 relative -ml-2 sm:-ml-3" },
-    { src: "https://c.animaapp.com/mecm5afmnFTEcQ/img/ellipse-5.png", className: "w-8 h-8 sm:w-10 sm:h-10 relative -ml-2 sm:-ml-3" },
-    { src: "https://c.animaapp.com/mecm5afmnFTEcQ/img/ellipse-6.png", className: "w-8 h-8 sm:w-10 sm:h-10 relative -ml-2 sm:-ml-3" },
+    {
+      src: "https://c.animaapp.com/mecj8w01EfvOiv/img/ellipse-2.png",
+    },
+    {
+      src: "https://c.animaapp.com/mecj8w01EfvOiv/img/ellipse-3.png",
+    },
+    {
+      src: "https://c.animaapp.com/mecj8w01EfvOiv/img/ellipse-4.png",
+    },
+    {
+      src: "https://c.animaapp.com/mecj8w01EfvOiv/img/ellipse-5.png",
+    },
+    {
+      src: "https://c.animaapp.com/mecj8w01EfvOiv/img/ellipse-6.png",
+    },
   ];
-  
-
 
   return (
-    <section className="relative w-full h-[30rem] sm:h-[600px] md:h-[700px] lg:h-[595px] bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/1000-f-645546712-clv1sotwmf2k99veh5cvx7tvqc38k6hp-1.png)] bg-cover bg-center">
-      <div className="flex flex-col w-full max-w-[1031px] mx-auto h-full gap-6 sm:gap-8 md:gap-12 lg:gap-[114px] px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-7 pb-8 sm:pb-12 lg:pb-16">
-        
-        {/* Header */}
-        <motion.header 
-          className="flex flex-wrap lg:flex-nowrap items-center gap-3 sm:gap-4 w-full"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        > <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="mb-8 flex flex-col md:flex-row gap-4"
-        >
-        
-          
-          <div className="zitems-center gap-2">
+    <section className="relative w-full min-h-[400px] sm:min-h-[500px] lg:min-h-[595px] bg-[url(https://c.animaapp.com/mecj8w01EfvOiv/img/1000-f-645546712-clv1sotwmf2k99veh5cvx7tvqc38k6hp-1.png)] bg-cover bg-center">
+      <div className="flex flex-col w-full max-w-7xl mx-auto items-start justify-center gap-8 sm:gap-16 lg:gap-[114px] px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        {/* Header - Hidden on mobile since we have MobileHeader */}
+        <header className="hidden lg:flex gap-3 items-center relative w-full">
+          <img
+            className="relative flex-1 h-8 sm:h-10"
+            alt="Search bar"
+            src="https://c.animaapp.com/mecj8w01EfvOiv/img/search-bar.svg"
+          />
 
+          <img
+            className="relative w-48 sm:w-64 lg:w-[303px] h-8 sm:h-10"
+            alt="Titles"
+            src="https://c.animaapp.com/mecj8w01EfvOiv/img/titles.svg"
+          />
+
+          <div className="flex items-center gap-3 relative flex-1">
+            <Button
+              variant="outline"
+              className="h-8 sm:h-9 flex-1 border-[#ee0faf] text-[#ee0faf] bg-transparent hover:bg-[#ee0faf]/10 text-xs sm:text-sm font-bold"
+            >
+              Login
+            </Button>
+
+            <Button className="h-8 sm:h-9 flex-1 bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white text-xs sm:text-sm font-bold">
+              Sign Up
+            </Button>
           </div>
-        </motion.div>
-
-
-          {/* Navigation Links */}
-          <motion.div
-            className="flex items-center gap-2 sm:gap-3 order-3 lg:order-2 w-full lg:w-auto justify-center lg:justify-start"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
-            <Link to="/about">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10 transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3"
-              >
-                About Us
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10 transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3"
-              >
-                Contact
-              </Button>
-            </Link>
-          </motion.div>
-
-          {/* Auth Buttons */}
-          {!user ? (
-            <motion.div 
-              className="flex items-center gap-2 sm:gap-3 order-2 lg:order-3 w-full lg:w-auto justify-end"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <Link to="/login" className="flex-1 lg:flex-initial">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 sm:h-9 w-full lg:w-auto border-[#ee0faf] text-[#ee0faf] bg-transparent hover:bg-[#ee0faf]/10 font-black text-xs sm:text-sm transition-all duration-200 hover:scale-105 px-3 sm:px-4"
-                >
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup" className="flex-1 lg:flex-initial">
-                <Button 
-                  size="sm"
-                  className="h-8 sm:h-9 w-full lg:w-auto bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white font-black text-xs sm:text-sm transition-all duration-200 hover:scale-105 px-3 sm:px-4"
-                >
-                  Sign Up
-                </Button>
-              </Link>
-            </motion.div>
-          ) : (
-            <motion.div
-              className="flex items-center gap-3 order-2 lg:order-3 w-full lg:w-auto justify-end"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <div className="text-white text-right truncate max-w-full">
-                <p className="text-xs sm:text-sm opacity-80">Welcome back,</p>
-                <p className="font-medium text-[#ee0faf] text-sm sm:text-base">{user.name}</p>
-              </div>
-            </motion.div>
-          )}
-        </motion.header>
+        </header>
 
         {/* Main Content */}
-        <motion.main 
-          className="flex flex-col w-full max-w-[400px] sm:max-w-[500px] lg:max-w-[352px] items-center gap-4 sm:gap-6 mx-auto lg:mx-0 lg:self-start"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-        >
-          <motion.img
-            className="w-full max-w-[300px] sm:max-w-[400px] lg:max-w-full"
-            alt="All the Best Songs"
-            src="https://c.animaapp.com/mecm5afmnFTEcQ/img/frame-181.svg"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          />
-          <motion.img
-            className="w-full bg-[black]/70 br-4rem max-w-[300px] sm:max-w-[400px] lg:max-w-full"
-            alt="in One Place"
-            src="https://c.animaapp.com/mecm5afmnFTEcQ/img/frame-180.svg"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
+        <main className="flex flex-col w-full max-w-sm sm:max-w-md lg:max-w-lg items-center gap-4 sm:gap-6 relative mx-auto">
+          <img
+            className="relative w-full h-auto"
+            alt="Frame"
+            src="https://c.animaapp.com/mecj8w01EfvOiv/img/frame-181.svg"
           />
 
-          {/* Action Buttons */}
-          <motion.div 
-            className="flex flex-nowrap items-center justify-center gap-3 sm:gap-4 lg:gap-6 w-[50%] sm:w-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-          >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-              <Button className="h-10 sm:h-11 lg:h-10 w-full sm:w-auto bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white font-medium text-sm sm:text-base lg:text-sm px-4 sm:px-6 lg:px-4 py-2">
-                Discover Now
-              </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-              <Button
-                variant="outline"
-                className="h-10 sm:h-11 lg:h-10 w-full sm:w-auto text-[#ee0faf] hover:bg-[#777777]/70 font-medium text-sm sm:text-base lg:text-sm px-4 sm:px-6 lg:px-4 py-2"
-              >
-                Create Playlist
-              </Button>
-            </motion.div>
-          </motion.div>
-        </motion.main>
+          <img
+            className="relative w-full h-auto"
+            alt="Frame"
+            src="https://c.animaapp.com/mecj8w01EfvOiv/img/frame-180.svg"
+          />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 relative w-full">
+            <Button className="w-full sm:w-auto h-10 sm:h-12 bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white px-6 py-2 font-medium text-sm sm:text-base">
+              Discover Now
+            </Button>
+
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto h-10 sm:h-12 border-[#0d9eef] text-[#0d9eef] hover:bg-[#0d9eef]/10 px-6 py-2 font-medium text-sm sm:text-base"
+            >
+              Create Playlist
+            </Button>
+          </div>
+        </main>
       </div>
 
-      {/* Stats */}
-      <div className="absolute bottom-4 sm:bottom-16 lg:bottom-20 right-4 sm:right-8 lg:right-16 flex items-center gap-2 sm:gap-3 lg:gap-[13.6px] flex-wrap sm:flex-nowrap">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}>
-          <MusicIcon className="w-6 h-6 sm:w-7 sm:h-7 lg:w-[29px] lg:h-[31px] text-white" />
-        </motion.div>
-        <div className="font-quicksand font-normal text-white text-sm sm:text-lg lg:text-[23.8px] whitespace-nowrap">
-          <span className="font-bold text-[#ee0faf]">50M+</span> <span className="font-bold">Songs</span>
-        </div>
-      </div>
+      {/* Stats Section */}
+      <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 lg:left-16 right-4 sm:right-8 lg:right-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
+          {/* User Avatars and Likes */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center">
+              {userAvatars.map((avatar, index) => (
+                <img
+                  key={`avatar-${index}`}
+                  className={`w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 rounded-full object-cover border-2 border-white ${index > 0 ? '-ml-2 sm:-ml-3' : ''}`}
+                  alt="User avatar"
+                  src={avatar.src}
+                />
+              ))}
+            </div>
 
-      <div className="absolute bottom-4 sm:bottom-16 lg:bottom-20 left-4 sm:left-8 lg:left-16 flex items-center gap-2 sm:gap-3 lg:gap-[13.6px] flex-wrap sm:flex-nowrap">
-        <div className="flex items-center relative">
-          {userAvatars.map((avatar, index) => (
-            <motion.div key={index} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1.4 + index * 0.1, duration: 0.3 }} className={`${index !== 0 ? '-ml-2 sm:-ml-3' : ''}`}>
-              <Avatar className={avatar.className}>
-                <AvatarImage src={avatar.src} alt="User avatar" className="object-cover" />
-              </Avatar>
-            </motion.div>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-            <HeartIcon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-[27.2px] lg:h-[27.2px] text-[#ee0faf] fill-current" />
-          </motion.div>
-          <div className="font-quicksand font-normal text-white text-sm sm:text-lg lg:text-[23.8px] whitespace-nowrap">
-            <span className="font-bold text-[#ee0faf]">33k</span> <span className="font-bold">Likes</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <HeartIcon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-[#ee0faf] fill-current" />
+              <div className="text-sm sm:text-base lg:text-lg font-bold">
+                <span className="text-[#ee0faf]">33k</span>
+                <span className="text-white"> Likes</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Songs Count */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <MusicIcon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
+            <div className="text-sm sm:text-base lg:text-lg font-bold">
+              <span className="text-[#ee0faf]">50M+</span>
+              <span className="text-white"> Songs</span>
+            </div>
           </div>
         </div>
       </div>
