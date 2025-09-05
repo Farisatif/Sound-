@@ -58,6 +58,6 @@ const App = () => {
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
-    <App />
+    <Home />
   </StrictMode>,
 );
