@@ -7,7 +7,7 @@ export const Layout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="bg-black w-full min-h-screen flex relative overflow-hidden">
+    <div className="z-[-1] bg-black w-full min-h-screen flex relative overflow-hidden">
       {/* Background Blur */}
       <div
         className="absolute inset-0 rotate-[90deg] blur-[90px] 

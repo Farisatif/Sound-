@@ -1,6 +1,5 @@
 // ==============================
 // SignUpSection_with_visitors.tsx
-// (React component - مدمج مع عداد الزوار)
 // ==============================
 
 import '../../../../index.css'
@@ -43,6 +42,11 @@ const playlistItems = [
   { icon: <PlusIcon className="w-4 h-4" />, label: "Add playlist", path: "/playlists/create", isSpecial: true },
 ];
 
+const extraItems = [
+  { path: "/about", label: "About Us" },
+  { path: "/contact", label: "Contact Us" }
+];
+
 export const SignUpSection = (): JSX.Element => {
   const { user, logout } = useAuth();
   const { favorites } = useFavorites();
@@ -50,9 +54,7 @@ export const SignUpSection = (): JSX.Element => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
-  // -----------------------------
-  // Visitor counter (localStorage, increment once per load)
-  // -----------------------------
+  // visitors counter
   const [visitors, setVisitors] = useState<number>(() => {
     const saved = localStorage.getItem("visitors");
     return saved ? parseInt(saved, 10) : 0;
@@ -62,7 +64,7 @@ export const SignUpSection = (): JSX.Element => {
     const newCount = visitors + 1;
     setVisitors(newCount);
     localStorage.setItem("visitors", newCount.toString());
-  }, []); // runs only once
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -82,36 +84,59 @@ export const SignUpSection = (): JSX.Element => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="flex items-center gap-3"
+            className="flex items-center gap-2"
           >
             <img
-              className="w-10 h-10 object-cover rounded-lg"
+              className="w-8 h-8 object-cover rounded-lg"
               alt="SoundBlast Logo"
               src="https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png"
             />
             <Link to="/" className="block">
-              <h1 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-lg sm:text-xl font-bold hover:scale-105 transition-transform duration-200">
-                SoundBlast
-              </h1>
+           <h3 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
+  SoundBlast
+</h3>
+
             </Link>
           </motion.div>
 
           {/* Center Icons */}
-          <nav className="hidden md:flex items-center justify-center gap-4 flex-1">
+          <nav className="hidden md:flex items-center justify-center gap-3 flex-1">
             {[...libraryItems, ...playlistItems, ...menuItems].map((item) => (
               <div key={item.path} className="relative group flex flex-col items-center">
                 <Link to={item.path}>
-                  <div className={`w-10 h-10 flex items-center justify-center text-white bg-[#1a0b22] rounded-full transition duration-300 group-hover:translate-y-[-4px] hover:bg-[#ee0faf]/20 ${isActive(item.path) ? "border-b-2 border-[#ee0faf]" : ""}`}>
+                  <div
+                    className={`w-8 h-8 flex items-center justify-center text-white bg-[#1a0b22] rounded-full transition duration-300 group-hover:translate-y-[-3px] hover:bg-[#ee0faf]/20 ${
+                      isActive(item.path) ? "border-b-2 border-[#ee0faf]" : ""
+                    }`}
+                  >
                     {item.icon}
                   </div>
                 </Link>
-                <span className="absolute top-full mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-xs whitespace-nowrap text-center">
+                <span className="absolute top-full mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-[10px] whitespace-nowrap text-center">
                   {item.label}
                   {item.label === "Favorites" && favorites.length > 0 && (
-                    <span className="ml-1 bg-[#ee0faf] text-white text-[10px] px-1 py-0.5 rounded-full">
+                    <span className="ml-1 bg-[#ee0faf] text-white text-[9px] px-1 py-0.5 rounded-full">
                       {favorites.length}
                     </span>
                   )}
+                </span>
+              </div>
+            ))}
+
+            {/* About & Contact */}
+            {extraItems.map((item) => (
+              <div key={item.path} className="relative group flex flex-col items-center">
+                <Link to={item.path}>
+                  <div
+                    className={`w-8 h-8 flex items-center justify-center text-white bg-[#1a0b22] rounded-full transition duration-300 group-hover:translate-y-[-3px] hover:bg-[#ee0faf]/20 ${
+                      isActive(item.path) ? "border-b-2 border-[#ee0faf]" : ""
+                    }`}
+                  >
+                    <span className="text-xs font-bold">{item.label.charAt(0)}</span>
+                  </div>
+                </Link>
+                <span className="absolute top-full mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-[10px] whitespace-nowrap text-center">
+                  {item.label}
                 </span>
               </div>
             ))}
@@ -125,7 +150,7 @@ export const SignUpSection = (): JSX.Element => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-8 sm:h-9 bg-transparent border-[#ee0faf] text-[#ee0faf] hover:bg-[#ee0faf]/10 text-xs sm:text-sm transition-all duration-200 px-3 sm:px-4"
+                    className="h-7 sm:h-8 bg-transparent border-[#ee0faf] text-[#ee0faf] hover:bg-[#ee0faf]/10 text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
                   >
                     Login
                   </Button>
@@ -133,22 +158,50 @@ export const SignUpSection = (): JSX.Element => {
                 <Link to="/signup">
                   <Button
                     size="sm"
-                    className="h-8 sm:h-9 bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white text-xs sm:text-sm transition-all duration-200 px-3 sm:px-4"
+                    className="h-7 sm:h-8 bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
                   >
                     Sign Up
                   </Button>
                 </Link>
+                <div className="absolute h-7 sm:h-8 bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3  right-[1rem] bottom-[-100%] hover:bg-[#ee0faf]/90 w-9 h-[50px] -4 transition-transform duration-200 flex flex-col items-center justify-center rounded-md">
+                <div className=" right-[1rem] bottom-[-50%]">👥</div>
+                            <p className=" right-[1rem] bottom-[-40%] bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
+               {visitors}
+            </p>
+              </div>
               </>
             ) : (
               <Button
                 onClick={handleLogout}
                 variant="ghost"
-                className="flex items-center gap-2 h-9 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                className="flex items-center gap-1 h-8 px-2 py-1 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs"
               >
-                <LogOutIcon className="w-4 h-4" />
-                <span className="text-sm font-medium">Logout</span>
+                <LogOutIcon className="w-3.5 h-3.5" />
+                <span className="font-medium">Logout</span>
               </Button>
             )}
+          </div>
+
+          {/* Hamburger + Visitors */}
+          <div className="flex flex-col items-center gap-1 md:hidden">
+            <button
+              id="hamburger-button"
+              className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-[#ee0faf]/70 text-white shadow-lg hover:bg-[#ee0faf]/90 transition"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <AnimatePresence mode="wait">
+                {isOpen ? (
+                  <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <XIcon className="w-4 h-4" />
+                  </motion.div>
+                ) : (
+                  <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                    <MenuIcon className="w-4 h-4" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+
           </div>
         </div>
       </header>
