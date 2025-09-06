@@ -64,7 +64,8 @@ export const SignUpSection = (): JSX.Element => {
     const newCount = visitors + 1;
     setVisitors(newCount);
     localStorage.setItem("visitors", newCount.toString());
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount
 
   const handleLogout = () => {
     logout();
@@ -92,10 +93,9 @@ export const SignUpSection = (): JSX.Element => {
               src="https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png"
             />
             <Link to="/" className="block">
-           <h3 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
-  SoundBlast
-</h3>
-
+              <h3 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
+                SoundBlast
+              </h3>
             </Link>
           </motion.div>
 
@@ -150,7 +150,7 @@ export const SignUpSection = (): JSX.Element => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 sm:h-8 bg-transparent border-[#ee0faf] text-[#ee0faf] hover:bg-[#ee0faf]/10 text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
+                    className="h-7 sm:h-8 bg-transparent border-[#ee0faf] text-[#ee0faf] hover:text-white hover:bg-[#ee0faf]/90 text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
                   >
                     Login
                   </Button>
@@ -158,23 +158,23 @@ export const SignUpSection = (): JSX.Element => {
                 <Link to="/signup">
                   <Button
                     size="sm"
-                    className="h-7 sm:h-8 bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
+                    className="h-7 sm:h-8 bg-[#ee0faf] hover-border-[#ee0faf] hover:bg-transparent text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
                   >
                     Sign Up
                   </Button>
                 </Link>
-                <div className="absolute  bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3  right-[1rem] bottom-[-100%] hover:bg-[#ee0faf]/90 w-9 h-[50px] -4 transition-transform duration-200 flex flex-col items-center justify-center rounded-md">
-                <UserIcon className="right-[1rem] bottom-[-50%] w-4 h-4" />
-                            <p className=" right-[1rem] bottom-[-40%] bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
-               {visitors}
-            </p>
-              </div>
+                <div className="absolute bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3 right-[1rem] bottom-[-100%] hover:bg-[#ee0faf]/90 w-9 h-[50px] flex flex-col items-center justify-center rounded-md">
+                  <UserIcon className="w-4 h-4" />
+                  <p className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xs font-bold">
+                    {visitors}
+                  </p>
+                </div>
               </>
             ) : (
               <Button
                 onClick={handleLogout}
                 variant="ghost"
-                className="flex items-center gap-1 h-8 px-2 py-1 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs"
+                className="hidden md:flex items-center gap-1 h-8 px-2 py-1 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs"
               >
                 <LogOutIcon className="w-3.5 h-3.5" />
                 <span className="font-medium">Logout</span>
@@ -182,7 +182,7 @@ export const SignUpSection = (): JSX.Element => {
             )}
           </div>
 
-          {/* Hamburger + Visitors */}
+          {/* Hamburger (mobile) */}
           <div className="flex flex-col items-center gap-1 md:hidden">
             <button
               id="hamburger-button"
@@ -201,10 +201,110 @@ export const SignUpSection = (): JSX.Element => {
                 )}
               </AnimatePresence>
             </button>
-
           </div>
         </div>
       </header>
+
+      {/* Sidebar (Mobile) */}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+            />
+
+            {/* Sidebar: starts under header (top-14) so scroll area excludes header */}
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.28, ease: "easeOut" }}
+              className="fixed mt-[1re] top-14 bottom-0 left-0 w-[50%] max-w-full bg-gradient-to-b from-[#0e0e0e] via-[#1a0b22] to-black/95 z-40 border-r border-white/10 p-4 flex flex-col overflow-y-auto"
+              // ensure smooth touch scrolling on mobile
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="self-end mb-2 text-white hover:text-[#ee0faf] transition"
+                aria-label="Close sidebar"
+              >
+                <XIcon className="w-5 h-5" />
+              </button>
+
+              {/* Content (scrollable) */}
+              <div className="w-full flex-1 space-y-2">
+                {[...menuItems, ...libraryItems, ...playlistItems].map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm text-white hover:bg-[#ee0faf]/20 transition ${
+                      isActive(item.path) ? "bg-[#ee0faf]/30" : ""
+                    }`}
+                  >
+                    {item.icon}
+                    <span className="font-medium">{item.label}</span>
+                    {item.label === "Favorites" && favorites.length > 0 && (
+                      <span className="ml-auto bg-[#ee0faf] text-black text-[11px] px-2 py-0.5 rounded-full">
+                        {favorites.length}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+
+                {/* About & Contact */}
+                <div className="mt-2 border-t border-white/5 pt-3 space-y-1">
+                  {extraItems.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm text-white hover:bg-[#ee0faf]/20 transition ${
+                        isActive(item.path) ? "bg-[#ee0faf]/30" : ""
+                      }`}
+                    >
+                      <span className="font-medium">{item.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Footer area inside sidebar */}
+              <div className="mt-4 pt-2 border-t border-white/5">
+                {/* Visitors (optional) */}
+                <div className="flex items-center justify-between text-[13px] text-white/80 mb-2">
+                  <div className="flex items-center gap-2">
+                    <UserIcon className="w-4 h-4" />
+                    <span>Visitors</span>
+                  </div>
+                  <span className="font-semibold">{visitors}</span>
+                </div>
+
+                {/* Logout inside sidebar */}
+                {user && (
+                  <Button
+                    onClick={() => {
+                      handleLogout();
+                      setIsOpen(false);
+                    }}
+                    variant="ghost"
+                    className="w-full flex items-center gap-2 justify-center bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+                  >
+                    <LogOutIcon className="w-4 h-4" />
+                    Logout
+                  </Button>
+                )}
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
