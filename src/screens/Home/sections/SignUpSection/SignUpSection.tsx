@@ -163,8 +163,8 @@ export const SignUpSection = (): JSX.Element => {
                     Sign Up
                   </Button>
                 </Link>
-                <div className="absolute h-7 sm:h-8 bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3  right-[1rem] bottom-[-100%] hover:bg-[#ee0faf]/90 w-9 h-[50px] -4 transition-transform duration-200 flex flex-col items-center justify-center rounded-md">
-                <div className=" right-[1rem] bottom-[-50%]">👥</div>
+                <div className="absolute  bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3  right-[1rem] bottom-[-100%] hover:bg-[#ee0faf]/90 w-9 h-[50px] -4 transition-transform duration-200 flex flex-col items-center justify-center rounded-md">
+                <UserIcon className="right-[1rem] bottom-[-50%] w-4 h-4" />
                             <p className=" right-[1rem] bottom-[-40%] bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
                {visitors}
             </p>
