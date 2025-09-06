@@ -16,6 +16,7 @@ import { About } from "./screens/About/About";
 import { Contact } from "./screens/Contact/Contact";
 import { MusicPlayer as MusicPlayerScreen } from "./screens/MusicPlayer/MusicPlayer";
 import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSection";
+import { SignUpSection } from "./screens/Home/sections/SignUpSection/SignUpSection";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -28,6 +29,9 @@ export default function App() {
       <FavoritesProvider>
         <MusicPlayerProvider>
           <Router>
+            {/* Header ثابت مع عداد الزوار */}
+            <SignUpSection />
+
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -35,6 +39,8 @@ export default function App() {
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/player/:songId" element={<MusicPlayerScreen />} />
+
+              {/* صفحات تحت Layout */}
               <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="discover" element={<Discover />} />
@@ -60,6 +66,8 @@ export default function App() {
                 />
               </Route>
             </Routes>
+
+            {/* Footer ثابت */}
             <FooterSection />
           </Router>
         </MusicPlayerProvider>

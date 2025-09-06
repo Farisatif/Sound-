@@ -18,7 +18,7 @@ export const Favorites: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-black text-white p-8"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="mt-[3rem] max-w-7xl mx-auto">
         {/* Header with Back Button */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

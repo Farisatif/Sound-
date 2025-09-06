@@ -63,11 +63,13 @@
 
 .font-h4 {
   font-family: var(--h4-font-family);
+  position: absolute;
   
 }
 
 .font-text-big {
   font-family: var(--text-big-font-family);
+  
 }
 
 .font-text-medium {

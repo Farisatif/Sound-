@@ -177,47 +177,15 @@
       }
     },
     {
-      "id": "src\\screens\\Signup\\Signup.tsx:43:10-to-src\\components\\Layout\\Layout.tsx",
-      "source": "src\\screens\\Signup\\Signup.tsx",
-      "target": "src\\components\\Layout\\Layout.tsx",
-      "data": {
-        "viaRoute": "/",
-        "trigger": {
-          "element": "<Link to=\"/\" className=\"flex items-center gap-2\">\n            <img\n              className=\"w-[40px] h-[38px] object-cover\"\n              alt=\"SoundBlast\"\n              src=\"https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png\"\n            />\n            <h1 className=\"text-xl font-bold\">\n              <span className=\"text-white\">Sound</span>\n              <span className=\"text-[#ee0faf]\">Blast</span>\n            </h1>\n          </Link>",
-          "line": 43,
-          "endLine": 53,
-          "column": 10,
-          "endColumn": 17,
-          "sourceFile": "src\\screens\\Signup\\Signup.tsx"
-        }
-      }
-    },
-    {
-      "id": "src\\screens\\Signup\\Signup.tsx:55:12-to-src\\screens\\Login\\Login.tsx",
-      "source": "src\\screens\\Signup\\Signup.tsx",
-      "target": "src\\screens\\Login\\Login.tsx",
-      "data": {
-        "viaRoute": "/login",
-        "trigger": {
-          "element": "<Link to=\"/login\">\n              <Button variant=\"ghost\" className=\"text-white hover:text-[#ee0faf]\">\n                Sign In\n              </Button>\n            </Link>",
-          "line": 55,
-          "endLine": 59,
-          "column": 12,
-          "endColumn": 19,
-          "sourceFile": "src\\screens\\Signup\\Signup.tsx"
-        }
-      }
-    },
-    {
-      "id": "src\\screens\\Signup\\Signup.tsx:209:18-to-src\\screens\\Login\\Login.tsx",
+      "id": "src\\screens\\Signup\\Signup.tsx:186:18-to-src\\screens\\Login\\Login.tsx",
       "source": "src\\screens\\Signup\\Signup.tsx",
       "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
           "element": "<Link to=\"/login\" className=\"text-[#ee0faf] hover:text-[#ee0faf]/80 font-medium\">\n                    Sign in\n                  </Link>",
-          "line": 209,
-          "endLine": 211,
+          "line": 186,
+          "endLine": 188,
           "column": 18,
           "endColumn": 25,
           "sourceFile": "src\\screens\\Signup\\Signup.tsx"
@@ -317,38 +285,6 @@
           "column": 18,
           "endColumn": 25,
           "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
-        }
-      }
-    },
-    {
-      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:50:4-to-src\\screens\\Login\\Login.tsx",
-      "source": "src\\components\\Layout\\Layout.tsx",
-      "target": "src\\screens\\Login\\Login.tsx",
-      "data": {
-        "viaRoute": "/login",
-        "trigger": {
-          "element": "navigate('/login')",
-          "line": 50,
-          "endLine": 50,
-          "column": 4,
-          "endColumn": 22,
-          "sourceFile": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx"
-        }
-      }
-    },
-    {
-      "id": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx:91:12-to-src\\components\\Layout\\Layout.tsx",
-      "source": "src\\components\\Layout\\Layout.tsx",
-      "target": "src\\components\\Layout\\Layout.tsx",
-      "data": {
-        "viaRoute": "/",
-        "trigger": {
-          "element": "<Link to=\"/\" className=\"block\">\r\n              <h1 className=\"bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-lg sm:text-xl font-bold hover:scale-105 transition-transform duration-200\">\r\n                SoundBlast\r\n              </h1>\r\n            </Link>",
-          "line": 91,
-          "endLine": 95,
-          "column": 12,
-          "endColumn": 19,
-          "sourceFile": "src\\screens\\Home\\sections\\SignUpSection\\SignUpSection.tsx"
         }
       }
     }

@@ -11,7 +11,7 @@ const footerColumns = [
   },
   {
     title: "Access",
-    links: ["Explor", "Artists", "Playlists", "Albums", "Trending"],
+    links: ["Explore", "Artists", "Playlists", "Albums", "Trending"],
   },
   {
     title: "Contact",
@@ -21,14 +21,14 @@ const footerColumns = [
 
 export const FooterSection = (): JSX.Element => {
   return (
-    <footer className="relative p-1 bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
+    <footer className="mt-8 fgrelative bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
       <div className="w-full bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/background.png)] bg-cover bg-center">
-        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           
           {/* About */}
           <div>
-            <h2 className="font-black text-2xl text-white mb-4">About</h2>
-            <p className="text-sm leading-6 text-justify text-gray-200">
+            <h2 className="font-black text-xl sm:text-2xl text-white mb-3 sm:mb-4">About</h2>
+            <p className="text-xs sm:text-sm leading-5 sm:leading-6 text-justify text-gray-200">
               <span className="text-white">Sound</span>
               <span className="text-[#ee0faf]">Blast</span> is a website that has
               been created for over{" "}
@@ -43,7 +43,7 @@ export const FooterSection = (): JSX.Element => {
           {/* Dynamic Columns */}
           {footerColumns.map((col, idx) => (
             <div key={idx}>
-              <h3 className="text-xl font-bold text-white mb-3">
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">
                 {col.titleSpans ? (
                   <>
                     {col.titleSpans.map((span, i) => (
@@ -56,13 +56,13 @@ export const FooterSection = (): JSX.Element => {
                   col.title
                 )}
               </h3>
-              <div className="w-12 h-[3px] bg-gradient-to-r from-[#ee0faf] to-[#0d9eef] mb-4"></div>
-              <ul className="space-y-2">
+              <div className="w-10 sm:w-12 h-[2px] sm:h-[3px] bg-gradient-to-r from-[#ee0faf] to-[#0d9eef] mb-3 sm:mb-4"></div>
+              <ul className="space-y-1 sm:space-y-2">
                 {col.links.map((link, i) => (
                   <li key={i}>
                     <a
                       href="#"
-                      className="hover:text-[#ee0faf] transition-colors"
+                      className="text-xs sm:text-sm hover:text-[#ee0faf] transition-colors"
                     >
                       {link}
                     </a>
@@ -74,8 +74,8 @@ export const FooterSection = (): JSX.Element => {
         </div>
 
         {/* Bottom Logo */}
-        <div className="border-t border-gray-700 py-6 flex justify-center">
-          <h2 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-3xl font-bold">
+        <div className="border-t border-gray-700 py-4 sm:py-6 flex justify-center">
+          <h2 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-2xl sm:text-3xl font-bold">
             SoundBlast
           </h2>
         </div>

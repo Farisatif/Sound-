@@ -23,7 +23,7 @@ export const Playlists: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-black text-white p-8"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="mt-[10%] max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

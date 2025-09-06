@@ -36,33 +36,10 @@ export const Signup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
-      {/* Header */}
-      <div className="p-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <img
-              className="w-[40px] h-[38px] object-cover"
-              alt="SoundBlast"
-              src="https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png"
-            />
-            <h1 className="text-xl font-bold">
-              <span className="text-white">Sound</span>
-              <span className="text-[#ee0faf]">Blast</span>
-            </h1>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link to="/login">
-              <Button variant="ghost" className="text-white hover:text-[#ee0faf]">
-                Sign In
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
+    <div className="mt-[3rem] min-h-screen bg-black flex flex-col">
+    
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="mt-[3rem] mb-[3rem] flex-1 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

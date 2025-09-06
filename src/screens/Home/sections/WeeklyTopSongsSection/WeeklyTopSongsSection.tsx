@@ -20,7 +20,7 @@ export const WeeklyTopSongsSection = (): JSX.Element => {
 
   return (
     <motion.section 
-      className="flex flex-col w-[100%] m-1 items-start relative px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
+      className="flex flex-col w-[100%] m-3 items-start relative px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}

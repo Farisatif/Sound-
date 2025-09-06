@@ -29,96 +29,28 @@ export const HeroSection = (): JSX.Element => {
 
 
   return (
-    <section className="relative w-full h-[30rem] sm:h-[600px] md:h-[700px] lg:h-[595px] bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/1000-f-645546712-clv1sotwmf2k99veh5cvx7tvqc38k6hp-1.png)] bg-cover bg-center">
+    <section className=" relative w-full h-[30rem] sm:h-[600px] md:h-[700px] lg:h-[595px] bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/1000-f-645546712-clv1sotwmf2k99veh5cvx7tvqc38k6hp-1.png)] bg-cover bg-center">
       <div className="flex flex-col w-full max-w-[1031px] mx-auto h-full gap-6 sm:gap-8 md:gap-12 lg:gap-[114px] px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-7 pb-8 sm:pb-12 lg:pb-16">
         
         {/* Header */}
         <motion.header 
-          className="flex flex-wrap lg:flex-nowrap items-center gap-3 sm:gap-4 w-full"
+          className="mt-[5%] flex flex-wrap lg:flex-nowrap items-center gap-3 sm:gap-4 w-full"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-        > <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="mb-8 flex flex-col md:flex-row gap-4"
-        >
-        
-          
-          <div className="zitems-center gap-2">
-
-          </div>
-        </motion.div>
-
-
-          {/* Navigation Links */}
+        > 
           <motion.div
-            className="flex items-center gap-2 sm:gap-3 order-3 lg:order-2 w-full lg:w-auto justify-center lg:justify-start"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="mb-8 flex flex-col md:flex-row gap-4"
           >
-            <Link to="/about">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10 transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3"
-              >
-                About Us
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10 transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3"
-              >
-                Contact
-              </Button>
-            </Link>
-          </motion.div>
+            <div className="zitems-center gap-2">
 
-          {/* Auth Buttons */}
-          {!user ? (
-            <motion.div 
-              className="flex items-center gap-2 sm:gap-3 order-2 lg:order-3 w-full lg:w-auto justify-end"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <Link to="/login" className="flex-1 lg:flex-initial">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 sm:h-9 w-full lg:w-auto border-[#ee0faf] text-[#ee0faf] bg-transparent hover:bg-[#ee0faf]/10 font-black text-xs sm:text-sm transition-all duration-200 hover:scale-105 px-3 sm:px-4"
-                >
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup" className="flex-1 lg:flex-initial">
-                <Button 
-                  size="sm"
-                  className="h-8 sm:h-9 w-full lg:w-auto bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white font-black text-xs sm:text-sm transition-all duration-200 hover:scale-105 px-3 sm:px-4"
-                >
-                  Sign Up
-                </Button>
-              </Link>
-            </motion.div>
-          ) : (
-            <motion.div
-              className="flex items-center gap-3 order-2 lg:order-3 w-full lg:w-auto justify-end"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <div className="text-white text-right truncate max-w-full">
-                <p className="text-xs sm:text-sm opacity-80">Welcome back,</p>
-                <p className="font-medium text-[#ee0faf] text-sm sm:text-base">{user.name}</p>
-              </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
         </motion.header>
+
 
         {/* Main Content */}
         <motion.main 

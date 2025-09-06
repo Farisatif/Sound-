@@ -35,7 +35,7 @@ export const Artists: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-black text-white p-8"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="mt-[10%] max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -149,7 +149,7 @@ export const Artists: React.FC = () => {
         >
           <Button
             variant="outline"
-            className="border-[#ee0faf] text-[#ee0faf] hover:bg-[#ee0faf]/10 px-8 py-3"
+            className="border-[#ee0faf] bg-[#ee0faf]/70 hover:bg-[#ee0faf]/50 px-4 sm:px-6 py-1 sm:py-2 hover:text-white"
           >
             Load More Artists
           </Button>

@@ -24,7 +24,7 @@ export const About: React.FC = () => {
       className="min-h-screen bg-black text-white"
     >
       {/* Header */}
-      <div className="relative bg-gradient-to-br from-[#ee0faf]/20 to-[#0d9eef]/20 py-16">
+      <div className="mt-4 relative bg-gradient-to-br from-[#ee0faf]/20 to-[#0d9eef]/20 py-16">
         <div className="absolute inset-0 bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/1000-f-645546712-clv1sotwmf2k99veh5cvx7tvqc38k6hp-1.png)] bg-cover bg-center opacity-10" />
         
         <div className="relative max-w-7xl mx-auto px-8">

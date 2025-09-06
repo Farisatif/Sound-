@@ -40,7 +40,7 @@ const navigate = useNavigate();
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-black text-white p-8"
+      className="m-8  bg-black text-white p-8"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -50,8 +50,8 @@ const navigate = useNavigate();
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold mb-4">
-            <span className="text-white">Discover </span>
+          <h1 className="m-2 p-7 text-4xl font-bold mb-4">
+            <span className="text-white">Dscover </span>
             <span className="text-[#ee0faf]">Music</span>
           </h1>
           <p className="text-white/70 text-lg">Explore new songs and artists</p>
