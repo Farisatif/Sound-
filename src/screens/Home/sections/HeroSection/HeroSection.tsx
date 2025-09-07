@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "../../../../components/ui/button";
 import { useAuth } from "../../../../context/AuthContext";
 import { useSongs, useGenres } from '../../../../hooks/useData';
+import { Link } from 'react-router-dom';
 
 export const HeroSection = (): JSX.Element => {
   const { user } = useAuth();
@@ -48,11 +49,14 @@ export const HeroSection = (): JSX.Element => {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap sm:flex-nowrap justify-center items-center gap-2 sm:gap-3 mt-3 w-full">
+          <Link to= "/Discover">
           <Button className="bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white font-medium text-xs sm:text-sm px-4 py-1.5 rounded-md  sm:w-auto">
             Discover Now
           </Button>
+          </Link>
+          <></>
           <Button className="border border-[#ee0faf] text-[#ee0faf] hover:bg-white/10 font-medium text-xs sm:text-sm px-4 py-1.5 rounded-md sm:w-auto" variant="outline">
-            Create Playlist
+            
           </Button>
         </div>
       </div>
