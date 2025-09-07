@@ -1,12 +1,21 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { PlayIcon, HeartIcon, PlusIcon, UsersIcon } from 'lucide-react';
-import { usePlaylists } from '../../hooks/useData';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { PlayIcon, PlusIcon, UsersIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { usePlaylists } from "../../hooks/useData";
 
 export const Playlists: React.FC = () => {
   const { playlists, loading } = usePlaylists();
+  const [userPlaylists, setUserPlaylists] = useState<any[]>([]);
+  const navigate = useNavigate();
+
+  // تحميل القوائم من localStorage
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("playlists") || "[]");
+    setUserPlaylists(saved);
+  }, []);
 
   if (loading) {
     return (
@@ -48,10 +57,17 @@ export const Playlists: React.FC = () => {
           <Card className="bg-gradient-to-r from-[#ee0faf]/20 to-[#0d9eef]/20 border-[#ee0faf]/30">
             <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Create New Playlist</h3>
-                <p className="text-white/70">Start building your perfect music collection</p>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Create New Playlist
+                </h3>
+                <p className="text-white/70">
+                  Start building your perfect music collection
+                </p>
               </div>
-              <Button className="bg-[#ee0faf] hover:bg-[#ee0faf]/90 flex items-center gap-2">
+              <Button
+                onClick={() => navigate("/playlists/create")}
+                className="bg-[#ee0faf] hover:bg-[#ee0faf]/90 flex items-center gap-2"
+              >
                 <PlusIcon className="w-5 h-5" />
                 Create Playlist
               </Button>
@@ -94,33 +110,25 @@ export const Playlists: React.FC = () => {
                         </Button>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <h3 className="font-bold text-white">{playlist.title}</h3>
-                      <p className="text-white/70 text-sm line-clamp-2">{playlist.description}</p>
-                      
+                      <p className="text-white/70 text-sm line-clamp-2">
+                        {playlist.description}
+                      </p>
+
                       <div className="flex items-center justify-between text-white/60 text-xs">
                         <span>{playlist.tracks} tracks</span>
                         <span>{playlist.duration}</span>
                       </div>
-                      
+
                       {playlist.followers && (
                         <div className="flex items-center gap-1 text-white/60 text-xs">
                           <UsersIcon className="w-3 h-3" />
-                          <span>{(playlist.followers / 1000000).toFixed(1)}M followers</span>
-                        </div>
-                      )}
-                      
-                      {playlist.tags && (
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {playlist.tags.slice(0, 2).map((tag, tagIndex) => (
-                            <span
-                              key={tagIndex}
-                              className="px-2 py-1 bg-[#ee0faf]/20 text-[#ee0faf] text-xs rounded-full"
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                          <span>
+                            {(playlist.followers / 1000000).toFixed(1)}M
+                            followers
+                          </span>
                         </div>
                       )}
                     </div>
@@ -131,7 +139,7 @@ export const Playlists: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* User Playlists */}
+        {/* User Playlists (من localStorage) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -139,29 +147,36 @@ export const Playlists: React.FC = () => {
         >
           <h2 className="text-2xl font-bold mb-6">Your Playlists</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {playlists.userPlaylists.map((playlist, index) => (
-              <motion.div
-                key={playlist.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.9 + index * 0.1, duration: 0.5 }}
-                whileHover={{ x: 5 }}
-              >
-                <Card className="bg-[#1e1e1e] border-none hover:bg-[#2a2a2a] transition-all duration-300">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-white">{playlist.title}</h3>
-                        <p className="text-white/70">{playlist.description}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="text-white/70 hover:text-[#ee0faf]"
-                        >
-                          <HeartIcon className="w-5 h-5" />
-                        </Button>
+            {userPlaylists.length === 0 ? (
+              <p className="text-white/50">No playlists yet. Create one!</p>
+            ) : (
+              userPlaylists.map((playlist, index) => (
+                <motion.div
+                  key={playlist.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.9 + index * 0.1, duration: 0.5 }}
+                  whileHover={{ x: 5 }}
+                >
+                  <Card
+                    onClick={() => navigate(`/playlists/${playlist.id}`)}
+                    className="bg-[#1e1e1e] border-none hover:bg-[#2a2a2a] transition-all duration-300 cursor-pointer"
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={playlist.cover}
+                          alt={playlist.name}
+                          className="w-16 h-16 rounded-lg object-cover"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white">
+                            {playlist.name}
+                          </h3>
+                          <p className="text-white/70 text-sm line-clamp-1">
+                            {playlist.description}
+                          </p>
+                        </div>
                         <Button
                           size="icon"
                           className="bg-[#ee0faf] hover:bg-[#ee0faf]/90"
@@ -169,28 +184,11 @@ export const Playlists: React.FC = () => {
                           <PlayIcon className="w-5 h-5" />
                         </Button>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-white/60 text-sm">
-                      <span>{playlist.tracks} tracks • {playlist.duration}</span>
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        playlist.isPrivate 
-                          ? 'bg-red-500/20 text-red-400' 
-                          : 'bg-green-500/20 text-green-400'
-                      }`}>
-                        {playlist.isPrivate ? 'Private' : 'Public'}
-                      </span>
-                    </div>
-                    
-                    {playlist.updatedAt && (
-                      <p className="text-white/50 text-xs mt-2">
-                        Last updated: {new Date(playlist.updatedAt).toLocaleDateString()}
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            )}
           </div>
         </motion.div>
       </div>

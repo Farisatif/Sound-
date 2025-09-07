@@ -23,6 +23,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../../../../components/ui/button";
 import { useAuth } from "../../../../context/AuthContext";
 import { useFavorites } from "../../../../context/FavoritesContext";
+import { 
+
+  FlameIcon, 
+  Music2Icon 
+} from "lucide-react";
 
 const menuItems = [
   { icon: <HomeIcon className="w-4 h-4" />, label: "Home", path: "/" },
@@ -32,14 +37,22 @@ const menuItems = [
 ];
 
 const libraryItems = [
-  { icon: <TrendingUpIcon className="w-4 h-4" />, label: "Most played", path: "/most-played" },
+  { icon: <TrendingUpIcon className="w-4 h-4" />, label: "Music Player", path: "/music-player" },
+    { icon: <FlameIcon className="w-4 h-4 text-orange-500" />, label: "Trending Songs", path: "/trending" },
+  { icon: <Music2Icon className="w-4 h-4 text-pink-500" />, label: "Genres", path: "/genres" },
+
 ];
+
+
 
 const playlistItems = [
   { icon: <HeartIcon className="w-4 h-4" />, label: "Favorites", path: "/favorites" },
   { icon: <ListIcon className="w-4 h-4" />, label: "Playlists", path: "/playlists" },
   { icon: <PlusIcon className="w-4 h-4" />, label: "Add playlist", path: "/playlists/create", isSpecial: true },
 ];
+
+export { menuItems, libraryItems, playlistItems };
+
 
 const extraItems = [
   { path: "/about", label: "About Us" },
@@ -244,7 +257,7 @@ export const SignUpSection = (): JSX.Element => {
                     to={item.path}
                     onClick={() => setIsOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm text-white hover:bg-[#ee0faf]/20 transition ${
-                      isActive(item.path) ? "bg-[#ee0faf]/30" : ""
+                      isActive(item.path) ? "bg-[#ee0faf]/30 " : ""
                     }`}
                   >
                     {item.icon}

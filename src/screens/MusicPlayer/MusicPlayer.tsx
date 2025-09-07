@@ -28,6 +28,7 @@ interface Song {
   path: string;
   image?: string;
   duration?: string;
+  releaseDate?: string;
 }
 
 interface Reply {
@@ -46,7 +47,7 @@ interface Comment {
 }
 
 export const MusicPlayer: React.FC = () => {
-  const { songId } = useParams<{ songId: string }>();
+  const { songId } = useParams(); // ✅ بدون generic لتفادي مشاكل React Router
   const navigate = useNavigate();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { user } = useAuth();
@@ -66,10 +67,11 @@ export const MusicPlayer: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const wasPlayingRef = useRef<boolean>(false);
 
+  // ✅ songs safe spread
   const allSongs: Song[] = [
-    ...(songsData.weeklyTopSongs ?? []),
-    ...(songsData.newReleaseSongs ?? []),
-    ...(songsData.trendingSongs ?? []),
+    ...(songsData?.weeklyTopSongs ?? []),
+    ...(songsData?.newReleaseSongs ?? []),
+    ...(songsData?.trendingSongs ?? []),
   ];
 
   const parsedId = songId ? parseInt(songId, 10) : undefined;
@@ -77,6 +79,7 @@ export const MusicPlayer: React.FC = () => {
     (parsedId ? allSongs.find((s) => s.id === parsedId) : undefined) ?? allSongs[0];
   const currentIndex = allSongs.findIndex((s) => s.id === currentSong?.id);
 
+  // ⏳ manage audio events
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -106,6 +109,7 @@ export const MusicPlayer: React.FC = () => {
     };
   }, [isRepeat, currentSong]);
 
+  // 🎶 load song when change
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentSong) return;
@@ -119,6 +123,7 @@ export const MusicPlayer: React.FC = () => {
     setComments(savedComments);
   }, [currentSong]);
 
+  // 🔊 volume
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -179,8 +184,15 @@ export const MusicPlayer: React.FC = () => {
 
   const toggleFavorite = () => {
     if (!currentSong) return;
-    if (isFavorite && isFavorite(currentSong.id)) removeFromFavorites(currentSong.id);
-    else addToFavorites({ ...currentSong, releaseDate: currentSong.releaseDate ?? "" });
+    if (isFavorite?.(currentSong.id)) {
+      removeFromFavorites(currentSong.id);
+    } else {
+      addToFavorites({
+        ...currentSong,
+        releaseDate: currentSong.releaseDate ?? "",
+        image: currentSong.image ?? "",
+      });
+    }
   };
 
   const formatTime = (time?: number) => {
@@ -197,7 +209,7 @@ export const MusicPlayer: React.FC = () => {
   };
 
   const handleAddComment = () => {
-    if (!user || newComment.trim() === "") return;
+    if (!user || newComment.trim() === "" || !currentSong) return;
     const comment: Comment = { user: user.name, text: newComment, likes: 0, likedBy: [], replies: [] };
     const updated = [...comments, comment];
     setComments(updated);
@@ -206,7 +218,7 @@ export const MusicPlayer: React.FC = () => {
   };
 
   const handleAddReply = (commentIndex: number) => {
-    if (!user || !replyText[commentIndex]?.trim()) return;
+    if (!user || !replyText[commentIndex]?.trim() || !currentSong) return;
     const reply: Reply = { user: user.name, text: replyText[commentIndex], likes: 0, likedBy: [] };
     const updated = [...comments];
     updated[commentIndex].replies = [...(updated[commentIndex].replies ?? []), reply];
@@ -226,46 +238,51 @@ export const MusicPlayer: React.FC = () => {
     a.remove();
   };
 
-  const cover = currentSong.image ?? "https://via.placeholder.com/400x400";
+  const cover = currentSong?.image ?? "https://via.placeholder.com/400x400";
 
   return (
-    <motion.div className="mb-[] .mt-[3rem] min-h-screen bg-black text-white relative">
+    <motion.div className="mt-[3rem] min-h-screen bg-black text-white relative">
       <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
         {/* Left: Cover + Controls */}
         <div className="lg:w-1/3 flex flex-col items-center gap-6">
-          <img src={cover} alt={currentSong.title} className="w-64 h-64 rounded-xl object-cover shadow-xl" />
+          {currentSong && (
+            <>
+              <img src={cover} alt={currentSong.title} className="w-64 h-64 rounded-xl object-cover shadow-xl" />
 
-          <div className="flex items-center justify-center gap-5 mt-4">
-            <Button onClick={playPrevious} variant="ghost" size="icon"><SkipBackIcon className="w-6 h-6" /></Button>
-            <Button onClick={togglePlay} size="icon" className="w-14 h-14 bg-pink-600 hover:bg-pink-700">
-              {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
-            </Button>
-            <Button onClick={playNext} variant="ghost" size="icon"><SkipForwardIcon className="w-6 h-6" /></Button>
-          </div>
+              <div className="flex items-center justify-center gap-5 mt-4">
+                <Button onClick={playPrevious} variant="ghost" size="icon"><SkipBackIcon className="w-6 h-6" /></Button>
+                <Button onClick={togglePlay} size="icon" className="w-14 h-14 bg-pink-600 hover:bg-pink-700">
+                  {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
+                </Button>
+                <Button onClick={playNext} variant="ghost" size="icon"><SkipForwardIcon className="w-6 h-6" /></Button>
+              </div>
 
-          <div className="flex items-center gap-3 mt-4 w-full px-4">
-            <Button onClick={toggleMute} variant="ghost" size="icon">{getVolumeIcon()}</Button>
-            <Slider value={[isMuted ? 0 : volume]} max={100} step={1} onValueChange={handleVolumeChange} className="flex-1" />
-            <Button onClick={toggleFavorite} variant="ghost" size="icon" className={isFavorite(currentSong.id) ? "text-pink-500" : "text-white"}><HeartIcon className="w-6 h-6" /></Button>
-          </div>
+              <div className="flex items-center gap-3 mt-4 w-full px-4">
+                <Button onClick={toggleMute} variant="ghost" size="icon">{getVolumeIcon()}</Button>
+                <Slider value={[isMuted ? 0 : volume]} max={100} step={1} onValueChange={handleVolumeChange} className="flex-1" />
+                <Button onClick={toggleFavorite} variant="ghost" size="icon" className={isFavorite?.(currentSong.id) ? "text-pink-500" : "text-white"}><HeartIcon className="w-6 h-6" /></Button>
+              </div>
 
-          <div className="flex items-center justify-center gap-4 mt-2">
-            <Button onClick={() => setIsShuffle(!isShuffle)} variant="ghost" size="icon"><ShuffleIcon className={isShuffle ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
-            <Button onClick={() => setIsRepeat(!isRepeat)} variant="ghost" size="icon"><RepeatIcon className={isRepeat ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
-          </div>
+              <div className="flex items-center justify-center gap-4 mt-2">
+                <Button onClick={() => setIsShuffle(!isShuffle)} variant="ghost" size="icon"><ShuffleIcon className={isShuffle ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
+                <Button onClick={() => setIsRepeat(!isRepeat)} variant="ghost" size="icon"><RepeatIcon className={isRepeat ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
+              </div>
 
-          {/* Progress */}
-          <div className="flex items-center gap-3 mt-4 w-full px-4">
-            <span className="text-xs text-white/60">{formatTime(currentTime)}</span>
-            <Slider value={[Math.min(currentTime, duration)]} max={Math.max(duration, 1)} step={1} onValueChange={handleSeek} className="flex-1" />
-            <span className="text-xs text-white/60">{formatTime(duration)}</span>
-          </div>
+              {/* Progress */}
+              <div className="flex items-center gap-3 mt-4 w-full px-4">
+                <span className="text-xs text-white/60">{formatTime(currentTime)}</span>
+                <Slider value={[Math.min(currentTime, duration)]} max={Math.max(duration, 1)} step={1} onValueChange={handleSeek} className="flex-1" />
+                <span className="text-xs text-white/60">{formatTime(duration)}</span>
+              </div>
 
-          {user ? (
-            <Button onClick={handleDownload} className="text-center  mt-4 bg-pink-600/20 hover:bg-pink-700 text-white px-4 py-2 rounded-md">
-              <DownloadIcon className="w-4 h-4" /></Button>
-          ) : (
-            <p className="text-sm text-white/60 mt-4">Login to download!</p>
+              {user ? (
+                <Button onClick={handleDownload} className="text-center  mt-4 bg-pink-600/20 hover:bg-pink-700 text-white px-4 py-2 rounded-md">
+                  <DownloadIcon className="w-4 h-4" />
+                </Button>
+              ) : (
+                <p className="text-sm text-white/60 mt-4">Login to download!</p>
+              )}
+            </>
           )}
         </div>
 
@@ -276,7 +293,7 @@ export const MusicPlayer: React.FC = () => {
             <h2 className="text-xl font-bold mb-2">All Songs</h2>
             <ul className="space-y-2">
               {allSongs.map((song) => (
-                <li key={song.id} className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${song.id === currentSong.id ? "bg-pink-700/30" : "hover:bg-white/10"}`} onClick={() => navigate(`/player/${song.id}`)}>
+                <li key={song.id} className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${song.id === currentSong?.id ? "bg-pink-700/30" : "hover:bg-white/10"}`} onClick={() => navigate(`/player/${song.id}`)}>
                   <div className="flex items-center gap-3 min-w-0">
                     <img src={song.image ?? "https://via.placeholder.com/50"} alt={song.title} className="w-12 h-12 rounded object-cover" />
                     <div className="truncate">
@@ -286,7 +303,7 @@ export const MusicPlayer: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs">{song.duration ?? "0:00"}</span>
-                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); isFavorite(song.id) ? removeFromFavorites(song.id) : addToFavorites(song); }} className={isFavorite(song.id) ? "text-pink-500" : "text-white"}><HeartIcon className="w-5 h-5" /></Button>
+                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); isFavorite?.(song.id) ? removeFromFavorites(song.id) : addToFavorites(song); }} className={isFavorite?.(song.id) ? "text-pink-500" : "text-white"}><HeartIcon className="w-5 h-5" /></Button>
                   </div>
                 </li>
               ))}
@@ -313,11 +330,11 @@ export const MusicPlayer: React.FC = () => {
                             size="icon"
                             className={`text-pink-500 ${likedByUser ? "opacity-100" : "opacity-50"}`}
                             onClick={() => {
-                              if (!user) return;
+                              if (!user || !currentSong) return;
                               const updated = [...comments];
                               if (!updated[idx].likedBy) updated[idx].likedBy = [];
                               if (likedByUser) {
-                                updated[idx].likedBy = updated[idx].likedBy?.filter((u) => u !== user.name);
+                                updated[idx].likedBy = updated[idx].likedBy.filter((u) => u !== user.name);
                                 updated[idx].likes = (updated[idx].likes ?? 1) - 1;
                               } else {
                                 updated[idx].likedBy.push(user.name);
@@ -346,6 +363,7 @@ export const MusicPlayer: React.FC = () => {
                               size="sm"
                               className="text-xs text-white/70"
                               onClick={() => {
+                                if (!currentSong) return;
                                 const updated = [...comments];
                                 updated.splice(idx, 1);
                                 setComments(updated);
@@ -376,7 +394,7 @@ export const MusicPlayer: React.FC = () => {
                                     size="icon"
                                     className={`text-pink-500 ${likedByUser ? "opacity-100" : "opacity-50"}`}
                                     onClick={() => {
-                                      if (!user) return;
+                                      if (!user || !currentSong) return;
                                       const updated = [...comments];
                                       const reply = updated[idx].replies?.[ridx];
                                       if (!reply) return;
