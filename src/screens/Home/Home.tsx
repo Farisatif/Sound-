@@ -4,6 +4,8 @@ import { PopularArtistsSection } from "./sections/PopularArtistsSection/PopularA
 import { TrendingSongsSection } from "./sections/TrendingSongsSection/TrendingSongsSection";
 import { WeeklyTopSongsSection } from "./sections/WeeklyTopSongsSection/WeeklyTopSongsSection";
 import "../../index.css"
+import {OldMusicPlayer} from "../oldSongs/oldSongs"
+import { CreatePlaylist } from "../Playlists/CreatePlaylist";
 export const Home = (): JSX.Element => {
   return (
     
@@ -17,7 +19,9 @@ export const Home = (): JSX.Element => {
       <HeroSection />
       <WeeklyTopSongsSection />
       <TrendingSongsSection />
+      <CreatePlaylist/>
       <PopularArtistsSection />
-    </motion.main>
+      <OldMusicPlayer/>
+      </motion.main>
   );
 };

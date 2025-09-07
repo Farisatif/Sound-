@@ -86,9 +86,9 @@ export const SignUpSection = (): JSX.Element => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  return (
-    <div className="w-full h-full absolute pb-16">
-      {/* Header */}
+ return (
+  <div className="w-full h-full relative mt-[3rem]">
+  {/* Header */}
       <header className="fixed top-0 left-0 right-0 h-14 bg-black/95 border-b border-white/10 backdrop-blur z-50">
         <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           

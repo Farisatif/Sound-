@@ -47,11 +47,12 @@ export const Signup: React.FC = () => {
   return (
     <div className="mt-[3rem] min-h-screen bg-black flex justify-center items-center p-4 relative">
       {/* Background Blur */}
-      <div
-        className="absolute inset-0 rotate-[90deg] blur-[125px]
-        [background:conic-gradient(from_226deg_at_50%_50%,rgba(81,55,108,0.43)_6%,rgba(159,36,109,0.45)_42%,rgba(159,36,109,0.44)_44%,rgba(229,41,150,0.45)_58%,rgba(27,79,144,0.43)_75%,rgba(42,64,108,0.42)_87%)]
-        pointer-events-none -z-10"
-      />
+ <div
+  className="absolute inset-0 blur-[125px]
+  [background:conic-gradient(from_226deg_at_50%_50%,rgba(81,55,108,0.43)_6%,rgba(159,36,109,0.45)_42%,rgba(159,36,109,0.44)_44%,rgba(229,41,150,0.45)_58%,rgba(27,79,144,0.43)_75%,rgba(42,64,108,0.42)_87%)]
+  pointer-events-none -z-10"
+/>
+
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -1,6 +1,13 @@
 {
   "nodes": [
     {
+      "id": "src/screens/Playlists/PlaylistDetails/PlaylistDetails.tsx",
+      "label": "PlaylistDetails",
+      "routes": [
+        "/playlist/:id"
+      ]
+    },
+    {
       "id": "src/screens/artists/ArtistsPage.tsx",
       "label": "ArtistsPage",
       "routes": [
@@ -12,6 +19,27 @@
       "label": "ArtistPage",
       "routes": [
         "/artist/:artistId"
+      ]
+    },
+    {
+      "id": "src/screens/Trending/Trending.tsx",
+      "label": "Trending",
+      "routes": [
+        "/trending"
+      ]
+    },
+    {
+      "id": "src/screens/Genres/Genres.tsx",
+      "label": "Genres",
+      "routes": [
+        "/genres"
+      ]
+    },
+    {
+      "id": "src/screens/GenreDetails/GenreDetails.tsx",
+      "label": "GenreDetails",
+      "routes": [
+        "/genres/:slug"
       ]
     },
     {
@@ -47,6 +75,21 @@
       "label": "Contact",
       "routes": [
         "/contact"
+      ]
+    },
+    {
+      "id": "src/screens/Playlists/CreatePlaylist.tsx",
+      "label": "CreatePlaylist",
+      "routes": [
+        "/playlists/create"
+      ]
+    },
+    {
+      "id": "src/screens/MusicPlayer/MusicPlayer.tsx",
+      "label": "MusicPlayer",
+      "routes": [
+        "/player/:songId",
+        "music-player"
       ]
     },
     {
@@ -180,6 +223,22 @@
           "column": 16,
           "endColumn": 23,
           "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Playlists\\Playlists.tsx:68:31-to-src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "source": "src\\screens\\Playlists\\Playlists.tsx",
+      "target": "src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "data": {
+        "viaRoute": "/playlists/create",
+        "trigger": {
+          "element": "navigate(\"/playlists/create\")",
+          "line": 68,
+          "endLine": 68,
+          "column": 31,
+          "endColumn": 60,
+          "sourceFile": "src\\screens\\Playlists\\Playlists.tsx"
         }
       }
     }
