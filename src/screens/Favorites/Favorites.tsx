@@ -6,7 +6,6 @@ import { PlayIcon, HeartIcon, TrashIcon, ArrowLeftIcon } from 'lucide-react';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useNavigate } from 'react-router-dom';
 
-
 export const Favorites: React.FC = () => {
   const { favorites, removeFromFavorites } = useFavorites();
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ export const Favorites: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-black text-white p-8"
+      className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 py-8"
     >
       <div className="mt-[3rem] max-w-7xl mx-auto">
         {/* Header with Back Button */}
@@ -30,12 +29,12 @@ export const Favorites: React.FC = () => {
             onClick={() => navigate(-1)}
             variant="ghost"
             size="icon"
-            className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10"
+            className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10 transition-all duration-300"
           >
             <ArrowLeftIcon className="w-6 h-6" />
           </Button>
           <div>
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-2">
               <span className="text-white">Your </span>
               <span className="text-[#ee0faf]">Favorites</span>
             </h1>
@@ -57,7 +56,7 @@ export const Favorites: React.FC = () => {
             <p className="text-white/70 mb-8">Start adding songs to your favorites by clicking the heart icon</p>
             <Button
               onClick={() => navigate('/discover')}
-              className="bg-[#ee0faf] hover:bg-[#ee0faf]/90"
+              className="bg-[#ee0faf] hover:bg-[#ee0faf]/90 transition-all duration-300"
             >
               Discover Music
             </Button>
@@ -72,35 +71,41 @@ export const Favorites: React.FC = () => {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 className="group"
               >
-                <Card className="bg-[#1e1e1e] border-none hover:bg-[#2a2a2a] transition-all duration-300">
+                <Card className="bg-[#1e1e1e] border-none hover:bg-[#2a2a2a] hover:shadow-lg transition-all duration-300">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-4">
-                      <div className="relative">
+                      {/* Album Image with Play Button Overlay */}
+                      <div className="relative group">
                         <img
                           src={song.image}
                           alt={song.title}
-                          className="w-16 h-16 rounded-lg object-cover"
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover"
                         />
-                        <Button
-                          size="icon"
-                          className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"
-                        >
-                          <PlayIcon className="w-6 h-6 text-white" />
-                        </Button>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300">
+                          <Button
+                            size="icon"
+                            className="bg-[#ee0faf] hover:bg-[#ee0faf]/90 w-10 h-10 sm:w-12 sm:h-12 rounded-full"
+                            onClick={() => navigate(`/player/${song.id}`)}
+                          >
+                            <PlayIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                          </Button>
+                        </div>
                       </div>
                       
+                      {/* Song Info */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-white truncate">{song.title}</h3>
                         <p className="text-white/70 text-sm truncate">{song.artist}</p>
                         <p className="text-white/50 text-xs">{song.genre} • {song.duration}</p>
                       </div>
                       
+                      {/* Remove Button */}
                       <div className="flex items-center gap-2">
                         <Button
                           size="icon"
                           variant="ghost"
                           onClick={() => removeFromFavorites(song.id)}
-                          className="text-[#ee0faf] hover:text-red-400 hover:bg-red-400/10"
+                          className="text-[#ee0faf] hover:text-red-400 hover:bg-red-400/10 transition-all duration-300"
                         >
                           <TrashIcon className="w-5 h-5" />
                         </Button>
@@ -109,13 +114,11 @@ export const Favorites: React.FC = () => {
                   </CardContent>
                 </Card>
               </motion.div>
-              
             ))}
           </div>
         )}
     
       </div>
     </motion.div>
-    
   );
 };

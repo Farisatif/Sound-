@@ -34,6 +34,7 @@ export interface Artist {
 }
 
 export interface Album {
+  artistId: number;
   id: number;
   title: string;
   artist: string;
@@ -48,6 +49,7 @@ export interface Album {
 }
 
 export interface Playlist {
+  artistId: number;
   id: number;
   title: string;
   image?: string;

@@ -9,7 +9,6 @@ import { Signup } from "./screens/Signup/Signup";
 import { ForgotPassword } from "./screens/ForgotPassword/ForgotPassword";
 import { Discover } from "./screens/Discover/Discover";
 import { Albums } from "./screens/Albums/Albums";
-import { Artists } from "./screens/Artists/Artists";
 import { Playlists } from "./screens/Playlists/Playlists";
 import { Favorites } from "./screens/Favorites/Favorites";
 import { About } from "./screens/About/About";
@@ -17,6 +16,8 @@ import { Contact } from "./screens/Contact/Contact";
 import { MusicPlayer as MusicPlayerScreen } from "./screens/MusicPlayer/MusicPlayer";
 import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSection";
 import { SignUpSection } from "./screens/Home/sections/SignUpSection/SignUpSection";
+import { ArtistsPage } from "./screens/artists/ArtistsPage";
+import { ArtistPage } from "./screens/artists/ArtistPage";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -29,10 +30,13 @@ export default function App() {
       <FavoritesProvider>
         <MusicPlayerProvider>
           <Router>
-            {/* Header ثابت مع عداد الزوار */}
             <SignUpSection />
 
             <Routes>
+
+              <Route path="/artists" element={<ArtistsPage />} />
+              <Route path="/artist/:artistId" element={<ArtistPage />} />
+
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -45,17 +49,8 @@ export default function App() {
                 <Route index element={<Home />} />
                 <Route path="discover" element={<Discover />} />
                 <Route path="albums" element={<Albums />} />
-                <Route path="artists" element={<Artists />} />
                 <Route path="playlists" element={<Playlists />} />
                 <Route path="favorites" element={<Favorites />} />
-                <Route
-                  path="recently-added"
-                  element={
-                    <div className="text-white p-8 min-h-screen flex items-center justify-center">
-                      <h1 className="text-2xl">Recently Added - Coming Soon</h1>
-                    </div>
-                  }
-                />
                 <Route
                   path="most-played"
                   element={

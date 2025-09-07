@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent } from '../../components/ui/card';
-import { Slider } from '../../components/ui/slider';
+// src/pages/player/MusicPlayer.tsx
+import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Button } from "../../components/ui/button";
+import { Slider } from "../../components/ui/slider";
 import {
   PlayIcon,
   PauseIcon,
@@ -14,120 +14,180 @@ import {
   HeartIcon,
   RepeatIcon,
   ShuffleIcon,
-  ArrowLeftIcon,
-  MoreHorizontalIcon
-} from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useSongs } from '../../hooks/useData';
-import { useFavorites } from '../../context/FavoritesContext';
+  DownloadIcon,
+} from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useFavorites } from "../../context/FavoritesContext";
+import { useAuth } from "../../context/AuthContext";
+import songsData from "../../data/songs.json";
+
+interface Song {
+  id: number;
+  title: string;
+  artist: string;
+  path: string;
+  image?: string;
+  duration?: string;
+}
+
+interface Reply {
+  user: string;
+  text: string;
+  likes?: number;
+  likedBy?: string[];
+}
+
+interface Comment {
+  user: string;
+  text: string;
+  likes?: number;
+  likedBy?: string[];
+  replies?: Reply[];
+}
 
 export const MusicPlayer: React.FC = () => {
   const { songId } = useParams<{ songId: string }>();
   const navigate = useNavigate();
-  const { songs, loading } = useSongs();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const { user } = useAuth();
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(75);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [volume, setVolume] = useState<number>(75);
   const [isRepeat, setIsRepeat] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [replyText, setReplyText] = useState<{ [key: number]: string }>({});
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const wasPlayingRef = useRef<boolean>(false);
 
-  // Get all songs from different categories
-  const allSongs = [
-    ...songs.weeklyTopSongs,
-    ...songs.newReleaseSongs,
-    ...songs.trendingSongs
+  const allSongs: Song[] = [
+    ...(songsData.weeklyTopSongs ?? []),
+    ...(songsData.newReleaseSongs ?? []),
+    ...(songsData.trendingSongs ?? []),
   ];
 
-  const currentSong = allSongs.find(song => song.id === parseInt(songId || '1')) || allSongs[0];
-  const currentIndex = allSongs.findIndex(song => song.id === currentSong?.id);
+  const parsedId = songId ? parseInt(songId, 10) : undefined;
+  const currentSong =
+    (parsedId ? allSongs.find((s) => s.id === parsedId) : undefined) ?? allSongs[0];
+  const currentIndex = allSongs.findIndex((s) => s.id === currentSong?.id);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
-  }, [volume]);
-
-  const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onTime = () => setCurrentTime(audio.currentTime);
+    const onLoaded = () => setDuration(isNaN(audio.duration) ? 0 : audio.duration);
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onEnded = () => {
+      if (isRepeat) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
       } else {
-        audioRef.current.play();
+        playNext();
       }
-      setIsPlaying(!isPlaying);
-    }
-  };
+    };
+    audio.addEventListener("timeupdate", onTime);
+    audio.addEventListener("loadedmetadata", onLoaded);
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("ended", onEnded);
+    return () => {
+      audio.removeEventListener("timeupdate", onTime);
+      audio.removeEventListener("loadedmetadata", onLoaded);
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("ended", onEnded);
+    };
+  }, [isRepeat, currentSong]);
 
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-    }
-  };
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentSong) return;
+    const wasPlaying = wasPlayingRef.current;
+    audio.pause();
+    audio.currentTime = 0;
+    audio.src = currentSong.path ?? "";
+    audio.load();
+    if (wasPlaying) audio.play().catch(() => {});
+    const savedComments = JSON.parse(localStorage.getItem(`comments_${currentSong.id}`) || "[]");
+    setComments(savedComments);
+  }, [currentSong]);
 
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = (isMuted ? 0 : volume) / 100;
+  }, [volume, isMuted]);
+
+  useEffect(() => {
+    wasPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  const togglePlay = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      try {
+        await audio.play();
+      } catch {}
+    } else {
+      audio.pause();
     }
   };
 
   const handleSeek = (value: number[]) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = value[0];
-      setCurrentTime(value[0]);
-    }
+    const audio = audioRef.current;
+    if (!audio) return;
+    const t = value[0] ?? 0;
+    audio.currentTime = t;
+    setCurrentTime(t);
   };
 
   const handleVolumeChange = (value: number[]) => {
-    setVolume(value[0]);
-    setIsMuted(false);
+    const v = value[0] ?? 0;
+    setVolume(v);
+    setIsMuted(v === 0);
   };
 
-  const toggleMute = () => {
-    if (audioRef.current) {
-      if (isMuted) {
-        audioRef.current.volume = volume / 100;
-        setIsMuted(false);
-      } else {
-        audioRef.current.volume = 0;
-        setIsMuted(true);
-      }
-    }
-  };
+  const toggleMute = () => setIsMuted((p) => !p);
 
   const playNext = () => {
+    if (!allSongs.length) return;
     const nextIndex = isShuffle
       ? Math.floor(Math.random() * allSongs.length)
       : (currentIndex + 1) % allSongs.length;
-    navigate(`/player/${allSongs[nextIndex].id}`);
+    const nextId = allSongs[nextIndex]?.id;
+    if (nextId !== undefined) navigate(`/player/${nextId}`);
   };
 
   const playPrevious = () => {
+    if (!allSongs.length) return;
     const prevIndex = isShuffle
       ? Math.floor(Math.random() * allSongs.length)
-      : currentIndex === 0 ? allSongs.length - 1 : currentIndex - 1;
-    navigate(`/player/${allSongs[prevIndex].id}`);
+      : currentIndex === 0
+      ? allSongs.length - 1
+      : currentIndex - 1;
+    const prevId = allSongs[prevIndex]?.id;
+    if (prevId !== undefined) navigate(`/player/${prevId}`);
   };
 
   const toggleFavorite = () => {
-    if (currentSong) {
-      if (isFavorite(currentSong.id)) {
-        removeFromFavorites(currentSong.id);
-      } else {
-        addToFavorites(currentSong);
-      }
-    }
+    if (!currentSong) return;
+    if (isFavorite && isFavorite(currentSong.id)) removeFromFavorites(currentSong.id);
+    else addToFavorites({ ...currentSong, releaseDate: currentSong.releaseDate ?? "" });
   };
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  const formatTime = (time?: number) => {
+    if (!time || isNaN(time) || !isFinite(time)) return "0:00";
+    const m = Math.floor(time / 60);
+    const s = Math.floor(time % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   };
 
   const getVolumeIcon = () => {
@@ -136,220 +196,248 @@ export const MusicPlayer: React.FC = () => {
     return <Volume2Icon className="w-5 h-5" />;
   };
 
-  if (loading || !currentSong) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
-    );
-  }
+  const handleAddComment = () => {
+    if (!user || newComment.trim() === "") return;
+    const comment: Comment = { user: user.name, text: newComment, likes: 0, likedBy: [], replies: [] };
+    const updated = [...comments, comment];
+    setComments(updated);
+    localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+    setNewComment("");
+  };
+
+  const handleAddReply = (commentIndex: number) => {
+    if (!user || !replyText[commentIndex]?.trim()) return;
+    const reply: Reply = { user: user.name, text: replyText[commentIndex], likes: 0, likedBy: [] };
+    const updated = [...comments];
+    updated[commentIndex].replies = [...(updated[commentIndex].replies ?? []), reply];
+    setComments(updated);
+    localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+    setReplyText((prev) => ({ ...prev, [commentIndex]: "" }));
+    setReplyingTo(null);
+  };
+
+  const handleDownload = () => {
+    if (!user || !currentSong?.path) return;
+    const a = document.createElement("a");
+    a.href = currentSong.path;
+    a.download = `${currentSong.title}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const cover = currentSong.image ?? "https://via.placeholder.com/400x400";
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen bg-black text-white relative overflow-hidden"
-    >
-      {/* Background */}
-      <div className="absolute inset-0">
-        <img
-          src={currentSong.image}
-          alt={currentSong.title}
-          className="w-full h-full object-cover opacity-20 blur-3xl scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40" />
-      </div>
+    <motion.div className="mt-[3rem] min-h-screen bg-black text-white relative">
+      <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+        {/* Left: Cover + Controls */}
+        <div className="lg:w-1/3 flex flex-col items-center gap-6">
+          <img src={cover} alt={currentSong.title} className="w-64 h-64 rounded-xl object-cover shadow-xl" />
 
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 p-6 flex items-center justify-between"
-      >
-        <Button
-          onClick={() => navigate(-1)}
-          variant="ghost"
-          size="icon"
-          className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/20"
-        >
-          <ArrowLeftIcon className="w-8 h-6" />
-        </Button>
+          <div className="flex items-center justify-center gap-5 mt-4">
+            <Button onClick={playPrevious} variant="ghost" size="icon"><SkipBackIcon className="w-6 h-6" /></Button>
+            <Button onClick={togglePlay} size="icon" className="w-14 h-14 bg-pink-600 hover:bg-pink-700">
+              {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
+            </Button>
+            <Button onClick={playNext} variant="ghost" size="icon"><SkipForwardIcon className="w-6 h-6" /></Button>
+          </div>
 
-        <div className="text-center">
-          <p className="text-white/70 text-sm">Playing from</p>
-          <p className="text-white font-medium">Your Library</p>
+          <div className="flex items-center gap-3 mt-4 w-full px-4">
+            <Button onClick={toggleMute} variant="ghost" size="icon">{getVolumeIcon()}</Button>
+            <Slider value={[isMuted ? 0 : volume]} max={100} step={1} onValueChange={handleVolumeChange} className="flex-1" />
+            <Button onClick={toggleFavorite} variant="ghost" size="icon" className={isFavorite(currentSong.id) ? "text-pink-500" : "text-white"}><HeartIcon className="w-6 h-6" /></Button>
+          </div>
+
+          <div className="flex items-center justify-center gap-4 mt-2">
+            <Button onClick={() => setIsShuffle(!isShuffle)} variant="ghost" size="icon"><ShuffleIcon className={isShuffle ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
+            <Button onClick={() => setIsRepeat(!isRepeat)} variant="ghost" size="icon"><RepeatIcon className={isRepeat ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
+          </div>
+
+          {/* Progress */}
+          <div className="flex items-center gap-3 mt-4 w-full px-4">
+            <span className="text-xs text-white/60">{formatTime(currentTime)}</span>
+            <Slider value={[Math.min(currentTime, duration)]} max={Math.max(duration, 1)} step={1} onValueChange={handleSeek} className="flex-1" />
+            <span className="text-xs text-white/60">{formatTime(duration)}</span>
+          </div>
+
+          {user ? (
+            <Button onClick={handleDownload} className="mt-4 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md">
+              <DownloadIcon className="w-4 h-4 mr-2" /> Download
+            </Button>
+          ) : (
+            <p className="text-sm text-white/60 mt-4">Login to download</p>
+          )}
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10"
-        >
-          <MoreHorizontalIcon className="w-6 h-6" />
-        </Button>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center px-8 py-12">
-        {/* Album Art */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="mb-8"
-        >
-          <div className="relative flex items-center justify-center w-full sm:w-80 sm:h-80 lg:w-96 lg:h-96">
-            <img
-              src={currentSong.image}
-              alt={currentSong.title}
-              className="w-[100%] h-[100%] rounded-2xl shadow-2xl object-cover"
-            />
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent" />
+        {/* Right: Playlist + Comments */}
+        <div className="lg:w-2/3 flex flex-col gap-4 max-h-[80vh] overflow-y-auto">
+          {/* Playlist */}
+          <div className="bg-[#111] rounded-xl p-4">
+            <h2 className="text-xl font-bold mb-2">All Songs</h2>
+            <ul className="space-y-2">
+              {allSongs.map((song) => (
+                <li key={song.id} className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${song.id === currentSong.id ? "bg-pink-700/30" : "hover:bg-white/10"}`} onClick={() => navigate(`/player/${song.id}`)}>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img src={song.image ?? "https://via.placeholder.com/50"} alt={song.title} className="w-12 h-12 rounded object-cover" />
+                    <div className="truncate">
+                      <p className="font-semibold truncate">{song.title}</p>
+                      <p className="text-sm text-white/70 truncate">{song.artist}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs">{song.duration ?? "0:00"}</span>
+                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); isFavorite(song.id) ? removeFromFavorites(song.id) : addToFavorites(song); }} className={isFavorite(song.id) ? "text-pink-500" : "text-white"}><HeartIcon className="w-5 h-5" /></Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-        </motion.div>
 
-        {/* Song Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="text-center mb-8 max-w-md"
-        >
-          <h1 className="text-3xl font-bold mb-2">{currentSong.title}</h1>
-          <p className="text-xl text-white/70 mb-4">{currentSong.artist}</p>
-          <div className="flex items-center justify-center gap-4 text-white/60 text-sm">
-            <span>{currentSong.genre}</span>
-            <span>•</span>
-            <span>{currentSong.duration}</span>
-          </div>
-        </motion.div>
+          {/* Comments */}
+          <div className="bg-[#111] rounded-xl p-5 max-h-[400px] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Comments</h3>
+              <span className="text-sm text-white/60">{comments.length} total</span>
+            </div>
+            {comments.length > 0 ? (
+              <ul className="space-y-3">
+                {comments.map((c, idx) => {
+                  const likedByUser = user ? c.likedBy?.includes(user.name) : false;
+                  return (
+                    <li key={idx} className="bg-[#1b1b1b] p-3 rounded-md">
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold">{c.user}</span>
+                        <div className="flex gap-2 items-center">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={`text-pink-500 ${likedByUser ? "opacity-100" : "opacity-50"}`}
+                            onClick={() => {
+                              if (!user) return;
+                              const updated = [...comments];
+                              if (!updated[idx].likedBy) updated[idx].likedBy = [];
+                              if (likedByUser) {
+                                updated[idx].likedBy = updated[idx].likedBy?.filter((u) => u !== user.name);
+                                updated[idx].likes = (updated[idx].likes ?? 1) - 1;
+                              } else {
+                                updated[idx].likedBy.push(user.name);
+                                updated[idx].likes = (updated[idx].likes ?? 0) + 1;
+                              }
+                              setComments(updated);
+                              localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+                            }}
+                          >
+                            <HeartIcon className="w-4 h-4" />
+                          </Button>
+                          <span className="text-xs text-white/60">{c.likes ?? 0}</span>
+                          {user && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-xs text-white/70"
+                              onClick={() => setReplyingTo(replyingTo === idx ? null : idx)}
+                            >
+                              Reply
+                            </Button>
+                          )}
+                          {user?.name === c.user && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-xs text-white/70"
+                              onClick={() => {
+                                const updated = [...comments];
+                                updated.splice(idx, 1);
+                                setComments(updated);
+                                localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-sm mt-1">{c.text}</p>
 
-        {/* Progress Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="w-full max-w-md mb-8"
-        >
-          <Slider
-            value={[currentTime]}
-            max={duration || 100}
-            step={1}
-            onValueChange={handleSeek}
-            className="w-full"
-          />
-          <div className="flex justify-between text-white/60 text-sm mt-2">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </motion.div>
+                      {/* Replies */}
+                      {c.replies && c.replies.length > 0 && (
+                        <ul className="pl-4 mt-2 space-y-2 border-l border-white/10">
+                          {c.replies.map((r, ridx) => {
+                            const likedByUser = user ? r.likedBy?.includes(user.name) : false;
+                            return (
+                              <li key={ridx} className="text-sm text-white/80 flex items-start justify-between">
+                                <div>
+                                  <span className="font-semibold">{r.user}: </span>
+                                  {r.text}
+                                </div>
+                                <div className="flex gap-1 items-center">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={`text-pink-500 ${likedByUser ? "opacity-100" : "opacity-50"}`}
+                                    onClick={() => {
+                                      if (!user) return;
+                                      const updated = [...comments];
+                                      const reply = updated[idx].replies?.[ridx];
+                                      if (!reply) return;
+                                      if (!reply.likedBy) reply.likedBy = [];
+                                      if (likedByUser) {
+                                        reply.likedBy = reply.likedBy.filter((u) => u !== user.name);
+                                        reply.likes = (reply.likes ?? 1) - 1;
+                                      } else {
+                                        reply.likedBy.push(user.name);
+                                        reply.likes = (reply.likes ?? 0) + 1;
+                                      }
+                                      setComments(updated);
+                                      localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+                                    }}
+                                  >
+                                    <HeartIcon className="w-3 h-3" />
+                                  </Button>
+                                  <span className="text-xs text-white/60">{r.likes ?? 0}</span>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
 
-        {/* Controls */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="flex items-center gap-6 mb-8"
-        >
-          <Button
-            onClick={() => setIsShuffle(!isShuffle)}
-            variant="ghost"
-            size="icon"
-            className={`text-white hover:text-[#ee0faf] ${isShuffle ? 'text-[#ee0faf]' : ''}`}
-          >
-            <ShuffleIcon className="w-5 h-5" />
-          </Button>
-
-          <Button
-            onClick={playPrevious}
-            variant="ghost"
-            size="icon"
-            className="text-white hover:text-[#ee0faf]"
-          >
-            <SkipBackIcon className="w-6 h-6" />
-          </Button>
-
-          <Button
-            onClick={togglePlay}
-            size="icon"
-            className="w-16 h-16 bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white"
-          >
-            {isPlaying ? (
-              <PauseIcon className="w-8 h-8" />
+                      {replyingTo === idx && (
+                        <div className="flex gap-2 mt-2">
+                          <input
+                            value={replyText[idx] ?? ""}
+                            onChange={(e) => setReplyText((prev) => ({ ...prev, [idx]: e.target.value }))}
+                            className="flex-1 bg-[#222] p-2 rounded-md text-sm"
+                            placeholder="Write a reply..."
+                          />
+                          <Button size="sm" onClick={() => handleAddReply(idx)}>Reply</Button>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
             ) : (
-              <PlayIcon className="w-8 h-8 ml-1" />
+              <p className="text-sm text-white/60">No comments yet.</p>
             )}
-          </Button>
 
-          <Button
-            onClick={playNext}
-            variant="ghost"
-            size="icon"
-            className="text-white hover:text-[#ee0faf]"
-          >
-            <SkipForwardIcon className="w-6 h-6" />
-          </Button>
-
-          <Button
-            onClick={() => setIsRepeat(!isRepeat)}
-            variant="ghost"
-            size="icon"
-            className={`text-white hover:text-[#ee0faf] ${isRepeat ? 'text-[#ee0faf]' : ''}`}
-          >
-            <RepeatIcon className="w-5 h-5" />
-          </Button>
-        </motion.div>
-
-        {/* Secondary Controls */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.6 }}
-          className="flex items-center gap-6"
-        >
-          <Button
-            onClick={toggleFavorite}
-            variant="ghost"
-            size="icon"
-            className={`hover:text-[#ee0faf] ${isFavorite(currentSong.id) ? 'text-[#ee0faf]' : 'text-white'
-              }`}
-          >
-            <HeartIcon className={`w-6 h-6 ${isFavorite(currentSong.id) ? 'fill-current' : ''}`} />
-          </Button>
-
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={toggleMute}
-              variant="ghost"
-              size="icon"
-              className="text-white hover:text-[#ee0faf]"
-            >
-              {getVolumeIcon()}
-            </Button>
-            <Slider
-              value={[isMuted ? 0 : volume]}
-              max={100}
-              step={1}
-              onValueChange={handleVolumeChange}
-              className="w-24"
-            />
+            {user && (
+              <div className="mt-4 flex gap-2">
+                <input
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  className="flex-1 bg-[#222] p-2 rounded-md text-sm"
+                  placeholder="Write a comment..."
+                />
+                <Button size="sm" onClick={handleAddComment}>Comment</Button>
+              </div>
+            )}
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Audio Element */}
-      <audio
-        ref={audioRef}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={playNext}
-        preload="metadata"
-      >
-        {/* Note: In a real app, you would have actual audio files */}
-        <source src={currentSong.path} type="audio/mpeg" />
-      </audio>
+      <audio ref={audioRef} preload="metadata" />
     </motion.div>
   );
 };

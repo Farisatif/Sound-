@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useRef, useEffect } from 'r
 
 // تعريف نوع الأغنية
 export interface Song {
+  image: string | undefined;
   id: number;
   title: string;
   artist: string;

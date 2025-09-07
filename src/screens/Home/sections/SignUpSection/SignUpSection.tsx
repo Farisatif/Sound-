@@ -32,7 +32,6 @@ const menuItems = [
 ];
 
 const libraryItems = [
-  { icon: <ClockIcon className="w-4 h-4" />, label: "Recently Added", path: "/recent" },
   { icon: <TrendingUpIcon className="w-4 h-4" />, label: "Most played", path: "/most-played" },
 ];
 
@@ -163,7 +162,7 @@ export const SignUpSection = (): JSX.Element => {
                     Sign Up
                   </Button>
                 </Link>
-                <div className="absolute bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3 right-[1rem] bottom-[-100%] hover:bg-[#ee0faf]/90 w-9 h-[50px] flex flex-col items-center justify-center rounded-md">
+                <div className="absolute bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3 right-[1rem] bottom-[-100%]  w-9 h-[50px] flex flex-col items-center justify-center rounded-md">
                   <UserIcon className="w-4 h-4" />
                   <p className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xs font-bold">
                     {visitors}
