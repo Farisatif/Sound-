@@ -262,16 +262,15 @@ export const MusicPlayer: React.FC = () => {
           </div>
 
           {user ? (
-            <Button onClick={handleDownload} className="mt-4 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md">
-              <DownloadIcon className="w-4 h-4 mr-2" /> Download
-            </Button>
+            <Button onClick={handleDownload} className="text-center  mt-4 bg-pink-600/20 hover:bg-pink-700 text-white px-4 py-2 rounded-md">
+              <DownloadIcon className="w-4 h-4" /></Button>
           ) : (
-            <p className="text-sm text-white/60 mt-4">Login to download</p>
+            <p className="text-sm text-white/60 mt-4">Login to download!</p>
           )}
         </div>
 
         {/* Right: Playlist + Comments */}
-        <div className="lg:w-2/3 flex flex-col gap-4 max-h-[80vh] overflow-y-auto">
+        <div className="mt-2 w-[100%] overflow-y-auto">
           {/* Playlist */}
           <div className="bg-[#111] rounded-xl p-4">
             <h2 className="text-xl font-bold mb-2">All Songs</h2>
