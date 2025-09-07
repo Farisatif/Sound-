@@ -1,4 +1,4 @@
-// src/pages/player/OldMusicPlayer.tsx
+// src/pages/player/MusicPlayer.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "../../components/ui/button";
@@ -19,20 +19,35 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useAuth } from "../../context/AuthContext";
-import oldSongsData from "../../data/oldSongs.json";
+import songsData from "../../data/oldSongs.json";
 
 interface Song {
+  duration: string;
   id: number;
   title: string;
   artist: string;
+  year: string;
   path: string;
   image?: string;
-  duration?: string;
-  releaseDate?: string;
+}
+
+interface Reply {
+  user: string;
+  text: string;
+  likes?: number;
+  likedBy?: string[];
+}
+
+interface Comment {
+  user: string;
+  text: string;
+  likes?: number;
+  likedBy?: string[];
+  replies?: Reply[];
 }
 
 export const OldMusicPlayer: React.FC = () => {
-  const { songId } = useParams();
+  const { songId } = useParams(); // ✅ بدون generic لتفادي مشاكل React Router
   const navigate = useNavigate();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { user } = useAuth();
@@ -44,33 +59,28 @@ export const OldMusicPlayer: React.FC = () => {
   const [isRepeat, setIsRepeat] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [replyText, setReplyText] = useState<{ [key: number]: string }>({});
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const wasPlayingRef = useRef<boolean>(false);
 
-  const allSongs: Song[] = (oldSongsData ?? []).map((song: any) => ({
-    id: song.id,
-    title: song.title,
-    artist: song.artist,
-    path: song.url, // map 'url' to 'path'
-    image: song.image ?? "",
-    duration: song.duration ?? "",
-    releaseDate: song.year ?? "",
-  }));
+  // ✅ songs safe spread
+  const allSongs: Song[] = Array.isArray(songsData) ? songsData : [];
 
   const parsedId = songId ? parseInt(songId, 10) : undefined;
   const currentSong =
-    (parsedId ? allSongs.find((s) => s.id === parsedId) : undefined) ??
-    allSongs[0];
+    (parsedId ? allSongs.find((s) => s.id === parsedId) : undefined) ?? allSongs[0];
   const currentIndex = allSongs.findIndex((s) => s.id === currentSong?.id);
 
-  // 🕐 تحديث الوقت
+  // ⏳ manage audio events
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     const onTime = () => setCurrentTime(audio.currentTime);
-    const onLoaded = () =>
-      setDuration(isNaN(audio.duration) ? 0 : audio.duration);
+    const onLoaded = () => setDuration(isNaN(audio.duration) ? 0 : audio.duration);
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
     const onEnded = () => {
@@ -95,7 +105,7 @@ export const OldMusicPlayer: React.FC = () => {
     };
   }, [isRepeat, currentSong]);
 
-  // 🎶 تحميل الأغنية عند التغيير
+  // 🎶 load song when change
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentSong) return;
@@ -105,9 +115,11 @@ export const OldMusicPlayer: React.FC = () => {
     audio.src = currentSong.path ?? "";
     audio.load();
     if (wasPlaying) audio.play().catch(() => {});
+    const savedComments = JSON.parse(localStorage.getItem(`comments_${currentSong.id}`) || "[]");
+    setComments(savedComments);
   }, [currentSong]);
 
-  // 🔊 الصوت
+  // 🔊 volume
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -152,7 +164,7 @@ export const OldMusicPlayer: React.FC = () => {
       ? Math.floor(Math.random() * allSongs.length)
       : (currentIndex + 1) % allSongs.length;
     const nextId = allSongs[nextIndex]?.id;
-    if (nextId !== undefined) navigate(`/old-player/${nextId}`);
+    if (nextId !== undefined) navigate(`/player/${nextId}`);
   };
 
   const playPrevious = () => {
@@ -163,7 +175,7 @@ export const OldMusicPlayer: React.FC = () => {
       ? allSongs.length - 1
       : currentIndex - 1;
     const prevId = allSongs[prevIndex]?.id;
-    if (prevId !== undefined) navigate(`/old-player/${prevId}`);
+    if (prevId !== undefined) navigate(`/player/${prevId}`);
   };
 
   const toggleFavorite = () => {
@@ -172,9 +184,10 @@ export const OldMusicPlayer: React.FC = () => {
       removeFromFavorites(currentSong.id);
     } else {
       addToFavorites({
-        ...currentSong,
-        releaseDate: currentSong.releaseDate ?? "",
-        image: currentSong.image ?? "",
+          ...currentSong,
+          releaseDate: currentSong.releaseDate ?? "",
+          image: currentSong.image ?? "",
+          duration: ""
       });
     }
   };
@@ -192,132 +205,97 @@ export const OldMusicPlayer: React.FC = () => {
     return <Volume2Icon className="w-5 h-5" />;
   };
 
-  const cover =
-    currentSong?.image ?? "https://via.placeholder.com/400x400?text=Old+Song";
+  const handleAddComment = () => {
+    if (!user || newComment.trim() === "" || !currentSong) return;
+    const comment: Comment = { user: user.name, text: newComment, likes: 0, likedBy: [], replies: [] };
+    const updated = [...comments, comment];
+    setComments(updated);
+    localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+    setNewComment("");
+  };
+
+  const handleAddReply = (commentIndex: number) => {
+    if (!user || !replyText[commentIndex]?.trim() || !currentSong) return;
+    const reply: Reply = { user: user.name, text: replyText[commentIndex], likes: 0, likedBy: [] };
+    const updated = [...comments];
+    updated[commentIndex].replies = [...(updated[commentIndex].replies ?? []), reply];
+    setComments(updated);
+    localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+    setReplyText((prev) => ({ ...prev, [commentIndex]: "" }));
+    setReplyingTo(null);
+  };
+
+  const handleDownload = () => {
+    if (!user || !currentSong?.path) return;
+    const a = document.createElement("a");
+    a.href = currentSong.path;
+    a.download = `${currentSong.title}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const cover = currentSong?.image ?? "https://via.placeholder.com/400x400";
 
   return (
     <motion.div className="mt-[3rem] min-h-screen bg-black text-white relative">
       <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
-        {/* يسار: الصورة والتحكم */}
+        {/* Left: Cover + Controls */}
         <div className="lg:w-1/3 flex flex-col items-center gap-6">
           {currentSong && (
             <>
-              <img
-                src={cover}
-                alt={currentSong.title}
-                className="w-64 h-64 rounded-xl object-cover shadow-xl"
-              />
+              <img src={cover} alt={currentSong.title} className="w-64 h-64 rounded-xl object-cover shadow-xl" />
 
               <div className="flex items-center justify-center gap-5 mt-4">
-                <Button onClick={playPrevious} variant="ghost" size="icon">
-                  <SkipBackIcon className="w-6 h-6" />
+                <Button onClick={playPrevious} variant="ghost" size="icon"><SkipBackIcon className="w-6 h-6" /></Button>
+                <Button onClick={togglePlay} size="icon" className="w-14 h-14 bg-pink-600 hover:bg-pink-700">
+                  {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
                 </Button>
-                <Button
-                  onClick={togglePlay}
-                  size="icon"
-                  className="w-14 h-14 bg-pink-600 hover:bg-pink-700"
-                >
-                  {isPlaying ? (
-                    <PauseIcon className="w-6 h-6" />
-                  ) : (
-                    <PlayIcon className="w-6 h-6" />
-                  )}
-                </Button>
-                <Button onClick={playNext} variant="ghost" size="icon">
-                  <SkipForwardIcon className="w-6 h-6" />
-                </Button>
+                <Button onClick={playNext} variant="ghost" size="icon"><SkipForwardIcon className="w-6 h-6" /></Button>
               </div>
 
               <div className="flex items-center gap-3 mt-4 w-full px-4">
-                <Button onClick={toggleMute} variant="ghost" size="icon">
-                  {getVolumeIcon()}
-                </Button>
-                <Slider
-                  value={[isMuted ? 0 : volume]}
-                  max={100}
-                  step={1}
-                  onValueChange={handleVolumeChange}
-                  className="flex-1"
-                />
-                <Button
-                  onClick={toggleFavorite}
-                  variant="ghost"
-                  size="icon"
-                  className={
-                    isFavorite?.(currentSong.id) ? "text-pink-500" : "text-white"
-                  }
-                >
-                  <HeartIcon className="w-6 h-6" />
-                </Button>
+                <Button onClick={toggleMute} variant="ghost" size="icon">{getVolumeIcon()}</Button>
+                <Slider value={[isMuted ? 0 : volume]} max={100} step={1} onValueChange={handleVolumeChange} className="flex-1" />
+                <Button onClick={toggleFavorite} variant="ghost" size="icon" className={isFavorite?.(currentSong.id) ? "text-pink-500" : "text-white"}><HeartIcon className="w-6 h-6" /></Button>
               </div>
 
               <div className="flex items-center justify-center gap-4 mt-2">
-                <Button
-                  onClick={() => setIsShuffle(!isShuffle)}
-                  variant="ghost"
-                  size="icon"
-                >
-                  <ShuffleIcon
-                    className={isShuffle ? "text-pink-500 w-5 h-5" : "w-5 h-5"}
-                  />
-                </Button>
-                <Button
-                  onClick={() => setIsRepeat(!isRepeat)}
-                  variant="ghost"
-                  size="icon"
-                >
-                  <RepeatIcon
-                    className={isRepeat ? "text-pink-500 w-5 h-5" : "w-5 h-5"}
-                  />
-                </Button>
+                <Button onClick={() => setIsShuffle(!isShuffle)} variant="ghost" size="icon"><ShuffleIcon className={isShuffle ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
+                <Button onClick={() => setIsRepeat(!isRepeat)} variant="ghost" size="icon"><RepeatIcon className={isRepeat ? "text-pink-500 w-5 h-5" : "w-5 h-5"} /></Button>
               </div>
 
-              {/* الشريط */}
+              {/* Progress */}
               <div className="flex items-center gap-3 mt-4 w-full px-4">
-                <span className="text-xs text-white/60">
-                  {formatTime(currentTime)}
-                </span>
-                <Slider
-                  value={[Math.min(currentTime, duration)]}
-                  max={Math.max(duration, 1)}
-                  step={1}
-                  onValueChange={handleSeek}
-                  className="flex-1"
-                />
-                <span className="text-xs text-white/60">
-                  {formatTime(duration)}
-                </span>
+                <span className="text-xs text-white/60">{formatTime(currentTime)}</span>
+                <Slider value={[Math.min(currentTime, duration)]} max={Math.max(duration, 1)} step={1} onValueChange={handleSeek} className="flex-1" />
+                <span className="text-xs text-white/60">{formatTime(duration)}</span>
               </div>
+
+              {user ? (
+                <Button onClick={handleDownload} className="text-center  mt-4 bg-pink-600/20 hover:bg-pink-700 text-white px-4 py-2 rounded-md">
+                  <DownloadIcon className="w-4 h-4" />
+                </Button>
+              ) : (
+                <p className="text-sm text-white/60 mt-4">Login to download!</p>
+              )}
             </>
           )}
         </div>
 
-        {/* يمين: قائمة الأغاني */}
-        <div className="mt-2 w-full overflow-y-auto">
+        {/* Right: Playlist + Comments */}
+        <div className="mt-2 w-[100%] overflow-y-auto">
+          {/* Playlist */}
           <div className="bg-[#111] rounded-xl p-4">
-            <h2 className="text-xl font-bold mb-2">Old Songs</h2>
+            <h2 className="text-xl font-bold mb-2">All Songs</h2>
             <ul className="space-y-2">
               {allSongs.map((song) => (
-                <li
-                  key={song.id}
-                  className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                    song.id === currentSong?.id
-                      ? "bg-pink-700/30"
-                      : "hover:bg-white/10"
-                  }`}
-                  onClick={() => navigate(`/old-player/${song.id}`)}
-                >
+                <li key={song.id} className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${song.id === currentSong?.id ? "bg-pink-700/30" : "hover:bg-white/10"}`} onClick={() => navigate(`/player/${song.id}`)}>
                   <div className="flex items-center gap-3 min-w-0">
-                    <img
-                      src={song.image ?? "https://via.placeholder.com/50"}
-                      alt={song.title}
-                      className="w-12 h-12 rounded object-cover"
-                    />
+                    <img src={song.image ?? "https://via.placeholder.com/50"} alt={song.title} className="w-12 h-12 rounded object-cover" />
                     <div className="truncate">
                       <p className="font-semibold truncate">{song.title}</p>
-                      <p className="text-sm text-white/70 truncate">
-                        {song.artist}
-                      </p>
+                      <p className="text-sm text-white/70 truncate">{song.artist}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -327,13 +305,18 @@ export const OldMusicPlayer: React.FC = () => {
                       size="icon"
                       onClick={(e) => {
                         e.stopPropagation();
-                        isFavorite?.(song.id)
-                          ? removeFromFavorites(song.id)
-                          : addToFavorites(song);
+                        if (isFavorite?.(song.id)) {
+                          removeFromFavorites(song.id);
+                        } else {
+                          addToFavorites({
+                            ...song,
+                            releaseDate: song.releaseDate ?? "",
+                            image: song.image ?? "",
+                            duration: song.duration ?? "",
+                          });
+                        }
                       }}
-                      className={
-                        isFavorite?.(song.id) ? "text-pink-500" : "text-white"
-                      }
+                      className={isFavorite?.(song.id) ? "text-pink-500" : "text-white"}
                     >
                       <HeartIcon className="w-5 h-5" />
                     </Button>
@@ -342,6 +325,148 @@ export const OldMusicPlayer: React.FC = () => {
               ))}
             </ul>
           </div>
+
+          {/* Comments */}
+          <div className="bg-[#111] rounded-xl p-5 max-h-[400px] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Comments</h3>
+              <span className="text-sm text-white/60">{comments.length} total</span>
+            </div>
+            {comments.length > 0 ? (
+              <ul className="space-y-3">
+                {comments.map((c, idx) => {
+                  const likedByUser = user ? c.likedBy?.includes(user.name) : false;
+                  return (
+                    <li key={idx} className="bg-[#1b1b1b] p-3 rounded-md">
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold">{c.user}</span>
+                        <div className="flex gap-2 items-center">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={`text-pink-500 ${likedByUser ? "opacity-100" : "opacity-50"}`}
+                            onClick={() => {
+                              if (!user || !currentSong) return;
+                              const updated = [...comments];
+                              if (!updated[idx].likedBy) updated[idx].likedBy = [];
+                              if (likedByUser) {
+                                updated[idx].likedBy = updated[idx].likedBy.filter((u) => u !== user.name);
+                                updated[idx].likes = (updated[idx].likes ?? 1) - 1;
+                              } else {
+                                updated[idx].likedBy.push(user.name);
+                                updated[idx].likes = (updated[idx].likes ?? 0) + 1;
+                              }
+                              setComments(updated);
+                              localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+                            }}
+                          >
+                            <HeartIcon className="w-4 h-4" />
+                          </Button>
+                          <span className="text-xs text-white/60">{c.likes ?? 0}</span>
+                          {user && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-xs text-white/70"
+                              onClick={() => setReplyingTo(replyingTo === idx ? null : idx)}
+                            >
+                              Reply
+                            </Button>
+                          )}
+                          {user?.name === c.user && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-xs text-white/70"
+                              onClick={() => {
+                                if (!currentSong) return;
+                                const updated = [...comments];
+                                updated.splice(idx, 1);
+                                setComments(updated);
+                                localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-sm mt-1">{c.text}</p>
+
+                      {/* Replies */}
+                      {c.replies && c.replies.length > 0 && (
+                        <ul className="pl-4 mt-2 space-y-2 border-l border-white/10">
+                          {c.replies.map((r, ridx) => {
+                            const likedByUser = user ? r.likedBy?.includes(user.name) : false;
+                            return (
+                              <li key={ridx} className="text-sm text-white/80 flex items-start justify-between">
+                                <div>
+                                  <span className="font-semibold">{r.user}: </span>
+                                  {r.text}
+                                </div>
+                                <div className="flex gap-1 items-center">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className={`text-pink-500 ${likedByUser ? "opacity-100" : "opacity-50"}`}
+                                    onClick={() => {
+                                      if (!user || !currentSong) return;
+                                      const updated = [...comments];
+                                      const reply = updated[idx].replies?.[ridx];
+                                      if (!reply) return;
+                                      if (!reply.likedBy) reply.likedBy = [];
+                                      if (likedByUser) {
+                                        reply.likedBy = reply.likedBy.filter((u) => u !== user.name);
+                                        reply.likes = (reply.likes ?? 1) - 1;
+                                      } else {
+                                        reply.likedBy.push(user.name);
+                                        reply.likes = (reply.likes ?? 0) + 1;
+                                      }
+                                      setComments(updated);
+                                      localStorage.setItem(`comments_${currentSong.id}`, JSON.stringify(updated));
+                                    }}
+                                  >
+                                    <HeartIcon className="w-3 h-3" />
+                                  </Button>
+                                  <span className="text-xs text-white/60">{r.likes ?? 0}</span>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+
+                      {replyingTo === idx && (
+                        <div className="flex gap-2 mt-2">
+                          <input
+                            value={replyText[idx] ?? ""}
+                            onChange={(e) => setReplyText((prev) => ({ ...prev, [idx]: e.target.value }))}
+                            className="flex-1 bg-[#222] p-2 rounded-md text-sm"
+                            placeholder="Write a reply..."
+                          />
+                          <Button size="sm" onClick={() => handleAddReply(idx)}>Reply</Button>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-sm text-white/60">No comments yet.</p>
+            )}
+
+            {user && (
+              <div className="mt-4 flex gap-2">
+                <input
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  className="flex-1 bg-[#222] p-2 rounded-md text-sm"
+                  placeholder="Write a comment..."
+                />
+                <Button size="sm" onClick={handleAddComment}>Comment</Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -349,5 +474,3 @@ export const OldMusicPlayer: React.FC = () => {
     </motion.div>
   );
 };
-
-export default OldMusicPlayer;

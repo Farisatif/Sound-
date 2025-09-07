@@ -16,6 +16,7 @@ import {
   UserIcon,
   LogOutIcon,
   MenuIcon,
+  MessageSquare,
   XIcon,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -38,9 +39,10 @@ const menuItems = [
 
 const libraryItems = [
   { icon: <TrendingUpIcon className="w-4 h-4" />, label: "Music Player", path: "/music-player" },
-    { icon: <FlameIcon className="w-4 h-4 text-orange-500" />, label: "Trending Songs", path: "/trending" },
+  { icon: <MessageSquare className="w-4 h-4" />, label: "Feedback", path: "/feedback" },
+  { icon: <FlameIcon className="w-4 h-4 text-orange-500" />, label: "Trending Songs", path: "/trending" },
   { icon: <Music2Icon className="w-4 h-4 text-pink-500" />, label: "Genres", path: "/genres" },
-
+  
 ];
 
 

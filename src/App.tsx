@@ -26,6 +26,8 @@ import { CreatePlaylist } from "./screens/Playlists/CreatePlaylist";
 import { PlaylistDetails } from "./screens/Playlists/PlaylistDetails/PlaylistDetails";
 import { OldMusicPlayer } from "./screens/oldSongs/oldSongs";
 import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSection";
+import { Feedback } from "./screens/FeedBack/FeedBack";
+import { Sitemap } from "./screens/Home/sections/Sitemap/Sitemap";
 // حماية المسارات التي تتطلب تسجيل الدخول
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -43,6 +45,8 @@ export default function App() {
 
             <Routes>
               {/* مسارات عامة */}
+              <Route path="/sitemap" element={<Sitemap />} />
+              <Route path="/feedback" element={<Feedback />} />
               <Route path="/playlists/:id" element={<PlaylistDetails />} />
               <Route path="/oldplayer/:songId" element={<OldMusicPlayer />} />
               <Route path="/playlist/:id" element={<PlaylistDetails />} />

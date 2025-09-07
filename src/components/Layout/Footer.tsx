@@ -64,17 +64,16 @@ export const Footer: React.FC = () => {
       {/* شريط الأخبار */}
       <div className="w-full bg-gradient-to-r from-pink-700 via-purple-800 to-pink-700 text-white py-2 overflow-hidden">
         <motion.div
-          animate={{ x: ["100%", "-100%"] }}
+          animate={{ x: ["102%", "-50%"] }}
           transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
           className="whitespace-nowrap text-sm font-medium"
         >
-          🔥 Welcome to My Music App | 🎶 Discover Old & New Songs | 🚀 Updates coming soon...
+           Welcome to SondBlast | 🎶 Discover Old & New Songs | 🚀 Updates coming soon...
         </motion.div>
       </div>
 
       {/* الوقت والتاريخ */}
       <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 text-sm">
-        <p className="text-white/70">© {new Date().getFullYear()} My Music App. All rights reserved.</p>
         <p className="text-white">
           {dateTime} <span className="text-pink-500 ml-2">({location})</span>
         </p>
