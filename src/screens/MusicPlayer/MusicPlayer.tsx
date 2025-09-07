@@ -229,7 +229,7 @@ export const MusicPlayer: React.FC = () => {
   const cover = currentSong.image ?? "https://via.placeholder.com/400x400";
 
   return (
-    <motion.div className="mt-[3rem] min-h-screen bg-black text-white relative">
+    <motion.div className="mb-[] .mt-[3rem] min-h-screen bg-black text-white relative">
       <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
         {/* Left: Cover + Controls */}
         <div className="lg:w-1/3 flex flex-col items-center gap-6">
