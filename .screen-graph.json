@@ -147,17 +147,17 @@
   ],
   "edges": [
     {
-      "id": "src\\screens\\Playlists\\Playlists.tsx:54:27-to-src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "id": "src\\screens\\Playlists\\Playlists.tsx:135:33-to-src\\screens\\Playlists\\CreatePlaylist.tsx",
       "source": "src\\screens\\Playlists\\Playlists.tsx",
       "target": "src\\screens\\Playlists\\CreatePlaylist.tsx",
       "data": {
         "viaRoute": "/playlists/create",
         "trigger": {
           "element": "navigate(\"/playlists/create\")",
-          "line": 54,
-          "endLine": 54,
-          "column": 27,
-          "endColumn": 56,
+          "line": 135,
+          "endLine": 135,
+          "column": 33,
+          "endColumn": 62,
           "sourceFile": "src\\screens\\Playlists\\Playlists.tsx"
         }
       }
@@ -259,33 +259,33 @@
       }
     },
     {
-      "id": "src\\screens\\Playlists\\CreatePlaylist.tsx:64:4-to-src\\screens\\Playlists\\Playlists.tsx",
-      "source": "src\\screens\\Playlists\\CreatePlaylist.tsx",
-      "target": "src\\screens\\Playlists\\Playlists.tsx",
-      "data": {
-        "viaRoute": "/playlists",
-        "trigger": {
-          "element": "navigate(\"/playlists\")",
-          "line": 64,
-          "endLine": 64,
-          "column": 4,
-          "endColumn": 26,
-          "sourceFile": "src\\screens\\Playlists\\CreatePlaylist.tsx"
-        }
-      }
-    },
-    {
-      "id": "src\\screens\\Playlists\\CreatePlaylist.tsx:89:27-to-src\\screens\\Login\\Login.tsx",
+      "id": "src\\screens\\Playlists\\CreatePlaylist.tsx:85:89-to-src\\screens\\Login\\Login.tsx",
       "source": "src\\screens\\Playlists\\CreatePlaylist.tsx",
       "target": "src\\screens\\Login\\Login.tsx",
       "data": {
         "viaRoute": "/login",
         "trigger": {
           "element": "navigate(\"/login\")",
-          "line": 89,
-          "endLine": 89,
-          "column": 27,
-          "endColumn": 45,
+          "line": 85,
+          "endLine": 85,
+          "column": 89,
+          "endColumn": 107,
+          "sourceFile": "src\\screens\\Playlists\\CreatePlaylist.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Playlists\\CreatePlaylist.tsx:185:8-to-src\\screens\\Playlists\\Playlists.tsx",
+      "source": "src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "target": "src\\screens\\Playlists\\Playlists.tsx",
+      "data": {
+        "viaRoute": "/playlists",
+        "trigger": {
+          "element": "navigate(\"/playlists\")",
+          "line": 185,
+          "endLine": 185,
+          "column": 8,
+          "endColumn": 30,
           "sourceFile": "src\\screens\\Playlists\\CreatePlaylist.tsx"
         }
       }

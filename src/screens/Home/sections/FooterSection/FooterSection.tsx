@@ -1,5 +1,7 @@
 import "../../../../index.css";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
 
 const footerColumns = [
   {
@@ -37,7 +39,22 @@ const footerColumns = [
 
 export const FooterSection = (): JSX.Element => {
   return (
-    <footer className="mt-8 relative bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
+    <footer className=" mt-8 mb-8 relative bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
+      {/* شريط الأخبار العصري */}
+      <div className="w-full bg-gradient-to-r from-[#ee0faf] via-purple-700 to-[#0e9eef] text-white py-2 overflow-hidden">
+        <motion.div
+          animate={{ x: ["100%", "-100%"] }}
+          transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
+          className="flex whitespace-nowrap text-sm sm:text-base font-semibold tracking-wide"
+        >
+          <span className="px-4">
+            Team Zerif will strive to reach the top no matter what. Stay tuned for more amazing updates!
+          </span>
+          <span className="px-4">
+            Team Zerif will strive to reach the top no matter what. Stay tuned for more amazing updates!
+          </span>
+        </motion.div>
+      </div>
       <div className="w-full bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/background.png)] bg-cover bg-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           

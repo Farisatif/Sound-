@@ -1,15 +1,13 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import {
   PlayIcon,
   TrashIcon,
-  HeartIcon,
-  Clock,
+  Clock as ClockIcon,
   ShuffleIcon,
   ArrowLeft,
   Share2,
-  Minimize2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -26,134 +24,226 @@ interface Song {
   id: number;
   title: string;
   artist: string;
-  path: string;
+  path?: string;
   image?: string;
   duration?: string;
-  releaseDate?: string;
+  releaseDate?: string; // ISO string preferred
   playCount?: number;
 }
 
+type PlaylistShape = { id: string | number; name?: string; songs?: Song[]; [k: string]: any };
+
+const safeParse = (raw: string | null) => {
+  try {
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const loadPlaylistsFromLS = (): PlaylistShape[] => {
+  const raw = localStorage.getItem(LS_KEY);
+  const parsed = safeParse(raw);
+  return Array.isArray(parsed) ? parsed : [];
+};
+
+const savePlaylistsToLS = (list: PlaylistShape[]) => {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(list));
+  } catch (err) {
+    console.error("Failed to save playlists", err);
+  }
+};
+
 export const PlaylistDetails: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id?: string }>();
+  const playlistId = id ?? "";
+
   const [songs, setSongs] = useState<Song[]>([]);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sortBy, setSortBy] = useState<"title" | "artist" | "date">("title");
   const [miniPlayer, setMiniPlayer] = useState<Song | null>(null);
 
-  // تحميل الأغاني من localStorage
+  // debounce search (300ms)
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search.trim()), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // load playlist once (or first)
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
-      const playlist = saved.find((p: any) => p.id === "default");
-      if (playlist) {
-        setSongs(playlist.songs || []);
+      const saved = loadPlaylistsFromLS();
+      let playlist: PlaylistShape | undefined;
+      if (playlistId) {
+        playlist = saved.find((p) => String(p.id) === String(playlistId));
       }
+      if (!playlist) playlist = saved[0];
+      setSongs(Array.isArray(playlist?.songs) ? (playlist!.songs as Song[]) : []);
     } catch (err) {
       console.error("Error loading playlist", err);
+      setSongs([]);
     }
-  }, []);
+  }, [playlistId]);
 
-  // تحميل آخر أغنية مشغلة
+  // restore last played into mini player only if present in list
   useEffect(() => {
     const last = localStorage.getItem(LAST_PLAYED_KEY);
-    if (last) {
-      const song = songs.find((s) => s.id === Number(last));
-      if (song) setMiniPlayer(song);
-    }
+    if (!last) return;
+    const song = songs.find((s) => s.id === Number(last));
+    if (song) setMiniPlayer(song);
   }, [songs]);
 
-  // تصفية وفرز الأغاني
+  // filtered & sorted
   const filteredSongs = useMemo(() => {
     let list = [...songs];
-    if (search.trim()) {
+    if (debouncedSearch) {
+      const q = debouncedSearch.toLowerCase();
       list = list.filter(
         (s) =>
-          s.title.toLowerCase().includes(search.toLowerCase()) ||
-          s.artist.toLowerCase().includes(search.toLowerCase())
+          s.title.toLowerCase().includes(q) ||
+          s.artist.toLowerCase().includes(q)
       );
     }
     if (sortBy === "title") {
       list.sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortBy === "artist") {
       list.sort((a, b) => a.artist.localeCompare(b.artist));
-    } else if (sortBy === "date") {
-      list.sort(
-        (a, b) => (a.releaseDate || "").localeCompare(b.releaseDate || "")
-      );
+    } else {
+      // date: parse ISO (fall back to empty)
+      list.sort((a, b) => {
+        const da = a.releaseDate ? Date.parse(a.releaseDate) : 0;
+        const db = b.releaseDate ? Date.parse(b.releaseDate) : 0;
+        return db - da; // newest first
+      });
     }
     return list;
-  }, [songs, search, sortBy]);
+  }, [songs, debouncedSearch, sortBy]);
 
-  // حفظ الترتيب الجديد
-  const saveOrder = (newSongs: Song[]) => {
-    setSongs(newSongs);
-    const saved = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
-    const newPlaylists = saved.map((p: any) =>
-      p.id === "default" ? { ...p, songs: newSongs } : p
-    );
-    localStorage.setItem(LS_KEY, JSON.stringify(newPlaylists));
-  };
+  // save (upsert playlist)
+  const saveOrder = useCallback(
+    (newSongs: Song[]) => {
+      setSongs(newSongs);
+      try {
+        const saved = loadPlaylistsFromLS();
+        const isArray = Array.isArray(saved);
+        let updated: PlaylistShape[] = [];
 
-  // عند السحب والإفلات
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const reordered = Array.from(songs);
-    const [removed] = reordered.splice(result.source.index, 1);
-    reordered.splice(result.destination.index, 0, removed);
-    saveOrder(reordered);
-  };
+        if (!isArray || saved.length === 0) {
+          updated = [{ id: playlistId || Date.now(), songs: newSongs }];
+        } else {
+          let found = false;
+          updated = saved.map((p) => {
+            if (String(p.id) === String(playlistId) || (!playlistId && !found && p && p.songs)) {
+              found = true;
+              return { ...p, songs: newSongs };
+            }
+            return p;
+          });
+          if (!found) {
+            updated.push({ id: playlistId || Date.now(), songs: newSongs });
+          }
+        }
+        savePlaylistsToLS(updated);
+      } catch (err) {
+        console.error("Error saving playlist order", err);
+      }
+    },
+    [playlistId]
+  );
 
-  // حذف بلاي ليست كاملة
-  const clearPlaylist = () => {
+  // DnD handler — only apply to the full songs array (disable while filtered)
+  const handleDragEnd = useCallback(
+    (result: DropResult) => {
+      if (!result.destination) return;
+      // if search active — do not allow reorder (UI disables drag)
+      if (debouncedSearch) return;
+      const reordered = Array.from(songs);
+      const [removed] = reordered.splice(result.source.index, 1);
+      reordered.splice(result.destination.index, 0, removed);
+      saveOrder(reordered);
+    },
+    [songs, saveOrder, debouncedSearch]
+  );
+
+  const clearPlaylist = useCallback(() => {
+    const ok = window.confirm("هل تريد حذف جميع الأغاني من هذه القائمة؟");
+    if (!ok) return;
     saveOrder([]);
-  };
+  }, [saveOrder]);
 
-  // حذف أغنية واحدة
-  const removeSong = (id: number) => {
-    saveOrder(songs.filter((s) => s.id !== id));
-  };
+  const removeSong = useCallback(
+    (idToRemove: number) => {
+      const ok = window.confirm("هل تود حذف هذه الأغنية من القائمة؟");
+      if (!ok) return;
+      const newList = songs.filter((s) => s.id !== idToRemove);
+      saveOrder(newList);
+      if (miniPlayer?.id === idToRemove) setMiniPlayer(null);
+    },
+    [songs, saveOrder, miniPlayer]
+  );
 
-  // تشغيل أغنية
-  const playSong = (song: Song) => {
-    localStorage.setItem(LAST_PLAYED_KEY, song.id.toString());
-    setMiniPlayer(song);
+  const playSong = useCallback(
+    (song: Song) => {
+      if (!song) return;
+      localStorage.setItem(LAST_PLAYED_KEY, String(song.id));
+      setMiniPlayer(song);
+      const updated = songs.map((s) =>
+        s.id === song.id ? { ...s, playCount: (s.playCount || 0) + 1 } : s
+      );
+      saveOrder(updated);
+      navigate(`/player/${song.id}`);
+    },
+    [songs, saveOrder, navigate]
+  );
 
-    const updated = songs.map((s) =>
-      s.id === song.id ? { ...s, playCount: (s.playCount || 0) + 1 } : s
-    );
-    saveOrder(updated);
+  const shufflePlay = useCallback(() => {
+    if (!songs.length) return;
+    const r = Math.floor(Math.random() * songs.length);
+    playSong(songs[r]);
+  }, [songs, playSong]);
 
-    navigate(`/player/${song.id}`);
-  };
+  const sharePlaylist = useCallback(async () => {
+    try {
+      if (navigator.share && window.location.href) {
+        await navigator.share({
+          title: "🎶 My Playlist",
+          text: "Check out my playlist!",
+          url: window.location.href,
+        });
+      } else {
+        const playlistData = { title: "My Playlist", songs };
+        await navigator.clipboard.writeText(JSON.stringify(playlistData, null, 2));
+        alert("📋 Playlist copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Share failed:", err);
+      alert("Could not share playlist.");
+    }
+  }, [songs]);
 
-  // Shuffle play
-  const shufflePlay = () => {
-    const randomIndex = Math.floor(Math.random() * songs.length);
-    playSong(songs[randomIndex]);
-  };
-
-  // مشاركة
-  const sharePlaylist = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url);
-    alert("✅ Playlist link copied!");
-  };
-
-  // اختصارات لوحة المفاتيح
+  // keyboard shortcuts
   useEffect(() => {
     const handleKeys = (e: KeyboardEvent) => {
       if (!songs.length) return;
       if (e.code === "Space") {
         e.preventDefault();
         if (miniPlayer) playSong(miniPlayer);
+      } else if (e.code === "ArrowRight") {
+        shufflePlay();
+      } else if (e.code === "ArrowLeft") {
+        navigate(-1);
+      } else if (e.code === "KeyM") {
+        setMiniPlayer(null);
       }
-      if (e.code === "ArrowRight") shufflePlay();
-      if (e.code === "ArrowLeft") navigate(-1);
-      if (e.code === "KeyM") setMiniPlayer(null);
     };
     window.addEventListener("keydown", handleKeys);
     return () => window.removeEventListener("keydown", handleKeys);
-  });
+  }, [songs, miniPlayer, playSong, shufflePlay, navigate]);
+
+  const isDragDisabled = Boolean(debouncedSearch);
 
   if (!songs.length) {
     return (
@@ -165,8 +255,7 @@ export const PlaylistDetails: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Playlist Header */}
-      <div className="bg-gradient-to-b from-pink-700/70 to-black p-8 flex flex-col md:flex-row items-center gap-6">
+      <div className="p-8 flex flex-col md:flex-row items-center gap-6">
         <img
           src={songs[0]?.image ?? "https://via.placeholder.com/150"}
           alt="Playlist Cover"
@@ -184,7 +273,7 @@ export const PlaylistDetails: React.FC = () => {
             </Button>
             <Button
               onClick={shufflePlay}
-              className="bg-purple-600 hover:bg-purple-700 shadow-lg"
+              className="bg-pink-500 hover:bg-pink-600 shadow-lg"
             >
               <ShuffleIcon className="w-5 h-5 mr-2" /> Shuffle
             </Button>
@@ -213,7 +302,6 @@ export const PlaylistDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Search + Sort */}
       <div className="p-6 max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
         <input
           type="text"
@@ -233,10 +321,14 @@ export const PlaylistDetails: React.FC = () => {
         </select>
       </div>
 
-      {/* Songs List with Drag & Drop */}
       <div className="p-6 max-w-4xl mx-auto">
+        {isDragDisabled && (
+          <p className="text-sm text-white/50 mb-3">
+            البحث مفعل — تعطيل السحب أثناء الفلترة للحفاظ على الترتيب الصحيح.
+          </p>
+        )}
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="playlist">
+          <Droppable droppableId="playlist" isDropDisabled={isDragDisabled}>
             {(provided) => (
               <ul
                 {...provided.droppableProps}
@@ -248,15 +340,16 @@ export const PlaylistDetails: React.FC = () => {
                     key={song.id.toString()}
                     draggableId={song.id.toString()}
                     index={index}
+                    isDragDisabled={isDragDisabled}
                   >
-                    {(provided, snapshot) => (
+                    {(prov, snapshot) => (
                       <motion.li
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
+                        ref={prov.innerRef}
+                        {...prov.draggableProps}
+                        {...prov.dragHandleProps}
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
+                        transition={{ delay: index * 0.03 }}
                         className={`flex items-center justify-between p-4 rounded-lg cursor-pointer ${
                           snapshot.isDragging
                             ? "bg-pink-600/30 scale-105 shadow-lg"
@@ -271,7 +364,9 @@ export const PlaylistDetails: React.FC = () => {
                             className="w-14 h-14 rounded-lg object-cover shadow"
                           />
                           <div className="truncate">
-                            <p className="font-semibold truncate">{song.title}</p>
+                            <p className="font-semibold truncate">
+                              {song.title}
+                            </p>
                             <p className="text-sm text-white/60 truncate">
                               {song.artist}
                             </p>
@@ -286,13 +381,12 @@ export const PlaylistDetails: React.FC = () => {
                           ) : null}
                           {song.releaseDate && (
                             <span className="hidden sm:flex items-center gap-1">
-                              <Clock className="w-4 h-4" />
-                              {song.releaseDate}
+                              <ClockIcon className="w-4 h-4" />
+                              {new Date(song.releaseDate).toLocaleDateString()}
                             </span>
                           )}
                           <span>{song.duration ?? "0:00"}</span>
 
-                          {/* زر حذف */}
                           <Button
                             size="icon"
                             variant="ghost"
@@ -301,6 +395,7 @@ export const PlaylistDetails: React.FC = () => {
                               removeSong(song.id);
                             }}
                             className="text-red-400 hover:text-red-600"
+                            aria-label={`Remove ${song.title}`}
                           >
                             <TrashIcon className="w-5 h-5" />
                           </Button>
@@ -315,39 +410,6 @@ export const PlaylistDetails: React.FC = () => {
           </Droppable>
         </DragDropContext>
       </div>
-
-      {/* Mini Player */}
-      {miniPlayer && (
-        <div className="fixed bottom-4 right-4 bg-[#1c1c1c] text-white p-4 rounded-lg shadow-2xl flex items-center gap-4 w-[300px]">
-          <img
-            src={miniPlayer.image ?? "https://via.placeholder.com/50"}
-            alt={miniPlayer.title}
-            className="w-12 h-12 rounded-lg object-cover"
-          />
-          <div className="truncate flex-1">
-            <p className="font-semibold truncate">{miniPlayer.title}</p>
-            <p className="text-sm text-white/60 truncate">
-              {miniPlayer.artist}
-            </p>
-          </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => playSong(miniPlayer)}
-            className="text-white hover:text-pink-500"
-          >
-            <PlayIcon className="w-5 h-5" />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => setMiniPlayer(null)}
-            className="text-white hover:text-red-500"
-          >
-            <Minimize2 className="w-5 h-5" />
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// src/pages/player/MusicPlayer.tsx
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "../../components/ui/button";
@@ -19,6 +18,12 @@ import {
   GlobeIcon,
   CheckIcon,
   XIcon,
+  FileAudioIcon,
+  MusicIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ClockIcon,
+  UserIcon,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFavorites } from "../../context/FavoritesContext";
@@ -95,6 +100,32 @@ const flattenSongs = (): Song[] => [
   ...((songsData as any)?.newReleaseSongs ?? []),
   ...((songsData as any)?.trendingSongs ?? []),
 ];
+
+/* -------------------------------------------------------
+ * Small local helpers/components for consistent buttons
+ * -----------------------------------------------------*/
+const IconButton: React.FC<{
+  title?: string;
+  onClick?: (e?: any) => void;
+  active?: boolean;
+  children: React.ReactNode;
+  variant?: string;
+  size?: string;
+  className?: string;
+  ariaLabel?: string;
+}> = ({ title, onClick, active, children, className = "", ariaLabel }) => (
+  <Button
+    variant={"ghost" as any}
+    size={"icon" as any}
+    onClick={onClick}
+    title={title}
+    aria-pressed={active}
+    aria-label={ariaLabel || title}
+    className={`p-2 ${className}`}
+  >
+    {children}
+  </Button>
+);
 
 /* -------------------------------------------------------
  * Component
@@ -210,7 +241,7 @@ export const MusicPlayer: React.FC = () => {
     const onEnded = () => {
       if (isRepeat) {
         audio.currentTime = 0;
-        audio.play().catch(() => { });
+        audio.play().catch(() => {});
       } else {
         playNext();
       }
@@ -247,7 +278,7 @@ export const MusicPlayer: React.FC = () => {
     audio.src = currentSong.path ?? "";
     audio.load();
 
-    if (wasPlaying) audio.play().catch(() => { });
+    if (wasPlaying) audio.play().catch(() => {});
 
     // Load comments from LS
     const savedComments = JSON.parse(
@@ -278,7 +309,7 @@ export const MusicPlayer: React.FC = () => {
     if (audio.paused) {
       try {
         await audio.play();
-      } catch { }
+      } catch {}
     } else {
       audio.pause();
     }
@@ -371,12 +402,10 @@ export const MusicPlayer: React.FC = () => {
         // remove
         playlist.songs = playlist.songs.filter((s: Song) => s.id !== song.id);
         localStorage.setItem(LS_DEFAULT_PLAYLIST_KEY, JSON.stringify(saved));
-        alert(`➖ Removed from My Playlist: ${song.title}`);
       } else {
         // add
         playlist.songs.push(song);
         localStorage.setItem(LS_DEFAULT_PLAYLIST_KEY, JSON.stringify(saved));
-        alert(`➕ Added to My Playlist: ${song.title}`);
       }
     } catch (err) {
       console.error("Error toggling default playlist", err);
@@ -438,6 +467,31 @@ export const MusicPlayer: React.FC = () => {
   };
 
   /* -------------------------------------------------------
+   * Accessibility & keyboard shortcuts (Space, ←, →, M)
+   * -----------------------------------------------------*/
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (document.activeElement && document.activeElement.tagName) || "";
+      // avoid interfering when typing in inputs/textareas
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.key === "ArrowRight") {
+        playNext();
+      } else if (e.key === "ArrowLeft") {
+        playPrevious();
+      } else if (e.key.toLowerCase() === "m") {
+        toggleMute();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [togglePlay, playNext, playPrevious]);
+
+  /* -------------------------------------------------------
    * Render helpers
    * -----------------------------------------------------*/
   const cover = safeImage(currentSong?.image, 400);
@@ -463,14 +517,17 @@ export const MusicPlayer: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-3 py-3">
             {/* Title + count */}
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold">Music</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/70">
+            <div className="flex items-center gap-3">
+              <MusicIcon className="w-6 h-6 text-pink-500" />
+              <div>
+                <div className="text-lg font-bold">Music</div>
+                <div className="text-xs text-white/60">Your collection & player</div>
+              </div>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/70 ml-2">
                 {filteredSongs.length}/{allSongs.length}
               </span>
             </div>
 
-            {/* Divider */}
             <div className="hidden lg:block h-6 w-px bg-white/10 mx-1" />
 
             {/* Language */}
@@ -481,6 +538,7 @@ export const MusicPlayer: React.FC = () => {
                 onChange={(e) => setSelectedLanguage(e.target.value)}
                 className="bg-[#0f0f0f] text-white/90 border border-white/10 rounded-lg px-3 py-1.5 text-xs outline-none"
                 title="Filter by language"
+                aria-label="Filter by language"
               >
                 {languages.map((lang) => (
                   <option key={lang} value={lang}>
@@ -490,7 +548,6 @@ export const MusicPlayer: React.FC = () => {
               </select>
             </div>
 
-            {/* Divider */}
             <div className="hidden lg:block h-6 w-px bg-white/10 mx-1" />
 
             {/* Age segmented control */}
@@ -500,6 +557,7 @@ export const MusicPlayer: React.FC = () => {
                   onClick={() => setAgeFilter("all")}
                   className={`px-3 py-1.5 text-xs transition ${ageFilter === "all" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
                     }`}
+                  aria-pressed={ageFilter === "all"}
                 >
                   All
                 </button>
@@ -508,6 +566,7 @@ export const MusicPlayer: React.FC = () => {
                   className={`px-3 py-1.5 text-xs transition ${ageFilter === "new" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
                     }`}
                   title={`>= ${cutOffDate}`}
+                  aria-pressed={ageFilter === "new"}
                 >
                   New
                 </button>
@@ -516,6 +575,7 @@ export const MusicPlayer: React.FC = () => {
                   className={`px-3 py-1.5 text-xs transition ${ageFilter === "old" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
                     }`}
                   title={`< ${cutOffDate}`}
+                  aria-pressed={ageFilter === "old"}
                 >
                   Old
                 </button>
@@ -528,6 +588,7 @@ export const MusicPlayer: React.FC = () => {
                 onChange={(e) => setCutOffDate(e.target.value)}
                 className="bg-[#0f0f0f] text-white/90 border border-white/10 rounded-lg px-3 py-1.5 text-xs outline-none"
                 title="Cutoff date (Old < date, New ≥ date)"
+                aria-label="Cutoff date"
               />
 
               {/* Reset */}
@@ -537,6 +598,7 @@ export const MusicPlayer: React.FC = () => {
                 onClick={resetFilters}
                 title="Reset filters"
                 className="text-white/70 hover:text-white"
+                aria-label="Reset filters"
               >
                 <XIcon className="w-4 h-4" />
               </Button>
@@ -551,40 +613,51 @@ export const MusicPlayer: React.FC = () => {
           {currentSong && (
             <>
               {/* Cover */}
-              <img
-                src={cover}
-                alt={currentSong.title}
-                className="w-64 h-64 rounded-xl object-cover shadow-xl border border-white/10"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = safeImage(undefined);
-                }}
-              />
+              <div className="relative">
+                <img
+                  src={cover}
+                  alt={currentSong.title}
+                  className="w-64 h-64 rounded-xl object-cover shadow-xl border border-white/10"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = safeImage(undefined);
+                  }}
+                />
+                <div className="absolute left-3 top-3 bg-black/50 rounded-md px-2 py-1 text-xs text-white/80 flex items-center gap-1">
+                  <FileAudioIcon className="w-4 h-4" />
+                  <span className="truncate max-w-[10rem]">{currentSong.title}</span>
+                </div>
+              </div>
 
               {/* Primary Controls */}
               <div className="flex items-center justify-center gap-5 mt-1">
-                <Button onClick={playPrevious} variant="ghost" size="icon" title="Previous">
+                <IconButton title="Previous" onClick={playPrevious} ariaLabel="Previous">
                   <SkipBackIcon className="w-6 h-6" />
-                </Button>
+                </IconButton>
 
                 <Button
                   onClick={togglePlay}
                   size="icon"
-                  className="w-14 h-14 bg-pink-600 hover:bg-pink-700"
+                  className="w-14 h-14 bg-pink-600 hover:bg-pink-700 flex items-center justify-center rounded-full"
                   title={isPlaying ? "Pause" : "Play"}
+                  aria-label={isPlaying ? "Pause" : "Play"}
                 >
                   {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6" />}
                 </Button>
 
-                <Button onClick={playNext} variant="ghost" size="icon" title="Next">
+                <IconButton title="Next" onClick={playNext} ariaLabel="Next">
                   <SkipForwardIcon className="w-6 h-6" />
-                </Button>
+                </IconButton>
               </div>
 
               {/* Volume + Favorite + Toggle default playlist */}
               <div className="flex items-center gap-3 w-full px-4">
-                <Button onClick={toggleMute} variant="ghost" size="icon" title={isMuted ? "Unmute" : "Mute"}>
+                <IconButton
+                  onClick={toggleMute}
+                  title={isMuted ? "Unmute" : "Mute"}
+                  ariaLabel={isMuted ? "Unmute" : "Mute"}
+                >
                   {getVolumeIcon()}
-                </Button>
+                </IconButton>
 
                 <Slider
                   value={[isMuted ? 0 : volume]}
@@ -592,60 +665,59 @@ export const MusicPlayer: React.FC = () => {
                   step={1}
                   onValueChange={handleVolumeChange}
                   className="flex-1"
+                  aria-label="Volume"
                 />
 
                 {/* Favorites toggle */}
-                <Button
+                <IconButton
                   onClick={toggleFavorite}
-                  variant="ghost"
-                  size="icon"
                   className={isFavorite?.(currentSong.id) ? "text-pink-500" : "text-white"}
                   title={isFavorite?.(currentSong.id) ? "Remove from favorites" : "Add to favorites"}
+                  ariaLabel={isFavorite?.(currentSong.id) ? "Remove from favorites" : "Add to favorites"}
                 >
                   <HeartIcon
                     className="w-6 h-6"
                     {...(isFavorite?.(currentSong.id) ? { fill: "currentColor" } : {})}
                   />
-                </Button>
+                </IconButton>
 
                 {/* Add/Remove to default playlist */}
-                <Button
+                <IconButton
                   onClick={() => toggleSongInDefaultPlaylist(currentSong)}
-                  variant="ghost"
-                  size="icon"
+                  className={isInDefaultPlaylist(currentSong.id) ? "text-green-400" : "text-white"}
                   title={
                     isInDefaultPlaylist(currentSong.id)
                       ? "Remove from My Playlist"
                       : "Add to My Playlist"
                   }
-                  className={isInDefaultPlaylist(currentSong.id) ? "text-green-400" : "text-white"}
+                  ariaLabel={isInDefaultPlaylist(currentSong.id) ? "Remove from My Playlist" : "Add to My Playlist"}
                 >
                   {isInDefaultPlaylist(currentSong.id) ? (
                     <CheckIcon className="w-6 h-6" />
                   ) : (
                     <PlusIcon className="w-6 h-6" />
                   )}
-                </Button>
+                </IconButton>
               </div>
 
               {/* Shuffle & Repeat */}
               <div className="flex items-center justify-center gap-4">
-                <Button
+                <IconButton
                   onClick={() => setIsShuffle((p) => !p)}
-                  variant="ghost"
-                  size="icon"
                   title={isShuffle ? "Shuffle On" : "Shuffle Off"}
+                  ariaLabel="Shuffle"
+                  active={isShuffle}
                 >
                   <ShuffleIcon className={isShuffle ? "text-pink-500 w-5 h-5" : "w-5 h-5"} />
-                </Button>
-                <Button
+                </IconButton>
+                <IconButton
                   onClick={() => setIsRepeat((p) => !p)}
-                  variant="ghost"
-                  size="icon"
                   title={isRepeat ? "Repeat On" : "Repeat Off"}
+                  ariaLabel="Repeat"
+                  active={isRepeat}
                 >
                   <RepeatIcon className={isRepeat ? "text-pink-500 w-5 h-5" : "w-5 h-5"} />
-                </Button>
+                </IconButton>
               </div>
 
               {/* Progress */}
@@ -657,6 +729,7 @@ export const MusicPlayer: React.FC = () => {
                   step={1}
                   onValueChange={handleSeek}
                   className="flex-1"
+                  aria-label="Seek"
                 />
                 <span className="text-xs text-white/60">{formatTime(duration)}</span>
               </div>
@@ -667,6 +740,7 @@ export const MusicPlayer: React.FC = () => {
                   onClick={handleDownload}
                   className="text-center mt-1 bg-pink-600/20 hover:bg-pink-700 text-white px-4 py-2 rounded-md"
                   title="Download .mp3"
+                  aria-label="Download"
                 >
                   <DownloadIcon className="w-4 h-4" />
                 </Button>
@@ -676,7 +750,10 @@ export const MusicPlayer: React.FC = () => {
 
               {/* Lyrics */}
               <div className="mt-2 bg-[#111] p-4 rounded-xl w-full border border-white/10">
-                <h3 className="text-lg font-bold mb-2">Lyrics</h3>
+                <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
+                  <ClockIcon className="w-5 h-5" />
+                  Lyrics
+                </h3>
                 <p className="text-sm text-white/70 whitespace-pre-line">
                   {currentSong?.lyrics ?? "No lyrics available."}
                 </p>
@@ -684,7 +761,10 @@ export const MusicPlayer: React.FC = () => {
 
               {/* Comments */}
               <div className="mt-2 bg-[#111] p-4 rounded-xl w-full border border-white/10">
-                <h3 className="text-lg font-bold mb-3">Comments</h3>
+                <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
+                  <UserIcon className="w-5 h-5" />
+                  Comments
+                </h3>
 
                 {user ? (
                   <div className="flex gap-2 mb-4">
@@ -731,18 +811,17 @@ export const MusicPlayer: React.FC = () => {
                             <p className="text-sm text-white/80 break-words">{c.text}</p>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <Button
-                              variant="ghost"
-                              size="icon"
+                            <IconButton
                               onClick={() => toggleLikeComment(idx)}
                               className={likedByUser ? "text-pink-500" : "text-white/70"}
                               title={likedByUser ? "Unlike" : "Like"}
+                              ariaLabel={likedByUser ? "Unlike comment" : "Like comment"}
                             >
                               <HeartIcon
                                 className="w-4 h-4"
                                 {...(likedByUser ? { fill: "currentColor" } : {})}
                               />
-                            </Button>
+                            </IconButton>
                             {(c.likes ?? 0) > 0 && (
                               <span className="text-xs text-white/60">{c.likes}</span>
                             )}
@@ -775,18 +854,17 @@ export const MusicPlayer: React.FC = () => {
                                     <span className="break-words">{r.text}</span>
                                   </div>
                                   <div className="flex items-center gap-1 shrink-0">
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
+                                    <IconButton
                                       onClick={() => toggleLikeReply(idx, ridx)}
                                       className={likedByUserReply ? "text-pink-500" : "text-white/70"}
                                       title={likedByUserReply ? "Unlike reply" : "Like reply"}
+                                      ariaLabel={likedByUserReply ? "Unlike reply" : "Like reply"}
                                     >
                                       <HeartIcon
                                         className="w-3 h-3"
                                         {...(likedByUserReply ? { fill: "currentColor" } : {})}
                                       />
-                                    </Button>
+                                    </IconButton>
                                     {(r.likes ?? 0) > 0 && (
                                       <span className="text-[10px] text-white/60">{r.likes}</span>
                                     )}
@@ -849,7 +927,10 @@ export const MusicPlayer: React.FC = () => {
           {/* Related Songs */}
           {relatedSongs.length > 0 && (
             <div className="bg-[#111] rounded-xl p-4 border border-white/10">
-              <h2 className="text-xl font-bold mb-2">Related Songs</h2>
+              <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+                <ChevronLeftIcon className="w-5 h-5" />
+                Related Songs
+              </h2>
               <ul className="space-y-2">
                 {relatedSongs.map((song) => (
                   <li
@@ -878,9 +959,7 @@ export const MusicPlayer: React.FC = () => {
                       </span>
 
                       {/* Toggle add/remove default playlist */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
+                      <IconButton
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleSongInDefaultPlaylist(song);
@@ -897,7 +976,7 @@ export const MusicPlayer: React.FC = () => {
                         ) : (
                           <PlusIcon className="w-5 h-5" />
                         )}
-                      </Button>
+                      </IconButton>
                     </div>
                   </li>
                 ))}
@@ -955,9 +1034,7 @@ export const MusicPlayer: React.FC = () => {
                         <span className="text-xs">{song.duration ?? "0:00"}</span>
 
                         {/* Toggle default playlist (+ / remove) */}
-                        <Button
-                          variant="ghost"
-                          size="icon"
+                        <IconButton
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleSongInDefaultPlaylist(song);
@@ -966,12 +1043,10 @@ export const MusicPlayer: React.FC = () => {
                           title={inDefault ? "Remove from My Playlist" : "Add to My Playlist"}
                         >
                           {inDefault ? <CheckIcon className="w-5 h-5" /> : <PlusIcon className="w-5 h-5" />}
-                        </Button>
+                        </IconButton>
 
                         {/* Favorites toggle */}
-                        <Button
-                          variant="ghost"
-                          size="icon"
+                        <IconButton
                           onClick={(e) => {
                             e.stopPropagation();
                             isFavorite?.(song.id)
@@ -985,7 +1060,7 @@ export const MusicPlayer: React.FC = () => {
                             className="w-5 h-5"
                             {...(isFavorite?.(song.id) ? { fill: "currentColor" } : {})}
                           />
-                        </Button>
+                        </IconButton>
                       </div>
                     </li>
                   );
@@ -999,8 +1074,7 @@ export const MusicPlayer: React.FC = () => {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Filtered preview</h2>
               <div className="text-xs text-white/50">
-                {selectedLanguage === "All" ? "All languages" : selectedLanguage} •{" "}
-                {ageFilter === "all" ? "All ages" : ageFilter === "new" ? "New" : "Old"}
+                {selectedLanguage === "All" ? "All languages" : selectedLanguage} • {ageFilter === "all" ? "All ages" : ageFilter === "new" ? "New" : "Old"}
               </div>
             </div>
             <ul className="mt-3 space-y-2">
@@ -1042,3 +1116,5 @@ export const MusicPlayer: React.FC = () => {
     </motion.div>
   );
 };
+
+export default MusicPlayer;
