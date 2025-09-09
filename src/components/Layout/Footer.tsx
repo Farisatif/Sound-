@@ -56,27 +56,30 @@ export const Footer: React.FC = () => {
 
   return (
     <motion.footer
-      initial={{ y: 50, opacity: 0 }}
+      initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="bg-black border-t border-white/10 text-white relative overflow-hidden"
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="fixed bottom-0 left-0 w-full z-50 bg-black border-t border-white/10 text-white shadow-lg"
     >
-      {/* شريط الأخبار */}
-      <div className="w-full bg-gradient-to-r from-pink-700 via-purple-800 to-pink-700 text-white py-2 overflow-hidden">
+      {/* شريط الأخبار العصري */}
+      <div className="w-full bg-gradient-to-r from-[#ee0faf] via-purple-700 to-[#0e9eef] text-white py-2 overflow-hidden">
         <motion.div
-          animate={{ x: ["102%", "-50%"] }}
-          transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-          className="whitespace-nowrap text-sm font-medium"
+          animate={{ x: ["100%", "-100%"] }}
+          transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
+          className="whitespace-nowrap text-sm sm:text-base font-semibold tracking-wide"
         >
-           Welcome to SondBlast | 🎶 Discover Old & New Songs | 🚀 Updates coming soon...
+           Team Zerif will strive to reach the top no matter what
+          Stay tuned for more amazing updates!
         </motion.div>
       </div>
 
       {/* الوقت والتاريخ */}
-      <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 text-sm">
-        <p className="text-white">
-          {dateTime} <span className="text-pink-500 ml-2">({location})</span>
+      <div className="flex flex-col md:flex-row items-center justify-between px-6 py-3 text-xs sm:text-sm">
+        <p className="text-white/80">
+          {dateTime}{" "}
+          <span className="text-[#ee0faf] font-medium ml-2">({location})</span>
         </p>
+
       </div>
     </motion.footer>
   );

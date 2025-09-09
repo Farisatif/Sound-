@@ -6,10 +6,11 @@
       "artist": "Imagine Dragons",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17.png",
       "genre": "Alternative Rock",
+      "language": "English",
       "duration": "3:21",
       "releaseDate": "2017-06-23",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 2,
@@ -17,10 +18,11 @@
       "artist": "Adele",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-1.png",
       "genre": "Pop",
+      "language": "English",
       "duration": "4:02",
       "releaseDate": "2012-10-05",
       "likes": 120,
-      "path":"../songs/Skyfall.mp3"
+      "path": "../songs/Skyfall.mp3"
     },
     {
       "id": 3,
@@ -28,10 +30,11 @@
       "artist": "Eminem",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-2.png",
       "genre": "Hip Hop",
+      "language": "English",
       "duration": "5:50",
       "releaseDate": "2002-05-26",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 4,
@@ -39,10 +42,11 @@
       "artist": "The Neighbourhood",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-1.png",
       "genre": "Alternative Rock",
+      "language": "English",
       "duration": "3:59",
       "releaseDate": "2018-03-09",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 5,
@@ -50,10 +54,11 @@
       "artist": "Måneskin",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-4.png",
       "genre": "Rock",
+      "language": "Italian",
       "duration": "3:47",
       "releaseDate": "2022-10-07",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     }
   ],
   "newReleaseSongs": [
@@ -63,10 +68,11 @@
       "artist": "Luciano",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-5.png",
       "genre": "Hip Hop",
+      "language": "German",
       "duration": "3:12",
       "releaseDate": "2023-11-15",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 7,
@@ -74,10 +80,11 @@
       "artist": "Jazzek",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-6.png",
       "genre": "Electronic",
+      "language": "Instrumental",
       "duration": "2:58",
       "releaseDate": "2023-11-20",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 8,
@@ -85,10 +92,11 @@
       "artist": "Kyanu & DJ Gullum",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-7.png",
       "genre": "Electronic Dance",
+      "language": "English",
       "duration": "3:33",
       "releaseDate": "2023-11-25",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 9,
@@ -96,10 +104,11 @@
       "artist": "Alan Walker & Ava Max",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-8.png",
       "genre": "Electronic Pop",
+      "language": "English",
       "duration": "2:47",
       "releaseDate": "2023-12-01",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 10,
@@ -107,10 +116,11 @@
       "artist": "XXAnteria",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/rectangle-17-9.png",
       "genre": "Latin Trap",
+      "language": "Spanish",
       "duration": "3:15",
       "releaseDate": "2023-12-05",
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     }
   ],
   "trendingSongs": [
@@ -124,9 +134,10 @@
       "duration": "3:26",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-1.png",
       "genre": "Alternative Rock",
+      "language": "English",
       "plays": 15420000,
       "likes": 120,
-      "path":"../songs/BillieEilish.mp3"
+      "path": "../songs/BillieEilish.mp3"
     },
     {
       "id": 12,
@@ -138,9 +149,10 @@
       "duration": "2:45",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-2.png",
       "genre": "Electronic",
+      "language": "Instrumental",
       "plays": 12850000,
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 13,
@@ -152,9 +164,10 @@
       "duration": "2:11",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-3.png",
       "genre": "Pop",
+      "language": "English",
       "plays": 11200000,
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 14,
@@ -166,9 +179,10 @@
       "duration": "2:18",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-4.png",
       "genre": "Hip Hop",
+      "language": "English",
       "plays": 9750000,
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 15,
@@ -180,9 +194,10 @@
       "duration": "3:51",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-8.png",
       "genre": "Pop Rap",
+      "language": "English",
       "plays": 8900000,
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 16,
@@ -194,9 +209,10 @@
       "duration": "2:56",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-6.png",
       "genre": "Dance Pop",
+      "language": "English",
       "plays": 7650000,
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     },
     {
       "id": 17,
@@ -208,9 +224,10 @@
       "duration": "3:20",
       "image": "https://c.animaapp.com/mecm5afmnFTEcQ/img/the-neighbourhood---the-neighbourhood-7.png",
       "genre": "Amapiano",
+      "language": "English",
       "plays": 6800000,
       "likes": 120,
-      "path":"../songs/EdSheeran.mp3"
+      "path": "../songs/EdSheeran.mp3"
     }
   ]
 }

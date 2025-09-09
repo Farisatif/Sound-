@@ -1,10 +1,17 @@
 // Layout.tsx
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Footer from "../Layout/Footer";
+
 export const Layout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // Scroll to top when route changes
+  useEffect(() => {
+    window.scrollTo(0, 0); // direct scroll without smooth
+  }, [pathname]);
 
   return (
     <div className="relative bg-black w-full min-h-screen flex overflow-x-hidden overflow-y-auto">
@@ -23,6 +30,7 @@ export const Layout: React.FC = () => {
         transition={{ duration: 0.5 }}
       >
         <Outlet />
+       
       </motion.div>
     </div>
   );

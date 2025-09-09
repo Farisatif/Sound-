@@ -1,82 +1,99 @@
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "../../components/ui/button";
+import { PlayIcon, PlusIcon } from "lucide-react";
 
-import { useParams } from "react-router-dom";
-import { useArtists, useAlbums, usePlaylists } from "../../hooks/useData";
-import { Card, CardContent } from "../../components/ui/card";
+const LS_KEY = "playlists";
 
 export const ArtistPage: React.FC = () => {
-  const { artistId } = useParams<{ artistId: string }>();
-  const { artists } = useArtists();
-  const { albums } = useAlbums();
-  const { playlists } = usePlaylists();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const artist = location.state as {
+    id: number;
+    name: string;
+    image: string;
+    genre?: string;
+    songs: any[];
+  };
 
-  const artist = artists.find((a) => a.id === parseInt(artistId ?? "", 10));
-  if (!artist) return <div className="text-white p-6">Artist not found</div>;
+  if (!artist) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-lg">❌ No artist data available.</p>
+      </div>
+    );
+  }
 
-  const artistAlbums = albums.filter((a) => a.artistId === artist.id);
-  const artistPlaylists = playlists.moodPlaylists.filter((p) =>
-    p.artistId === artist.id
-  );
+  const addToPlaylist = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+      let playlist = saved.find((p: any) => p.id === "default");
+      if (!playlist) {
+        playlist = { id: "default", songs: [] };
+        saved.push(playlist);
+      }
+      playlist.songs.push(...artist.songs);
+      localStorage.setItem(LS_KEY, JSON.stringify(saved));
+      alert(`✅ Added ${artist.name}'s songs to playlist!`);
+    } catch (err) {
+      console.error("Error saving playlist", err);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white p-6 space-y-8">
+    <div className="min-h-screen bg-black text-white p-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-center gap-6">
+      <div className="flex items-center gap-4 mb-6">
         <img
-          src={artist.image}
+          src={artist.image ?? "https://via.placeholder.com/100"}
           alt={artist.name}
-          className="w-40 h-40 rounded-full object-cover shadow-lg"
+          className="w-24 h-24 rounded-full object-cover shadow-lg"
         />
-        <div className="flex flex-col gap-2">
+        <div>
           <h1 className="text-3xl font-bold">{artist.name}</h1>
-          <span className="text-white/70">{artist.genre ?? ""}</span>
+          <p className="text-white/70">
+            {artist.genre ?? "Unknown genre"} • {artist.songs.length} songs
+          </p>
+          <div className="flex gap-2 mt-2">
+            <Button
+              onClick={() => navigate(`/player/${artist.songs[0].id}`)}
+              className="bg-pink-600 hover:bg-pink-700"
+            >
+              <PlayIcon className="w-4 h-4 mr-2" /> Play All
+            </Button>
+            <Button
+              onClick={addToPlaylist}
+              variant="outline"
+              className="text-white border-white/30 hover:border-pink-500"
+            >
+              <PlusIcon className="w-4 h-4 mr-2" /> Add to Playlist
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Albums */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Albums</h2>
-        {artistAlbums.length === 0 ? (
-          <p className="text-white/70">No albums found.</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {artistAlbums.map((album) => (
-              <Card key={album.id} className="bg-[#1e1e1e] border-none">
-                <CardContent className="p-2">
-                  <img
-                    src={album.image}
-                    alt={album.title}
-                    className="w-full h-36 rounded-lg object-cover mb-2"
-                  />
-                  <div className="text-white font-medium">{album.title}</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Playlists */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Playlists</h2>
-        {artistPlaylists.length === 0 ? (
-          <p className="text-white/70">No playlists found.</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {artistPlaylists.map((pl) => (
-              <Card key={pl.id} className="bg-[#1e1e1e] border-none">
-                <CardContent className="p-2">
-                  <img
-                    src={pl.image}
-                    alt={pl.title}
-                    className="w-full h-36 rounded-lg object-cover mb-2"
-                  />
-                  <div className="text-white font-medium">{pl.title}</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Songs List */}
+      <ul className="space-y-3">
+        {artist.songs.map((song) => (
+          <li
+            key={song.id}
+            className="flex items-center justify-between bg-[#111] p-3 rounded-lg hover:bg-white/10 cursor-pointer"
+            onClick={() => navigate(`/player/${song.id}`)}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <img
+                src={song.image ?? "https://via.placeholder.com/50"}
+                alt={song.title}
+                className="w-12 h-12 rounded object-cover"
+              />
+              <div className="truncate">
+                <p className="font-semibold truncate">{song.title}</p>
+                <p className="text-sm text-white/70 truncate">{song.artist}</p>
+              </div>
+            </div>
+            <span className="text-xs">{song.duration ?? "0:00"}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

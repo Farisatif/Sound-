@@ -1,4 +1,5 @@
 import "../../../../index.css";
+import { Link } from "react-router-dom";
 
 const footerColumns = [
   {
@@ -7,21 +8,36 @@ const footerColumns = [
       { text: "Sound", className: "text-white" },
       { text: "Blast", className: "text-[#ee0faf]" },
     ],
-    links: ["Songs", "Radio", "Podcast"],
+    links: [
+      { name: "Songs", path: "/discover" },
+      { name: "Radio", path: "/sitemap" }, // ما عندك Radio → ربطته بسيت ماب
+      { name: "Podcast", path: "/feedback" }, // مفيش Podcast → ربطته بصفحة Feedback
+    ],
   },
   {
     title: "Access",
-    links: ["Explore", "Artists", "Playlists", "Albums", "Trending"],
+    links: [
+      { name: "Explore", path: "/discover" },
+      { name: "Artists", path: "/artists" },
+      { name: "Playlists", path: "/playlists" },
+      { name: "Albums", path: "/albums" },
+      { name: "Trending", path: "/trending" },
+    ],
   },
   {
     title: "Contact",
-    links: ["About", "Policy", "Social Media", "Support"],
+    links: [
+      { name: "About", path: "/about" },
+      { name: "Policy", path: "/contact" }, // ما عندكش Policy → حطيته على Contact
+      { name: "Social Media", path: "/contact" },
+      { name: "Support", path: "/feedback" },
+    ],
   },
 ];
 
 export const FooterSection = (): JSX.Element => {
   return (
-    <footer className="mt-8 fgrelative bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
+    <footer className="mt-8 relative bg-gray-900 text-gray-300 mt-auto shadow-[0px_-10px_20px_#00000040]">
       <div className="w-full bg-[url(https://c.animaapp.com/mecm5afmnFTEcQ/img/background.png)] bg-cover bg-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           
@@ -60,12 +76,12 @@ export const FooterSection = (): JSX.Element => {
               <ul className="space-y-1 sm:space-y-2">
                 {col.links.map((link, i) => (
                   <li key={i}>
-                    <a
-                      href="#"
+                    <Link
+                      to={link.path}
                       className="text-xs sm:text-sm hover:text-[#ee0faf] transition-colors"
                     >
-                      {link}
-                    </a>
+                      {link.name}
+                    </Link>
                   </li>
                 ))}
               </ul>

@@ -11,6 +11,7 @@ import {
   HeartIcon,
   HomeIcon,
   ListIcon,
+  ArrowLeftIcon,
   PlusIcon,
   TrendingUpIcon,
   UserIcon,
@@ -90,10 +91,21 @@ export const SignUpSection = (): JSX.Element => {
 
  return (
   <div className="w-full h-full relative mt-[3rem]">
+    
   {/* Header */}
       <header className="fixed top-0 left-0 right-0 h-14 bg-black/95 border-b border-white/10 backdrop-blur z-50">
-        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          
+                   <h3 className="absolute left-[5rem] top-[1rem] bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
+                SoundBlast
+              </h3>
+        <div className=" h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                {/* Top Bar: Back + Song Title/Artist */}
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} title="">
+          <ArrowLeftIcon className="absolute text-[#ee10b0] left-4 w-[2rem] h-[2rem]" />
+        </Button>
+
+
+       
+
           {/* Logo */}
           <motion.div
             initial={{ scale: 0 }}
@@ -102,17 +114,18 @@ export const SignUpSection = (): JSX.Element => {
             className="flex items-center gap-2"
           >
             <img
-              className="w-8 h-8 object-cover rounded-lg"
+              className="ml-[2rem] absolute left-2 w-9 h-9 object-cover rounded-lg"
               alt="SoundBlast Logo"
               src="https://c.animaapp.com/mecm5afmnFTEcQ/img/picsart-25-08-07-15-22-00-238--1--1.png"
             />
-            <Link to="/" className="block">
-              <h3 className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-sm sm:text-base font-bold hover:scale-105 transition-transform duration-200">
-                SoundBlast
-              </h3>
-            </Link>
-          </motion.div>
 
+          </motion.div>
+                <div className="absolute bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3 right-[1rem] bottom-[-100%]  w-9 h-[50px] flex flex-col items-center justify-center rounded-md">
+                  <UserIcon className="w-4 h-4" />
+                  <p className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xs font-bold">
+                    {visitors}
+                  </p>
+                </div>
           {/* Center Icons */}
           <nav className="hidden md:flex items-center justify-center gap-3 flex-1">
             {[...libraryItems, ...playlistItems, ...menuItems].map((item) => (
@@ -164,7 +177,7 @@ export const SignUpSection = (): JSX.Element => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 sm:h-8 bg-transparent border-[#ee0faf] text-[#ee0faf] hover:text-white hover:bg-[#ee0faf]/90 text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
+                    className="absolute right-[4rem] top-[0.8rem] h-7 sm:h-8 bg-transparent border-[#ee0faf] text-[#ee0faf] hover:text-white hover:bg-[#ee0faf]/90 text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
                   >
                     Login
                   </Button>
@@ -172,17 +185,11 @@ export const SignUpSection = (): JSX.Element => {
                 <Link to="/signup">
                   <Button
                     size="sm"
-                    className="h-7 sm:h-8 bg-[#ee0faf] hover-border-[#ee0faf] hover:bg-transparent text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
+                    className="absolute right-[7rem] top-[0.8rem] h-7 sm:h-8 bg-[#ee0faf] hover-border-[#ee0faf] hover:bg-transparent text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3"
                   >
                     Sign Up
                   </Button>
                 </Link>
-                <div className="absolute bg-[#000000]/80 text-white text-[11px] sm:text-xs transition-all duration-200 px-2 sm:px-3 right-[1rem] bottom-[-100%]  w-9 h-[50px] flex flex-col items-center justify-center rounded-md">
-                  <UserIcon className="w-4 h-4" />
-                  <p className="bg-gradient-to-r from-[#ee10b0] to-[#0e9eef] bg-clip-text text-transparent text-xs font-bold">
-                    {visitors}
-                  </p>
-                </div>
               </>
             ) : (
               <Button
@@ -190,8 +197,8 @@ export const SignUpSection = (): JSX.Element => {
                 variant="ghost"
                 className="hidden md:flex items-center gap-1 h-8 px-2 py-1 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs"
               >
-                <LogOutIcon className="w-3.5 h-3.5" />
-                <span className="font-medium">Logout</span>
+                <LogOutIcon className="absolute right-[1rem] top-[1.2rem] w-3.5 h-3.5" />
+                <span className="absolute right-[2.3rem] top-[1.2rem] font-medium">Logout</span>
               </Button>
             )}
           </div>
@@ -290,7 +297,7 @@ export const SignUpSection = (): JSX.Element => {
               </div>
 
               {/* Footer area inside sidebar */}
-              <div className="mt-4 pt-2 border-t border-white/5">
+              <div className="mt-4 mb-[7rem] pt-2 border-t border-white/5">
                 {/* Visitors (optional) */}
                 <div className="flex items-center justify-between text-[13px] text-white/80 mb-2">
                   <div className="flex items-center gap-2">

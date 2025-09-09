@@ -1,38 +1,206 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { SearchIcon, FilterIcon, PlayIcon } from 'lucide-react';
-import { useSongs, useGenres } from '../../hooks/useData';
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import {
+  SearchIcon,
+  FilterIcon,
+  PlayIcon,
+  HeartIcon,
+  PlusIcon,
+  SortAscIcon,
+} from "lucide-react";
+import { useSongs, useGenres } from "../../hooks/useData";
 import { useNavigate } from "react-router-dom";
+import { useFavorites } from "../../context/FavoritesContext";
+
+// constants
+const LS_PLAYLIST_KEY = "playlists";
+const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Cover";
+
+// song type
+interface Song {
+  id: number;
+  title: string;
+  artist: string;
+  image?: string;
+  genre?: string;
+  releaseDate?: string;
+  likes?: number;
+  plays?: number;
+  language?: string;
+  path?: string;
+}
 
 export const Discover: React.FC = () => {
-  const { songs, loading: songsLoading } = useSongs();
-  const { genres, loading: genresLoading } = useGenres();
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [selectedGenre, setSelectedGenre] = React.useState<string>('all');
+  // ====== hooks ======
+  const { songs, loading: songsLoading, error: songsError } = useSongs?.() || {
+    songs: null,
+    loading: false,
+    error: null,
+  };
+  const { genres, loading: genresLoading } = useGenres?.() || {
+    genres: [],
+    loading: false,
+  };
+
+  // favorites context (محمي لو مش موجود)
+  let favCtx: any = {};
+  try {
+    favCtx = useFavorites?.() || {};
+  } catch {
+    favCtx = {};
+  }
+  const { addToFavorites, removeFromFavorites, isFavorite } = favCtx;
+
+  // local states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("all");
+  const [selectedLanguage, setSelectedLanguage] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [playlistIds, setPlaylistIds] = useState<number[]>([]);
+
   const navigate = useNavigate();
 
-  if (songsLoading || genresLoading) return (
-    <div className="flex justify-center items-center min-h-screen bg-black">
-      <div className="text-white text-xl">Loading...</div>
-    </div>
-  );
+  // ====== combine songs safely ======
+  const allSongs: Song[] = useMemo(() => {
+    const list = [
+      ...(songs?.weeklyTopSongs ?? []),
+      ...(songs?.newReleaseSongs ?? []),
+      ...(songs?.trendingSongs ?? []),
+    ];
 
-  const allSongs = [
-    ...songs.weeklyTopSongs,
-    ...songs.newReleaseSongs,
-    ...songs.trendingSongs
+    // dummy data fallback لو API فاضي
+    if (!list.length) {
+      return [
+        {
+          id: 1,
+          title: "Dummy Song",
+          artist: "Unknown Artist",
+          genre: "Pop",
+          language: "English",
+          releaseDate: "2023-01-01",
+          likes: 10,
+          plays: 200,
+          image: FALLBACK_IMG,
+        },
+      ];
+    }
+    return list;
+  }, [songs]);
+
+  // ====== load playlist ids from localStorage ======
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_PLAYLIST_KEY) || "[]");
+      const def = saved.find((p: any) => p.id === "default");
+      const ids = (def?.songs ?? []).map((s: Song) => s.id);
+      setPlaylistIds(ids);
+    } catch {
+      setPlaylistIds([]);
+    }
+  }, []);
+
+  // ====== languages ======
+  const languages = [
+    "all",
+    "English",
+    "Arabic",
+    "Spanish",
+    "French",
+    "Korean",
+    "Japanese",
+    "Turkish",
+    "German",
+    "Italian",
   ];
 
-  const filteredSongs = allSongs.filter(song => {
-    const matchesSearch = song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          song.artist.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesGenre = selectedGenre === 'all' || song.genre?.toLowerCase() === selectedGenre.toLowerCase();
-    return matchesSearch && matchesGenre;
-  });
+  // ====== filtering & sorting ======
+  const filteredSongs = useMemo(() => {
+    return allSongs
+      .filter((song) => {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch =
+          (song.title || "").toLowerCase().includes(query) ||
+          (song.artist || "").toLowerCase().includes(query);
 
+        const matchesGenre =
+          selectedGenre === "all" ||
+          (song.genre || "").toLowerCase() === selectedGenre.toLowerCase();
+
+        const matchesLang =
+          selectedLanguage === "all" ||
+          (song.language || "").toLowerCase() === selectedLanguage.toLowerCase();
+
+        return matchesSearch && matchesGenre && matchesLang;
+      })
+      .sort((a, b) => {
+        if (sortBy === "newest")
+          return (
+            new Date(b.releaseDate || 0).getTime() -
+            new Date(a.releaseDate || 0).getTime()
+          );
+        if (sortBy === "oldest")
+          return (
+            new Date(a.releaseDate || 0).getTime() -
+            new Date(b.releaseDate || 0).getTime()
+          );
+        if (sortBy === "likes") return (b.likes || 0) - (a.likes || 0);
+        if (sortBy === "plays") return (b.plays || 0) - (a.plays || 0);
+        return 0;
+      });
+  }, [allSongs, searchQuery, selectedGenre, selectedLanguage, sortBy]);
+
+  // ====== handlers ======
+  const goToPlayer = (id: number) => navigate(`/player/${id}`);
+
+  const toggleFavorite = (song: Song) => {
+    if (!song || !addToFavorites || !removeFromFavorites || !isFavorite) return;
+    if (isFavorite(song.id)) removeFromFavorites(song.id);
+    else addToFavorites({ ...song, releaseDate: song.releaseDate ?? "" });
+  };
+
+  const togglePlaylist = (song: Song) => {
+    if (!song) return;
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_PLAYLIST_KEY) || "[]");
+      let def = saved.find((p: any) => p.id === "default");
+      if (!def) {
+        def = { id: "default", name: "My Playlist", songs: [] as Song[] };
+        saved.push(def);
+      }
+      const exists = def.songs.find((s: Song) => s.id === song.id);
+      if (exists) def.songs = def.songs.filter((s: Song) => s.id !== song.id);
+      else def.songs.push(song);
+      localStorage.setItem(LS_PLAYLIST_KEY, JSON.stringify(saved));
+      setPlaylistIds(def.songs.map((s: Song) => s.id));
+    } catch (e) {
+      console.error("Playlist save error", e);
+    }
+  };
+
+  // ====== top picks ======
+  const topPicks = allSongs.slice(0, 10);
+
+  // ====== loading & error states ======
+  if (songsLoading || genresLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-black">
+        <div className="text-white text-xl animate-pulse">Loading...</div>
+      </div>
+    );
+  }
+
+  if (songsError) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-black">
+        <div className="text-red-500">Error loading songs: {String(songsError)}</div>
+      </div>
+    );
+  }
+
+  // ====== jsx ======
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -41,131 +209,184 @@ export const Discover: React.FC = () => {
       className="bg-black text-white min-h-screen px-4 sm:px-6 lg:px-8 py-8"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8 text-center md:text-left"
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
-            <span className="text-white">Discover </span>
-            <span className="text-[#ee0faf]">Music</span>
-          </h1>
-          <p className="text-white/70 text-sm sm:text-lg">Explore new songs and artists</p>
-        </motion.div>
+        {/* header */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+          Discover <span className="text-[#ee0faf]">Music</span>
+        </h1>
 
-        {/* Search and Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="mb-8 flex flex-col sm:flex-row gap-4 items-center"
-        >
-          <div className="relative flex-1 w-full sm:w-auto">
-            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-5 h-5" />
+        {/* search & filters */}
+        <div className="mb-8 flex flex-col md:flex-row gap-4 items-center">
+          {/* search */}
+          <div className="relative flex-1 w-full">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 w-5 h-5" />
             <Input
               type="text"
-              placeholder="Search for songs, artists..."
+              placeholder="Search songs, artists..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-full sm:w-auto bg-[#1e1e1e] border border-[#ee0faf]/30 text-white placeholder:text-white/50 rounded-md transition-all duration-300"
+              className="pl-10 bg-[#1e1e1e] border border-[#ee0faf]/30 text-white placeholder:text-white/50 rounded-md w-full"
             />
           </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+
+          {/* genre */}
+          <div className="flex items-center gap-2">
             <FilterIcon className="text-white/50 w-5 h-5" />
             <select
               value={selectedGenre}
               onChange={(e) => setSelectedGenre(e.target.value)}
-              className="bg-[#1e1e1e] border border-[#ee0faf]/30 text-white rounded-md px-3 py-2 w-full sm:w-auto transition-all duration-300"
+              className="bg-[#1e1e1e] border border-[#ee0faf]/30 text-white rounded-md px-3 py-2"
             >
               <option value="all">All Genres</option>
-              {genres.map(genre => (
-                <option key={genre.id} value={genre.name}>{genre.name}</option>
+              {genres?.map((g: any) => (
+                <option key={g.id} value={g.name}>
+                  {g.name}
+                </option>
               ))}
             </select>
           </div>
-        </motion.div>
 
-        {/* Genres Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6">Browse by Genre</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {genres.map((genre, index) => (
-              <motion.div
-                key={genre.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 + index * 0.1, duration: 0.3 }}
-                whileHover={{ scale: 1.05 }}
-                className="cursor-pointer"
-                onClick={() => setSelectedGenre(genre.name)}
-              >
-                <Card 
-                  className="bg-gradient-to-br from-[#1e1e1e]/80 to-[#2a2a2a]/80 border-none hover:from-[#ee0faf]/20 hover:to-[#0d9eef]/20 transition-all duration-300"
-                  style={{ background: `linear-gradient(135deg, ${genre.color}20, ${genre.color}10)` }}
+          {/* language */}
+          <div className="flex items-center gap-2">
+            🌐
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="bg-[#1e1e1e] border border-[#ee0faf]/30 text-white rounded-md px-3 py-2"
+            >
+              {languages.map((lang) => (
+                <option key={lang} value={lang.toLowerCase()}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* sort */}
+          <div className="flex items-center gap-2">
+            <SortAscIcon className="text-white/50 w-5 h-5" />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-[#1e1e1e] border border-[#ee0faf]/30 text-white rounded-md px-3 py-2"
+            >
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="likes">Most Liked</option>
+              <option value="plays">Most Played</option>
+            </select>
+          </div>
+        </div>
+
+        {/* top picks */}
+        <h2 className="text-2xl font-bold mb-4">Top Picks</h2>
+        <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
+          {topPicks.map((song) => (
+            <Card key={song.id} className="bg-[#1e1e1e] min-w-[180px]">
+              <CardContent className="p-3">
+                <div
+                  className="relative mb-2 cursor-pointer"
+                  onClick={() => goToPlayer(song.id)}
                 >
-                  <CardContent className="p-4 text-center sm:p-6">
-                    <h3 className="font-semibold text-white truncate">{genre.name}</h3>
-                    <p className="text-xs sm:text-sm text-white/70 mt-1">{genre.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+                  <img
+                    src={song.image || FALLBACK_IMG}
+                    alt={song.title}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  <Button
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      goToPlayer(song.id);
+                    }}
+                    size="icon"
+                    className="absolute bottom-2 right-2 bg-[#ee0faf] w-9 h-9 rounded-full"
+                  >
+                    <PlayIcon className="w-5 h-5" />
+                  </Button>
+                </div>
+                <h3 className="font-semibold truncate">{song.title}</h3>
+                <p className="text-white/70 text-sm truncate">{song.artist}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-        {/* Songs Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-        >
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-            {searchQuery ? `Search Results (${filteredSongs.length})` : 'All Songs'}
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            {filteredSongs.map((song, index) => (
-              <motion.div
-                key={song.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + index * 0.05, duration: 0.3 }}
-                whileHover={{ y: -5 }}
-                className="group"
-              >
-                <Card className="bg-[#1e1e1e] border-none hover:bg-[#2a2a2a] hover:shadow-lg transition-all duration-300">
+        {/* songs grid */}
+        <h2 className="text-2xl font-bold mt-8 mb-6">
+          {searchQuery
+            ? `Search Results (${filteredSongs.length})`
+            : "All Songs"}
+        </h2>
+
+        {filteredSongs.length === 0 ? (
+          <p className="text-white/50">No songs found.</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {filteredSongs.map((song) => {
+              const fav = isFavorite?.(song.id);
+              const inPlaylist = playlistIds.includes(song.id);
+              return (
+                <Card key={song.id} className="bg-[#1e1e1e]">
                   <CardContent className="p-2 sm:p-4">
-                    <div className="relative mb-2 sm:mb-4 group">
+                    <div
+                      className="relative mb-3 cursor-pointer"
+                      onClick={() => goToPlayer(song.id)}
+                    >
                       <img
-                        src={song.image}
+                        src={song.image || FALLBACK_IMG}
                         alt={song.title}
-                        className="w-full h-32 sm:h-40 md:h-44 object-cover rounded-lg"
+                        className="w-full h-36 object-cover rounded-lg"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300">
-                        <Button
-                          onClick={() => navigate(`/player/${song.id}`)}
-                          size="icon"
-                          className="bg-[#ee0faf] hover:bg-[#ee0faf]/90 w-12 h-12 rounded-full"
-                        >
-                          <PlayIcon className="w-6 h-6" />
-                        </Button>
-                      </div>
+                      <Button
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          goToPlayer(song.id);
+                        }}
+                        size="icon"
+                        className="absolute bottom-2 right-2 bg-[#ee0faf] w-10 h-10 rounded-full"
+                      >
+                        <PlayIcon className="w-5 h-5" />
+                      </Button>
                     </div>
-                    <h3 className="font-semibold text-white truncate">{song.title}</h3>
-                    <p className="text-white/70 text-xs sm:text-sm truncate">{song.artist}</p>
-                    <p className="text-white/50 text-xs mt-1 truncate">{song.genre}</p>
+                    <h3 className="font-semibold truncate">{song.title}</h3>
+                    <p className="text-white/70 text-sm truncate">{song.artist}</p>
+                    <p className="text-white/50 text-xs truncate">
+                      {(song.genre || "Unknown")} • {song.releaseDate || ""}
+                    </p>
+
+                    {/* actions */}
+                    <div className="flex justify-between items-center mt-3">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className={`text-sm ${fav ? "text-[#ee0faf]" : "text-white/70"}`}
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          toggleFavorite(song);
+                        }}
+                      >
+                        <HeartIcon className="w-4 h-4 mr-1" />
+                        {fav ? "Favorited" : song.likes ?? 0}
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className={`text-sm ${inPlaylist ? "text-[#0d9eef]" : "text-white/70"}`}
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          togglePlaylist(song);
+                        }}
+                      >
+                        <PlusIcon className="w-4 h-4 mr-1" />
+                        {inPlaylist ? "Added" : "Playlist"}
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
-        </motion.div>
+        )}
       </div>
     </motion.div>
   );

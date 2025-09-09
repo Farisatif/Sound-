@@ -5,7 +5,7 @@ import { TrendingSongsSection } from "./sections/TrendingSongsSection/TrendingSo
 import { WeeklyTopSongsSection } from "./sections/WeeklyTopSongsSection/WeeklyTopSongsSection";
 import "../../index.css"
 import { Albums } from "../Albums/Albums";
-import {OldMusicPlayer} from "../oldSongs/oldSongs"
+
 import { CreatePlaylist } from "../Playlists/CreatePlaylist";
 export const Home = (): JSX.Element => {
   return (
@@ -21,7 +21,6 @@ export const Home = (): JSX.Element => {
       <WeeklyTopSongsSection />
       <TrendingSongsSection />
       <Albums />
-      <OldMusicPlayer/>
       <CreatePlaylist/>
       
       </motion.main>

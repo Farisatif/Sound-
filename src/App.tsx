@@ -20,14 +20,17 @@ import { SignUpSection } from "./screens/Home/sections/SignUpSection/SignUpSecti
 import { ArtistsPage } from "./screens/artists/ArtistsPage";
 import { ArtistPage } from "./screens/artists/ArtistPage";
 import { Trending } from "./screens/Trending/Trending";
-import { Genres } from "./screens/Genres/Genres";
+import { GenreSongs  } from "./screens/Genres/Genres";
 import { GenreDetails } from "./screens/GenreDetails/GenreDetails";
 import { CreatePlaylist } from "./screens/Playlists/CreatePlaylist";
 import { PlaylistDetails } from "./screens/Playlists/PlaylistDetails/PlaylistDetails";
-import { OldMusicPlayer } from "./screens/oldSongs/oldSongs";
 import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSection";
 import { Feedback } from "./screens/FeedBack/FeedBack";
 import { Sitemap } from "./screens/Home/sections/Sitemap/Sitemap";
+import { PlaylistPage } from "./screens/Playlists/PlaylistPage";
+
+
+
 // حماية المسارات التي تتطلب تسجيل الدخول
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -45,21 +48,23 @@ export default function App() {
 
             <Routes>
               {/* مسارات عامة */}
+              <Route path="/playlistpage" element={<PlaylistPage />} /> 
+              <Route path="/playlists" element={<Playlists />} />
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/playlists/:id" element={<PlaylistDetails />} />
-              <Route path="/oldplayer/:songId" element={<OldMusicPlayer />} />
               <Route path="/playlist/:id" element={<PlaylistDetails />} />
               <Route path="/artists" element={<ArtistsPage />} />
               <Route path="/artist/:artistId" element={<ArtistPage />} />
               <Route path="/trending" element={<Trending />} />
-              <Route path="/genres" element={<Genres />} />
+              <Route path="/genres" element={<GenreSongs />} />
               <Route path="/genres/:slug" element={<GenreDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+
               <Route path="/playlists/create" element={<CreatePlaylist />} />
               {/* مشغل الموسيقى */}
               <Route path="/player/:songId" element={<MusicPlayer />} />

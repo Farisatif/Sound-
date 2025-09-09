@@ -11,7 +11,15 @@ import {
   MessageSquareIcon,
   InfoIcon,
   KeyIcon,
+  LogInIcon,
+  UserPlusIcon,
+  HeartIcon,
+  CompassIcon,
+  ListMusicIcon,
+  HeadphonesIcon,
+  StarIcon,
   SearchIcon,
+  DiscIcon,
 } from "lucide-react";
 
 const sections = [
@@ -19,22 +27,40 @@ const sections = [
     title: "Main",
     pages: [
       { name: "Home", path: "/", icon: HomeIcon },
+      { name: "Discover", path: "/discover", icon: CompassIcon },
       { name: "Albums", path: "/albums", icon: AlbumIcon },
       { name: "Artists", path: "/artists", icon: UserIcon },
-      { name: "Old Songs", path: "/old-songs", icon: MusicIcon },
+      { name: "Trending", path: "/trending", icon: StarIcon },
+      { name: "Genres", path: "/genres", icon: DiscIcon },
+      { name: "Favorites", path: "/favorites", icon: HeartIcon },
+      { name: "Music Player", path: "/music-player", icon: HeadphonesIcon },
+    ],
+  },
+  {
+    title: "Playlists",
+    pages: [
+      { name: "All Playlists", path: "/playlists", icon: ListMusicIcon },
+      { name: "Playlist Page", path: "/playlistpage", icon: ListMusicIcon },
+      { name: "Create Playlist", path: "/playlists/create", icon: ListMusicIcon },
+      { name: "Playlist Details", path: "/playlists/:id", icon: ListMusicIcon },
     ],
   },
   {
     title: "User",
     pages: [
-      { name: "Profile", path: "/profile", icon: UserIcon },
-      { name: "Feedback", path: "/feedback", icon: MessageSquareIcon },
+      { name: "Login", path: "/login", icon: LogInIcon },
+      { name: "Signup", path: "/signup", icon: UserPlusIcon },
       { name: "Forgot Password", path: "/forgot-password", icon: KeyIcon },
+      { name: "Feedback", path: "/feedback", icon: MessageSquareIcon },
     ],
   },
   {
     title: "Info",
-    pages: [{ name: "About Us", path: "/about", icon: InfoIcon }],
+    pages: [
+      { name: "About", path: "/about", icon: InfoIcon },
+      { name: "Contact", path: "/contact", icon: MessageSquareIcon },
+      { name: "Sitemap", path: "/sitemap", icon: SearchIcon },
+    ],
   },
 ];
 
@@ -60,7 +86,9 @@ export const Sitemap: React.FC = () => {
           <span className="text-white">Explore Our </span>
           <span className="text-[#ee0faf]">Sitemap</span>
         </motion.h1>
-  
+        <p className="text-white/70 text-lg max-w-2xl mx-auto">
+          Navigate easily between all sections of the app. Use search to find pages faster.
+        </p>
       </div>
 
       {/* Search Bar */}
