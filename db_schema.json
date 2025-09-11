@@ -1,0 +1,317 @@
+{
+  "meta": {
+    "project": "SoundBlast",
+    "formatVersion": "1.0",
+    "generatedAt": "2025-09-10T00:00:00Z",
+    "description": "Database schema + sample seed data + basic API endpoints for SoundBlast (Postgres style)"
+  },
+  "models": {
+    "User": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "name": { "type": "string", "required": true },
+        "email": { "type": "string", "required": true, "unique": true },
+        "password": { "type": "string", "required": true, "description": "bcrypt hash" },
+        "role": { "type": "enum", "values": ["USER", "ARTIST", "ADMIN"], "default": "USER" },
+        "isVerified": { "type": "boolean", "default": false },
+        "avatarUrl": { "type": "string", "required": false },
+        "createdAt": { "type": "datetime", "default": "now()" },
+        "updatedAt": { "type": "datetime", "autoUpdate": true }
+      }
+    },
+    "Artist": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "userId": { "type": "uuid", "required": false, "unique": true, "references": "User.id" },
+        "name": { "type": "string", "required": true },
+        "bio": { "type": "text", "required": false },
+        "imageUrl": { "type": "string", "required": false },
+        "createdAt": { "type": "datetime", "default": "now()" }
+      }
+    },
+    "Album": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "artistId": { "type": "uuid", "required": true, "references": "Artist.id" },
+        "title": { "type": "string", "required": true },
+        "year": { "type": "int", "required": false },
+        "coverUrl": { "type": "string", "required": false },
+        "createdAt": { "type": "datetime", "default": "now()" }
+      }
+    },
+    "Track": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "title": { "type": "string", "required": true },
+        "albumId": { "type": "uuid", "required": false, "references": "Album.id" },
+        "artistId": { "type": "uuid", "required": false, "references": "Artist.id" },
+        "duration": { "type": "int", "description": "seconds" },
+        "fileKey": { "type": "string", "required": true, "description": "S3 key or CDN path" },
+        "mimeType": { "type": "string" },
+        "bitrate": { "type": "int" },
+        "genre": { "type": "string" },
+        "lyrics": { "type": "text" },
+        "plays": { "type": "int", "default": 0 },
+        "createdAt": { "type": "datetime", "default": "now()" }
+      }
+    },
+    "Playlist": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "ownerId": { "type": "uuid", "required": true, "references": "User.id" },
+        "title": { "type": "string", "required": true },
+        "description": { "type": "text" },
+        "isPublic": { "type": "boolean", "default": true },
+        "coverUrl": { "type": "string" },
+        "createdAt": { "type": "datetime", "default": "now()" }
+      }
+    },
+    "PlaylistTrack": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "playlistId": { "type": "uuid", "required": true, "references": "Playlist.id" },
+        "trackId": { "type": "uuid", "required": true, "references": "Track.id" },
+        "position": { "type": "int", "default": 0 },
+        "addedAt": { "type": "datetime", "default": "now()" }
+      },
+      "constraints": {
+        "unique": ["playlistId", "trackId"]
+      }
+    },
+    "Like": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "userId": { "type": "uuid", "required": true, "references": "User.id" },
+        "trackId": { "type": "uuid" },
+        "albumId": { "type": "uuid" },
+        "playlistId": { "type": "uuid" },
+        "createdAt": { "type": "datetime", "default": "now()" }
+      }
+    },
+    "Follow": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "followerId": { "type": "uuid", "required": true, "references": "User.id" },
+        "followeeId": { "type": "uuid", "required": true, "references": "User.id" },
+        "createdAt": { "type": "datetime", "default": "now()" }
+      },
+      "constraints": { "unique": ["followerId", "followeeId"] }
+    },
+    "PlayHistory": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "userId": { "type": "uuid", "required": true, "references": "User.id" },
+        "trackId": { "type": "uuid", "required": true, "references": "Track.id" },
+        "playedAt": { "type": "datetime", "default": "now()" },
+        "device": { "type": "string" },
+        "ip": { "type": "string" }
+      }
+    },
+    "Comment": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "userId": { "type": "uuid", "required": true, "references": "User.id" },
+        "trackId": { "type": "uuid", "required": true, "references": "Track.id" },
+        "text": { "type": "text", "required": true },
+        "createdAt": { "type": "datetime", "default": "now()" },
+        "editedAt": { "type": "datetime", "nullable": true }
+      }
+    },
+    "RefreshToken": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "userId": { "type": "uuid", "required": true, "references": "User.id" },
+        "tokenHash": { "type": "string", "required": true },
+        "expiresAt": { "type": "datetime", "required": true },
+        "createdAt": { "type": "datetime", "default": "now()" }
+      }
+    },
+    "Subscription": {
+      "fields": {
+        "id": { "type": "uuid", "required": true, "unique": true },
+        "userId": { "type": "uuid", "required": true, "references": "User.id" },
+        "provider": { "type": "string", "required": true },
+        "planId": { "type": "string" },
+        "status": { "type": "string" },
+        "startedAt": { "type": "datetime" },
+        "endedAt": { "type": "datetime" }
+      }
+    }
+  },
+  "relations": [
+    { "from": "Album.artistId", "to": "Artist.id", "type": "many-to-one" },
+    { "from": "Track.albumId", "to": "Album.id", "type": "many-to-one" },
+    { "from": "Track.artistId", "to": "Artist.id", "type": "many-to-one" },
+    { "from": "Playlist.ownerId", "to": "User.id", "type": "many-to-one" },
+    { "from": "PlaylistTrack.playlistId", "to": "Playlist.id", "type": "many-to-one" },
+    { "from": "PlaylistTrack.trackId", "to": "Track.id", "type": "many-to-one" },
+    { "from": "Like.userId", "to": "User.id", "type": "many-to-one" },
+    { "from": "PlayHistory.userId", "to": "User.id", "type": "many-to-one" },
+    { "from": "Comment.trackId", "to": "Track.id", "type": "many-to-one" }
+  ],
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/api/auth/signup",
+      "auth": "public",
+      "bodyExample": { "name": "string", "email": "string", "password": "string" },
+      "responseExample": { "status": 201, "body": { "message": "created", "user": { "id": "uuid", "name": "string", "email": "string" } } }
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "auth": "public",
+      "bodyExample": { "email": "string", "password": "string" },
+      "responseExample": { "status": 200, "body": { "accessToken": "jwt", "user": { "id": "uuid", "name": "string", "email": "string" } }, "notes": "sets httpOnly refresh cookie" }
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/me",
+      "auth": "bearer",
+      "responseExample": { "status": 200, "body": { "user": "User object" } }
+    },
+    {
+      "method": "GET",
+      "path": "/api/tracks",
+      "auth": "public",
+      "queryParams": ["q", "genre", "artistId", "page", "perPage", "sort"],
+      "responseExample": { "status": 200, "body": { "items": ["Track"], "total": 123 } }
+    },
+    {
+      "method": "POST",
+      "path": "/api/play/:trackId",
+      "auth": "bearer",
+      "description": "Record a play, increment track.plays and create PlayHistory"
+    }
+  ],
+  "seed": {
+    "users": [
+      {
+        "id": "11111111-1111-1111-1111-111111111111",
+        "name": "Fares Atif",
+        "email": "fares@example.com",
+        "password": "<bcrypt-hash>",
+        "role": "USER",
+        "isVerified": true,
+        "avatarUrl": null,
+        "createdAt": "2025-08-01T12:00:00Z",
+        "updatedAt": "2025-08-01T12:00:00Z"
+      },
+      {
+        "id": "22222222-2222-2222-2222-222222222222",
+        "name": "Artist Account",
+        "email": "artist@example.com",
+        "password": "<bcrypt-hash>",
+        "role": "ARTIST",
+        "isVerified": true,
+        "avatarUrl": null,
+        "createdAt": "2025-08-02T12:00:00Z",
+        "updatedAt": "2025-08-02T12:00:00Z"
+      }
+    ],
+    "artists": [
+      {
+        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "userId": "22222222-2222-2222-2222-222222222222",
+        "name": "SoundBlast Band",
+        "bio": "Sample artist for demo",
+        "imageUrl": null,
+        "createdAt": "2025-08-02T12:00:00Z"
+      }
+    ],
+    "albums": [
+      {
+        "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "artistId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "title": "Debut EP",
+        "year": 2025,
+        "coverUrl": null,
+        "createdAt": "2025-08-03T12:00:00Z"
+      }
+    ],
+    "tracks": [
+      {
+        "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "title": "First Track",
+        "albumId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "artistId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "duration": 215,
+        "fileKey": "s3://soundblast/tracks/first-track.mp3",
+        "mimeType": "audio/mpeg",
+        "bitrate": 320,
+        "genre": "electronic",
+        "lyrics": null,
+        "plays": 0,
+        "createdAt": "2025-08-03T12:01:00Z"
+      }
+    ],
+    "playlists": [
+      {
+        "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+        "ownerId": "11111111-1111-1111-1111-111111111111",
+        "title": "My Favorites",
+        "description": "A demo favorites playlist",
+        "isPublic": true,
+        "coverUrl": null,
+        "createdAt": "2025-08-04T10:00:00Z"
+      }
+    ],
+    "playlistTracks": [
+      {
+        "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+        "playlistId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+        "trackId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "position": 0,
+        "addedAt": "2025-08-04T10:01:00Z"
+      }
+    ],
+    "likes": [
+      {
+        "id": "f1111111-1111-1111-1111-111111111111",
+        "userId": "11111111-1111-1111-1111-111111111111",
+        "trackId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "createdAt": "2025-08-04T10:02:00Z"
+      }
+    ],
+    "playHistory": [
+      {
+        "id": "g1111111-1111-1111-1111-111111111111",
+        "userId": "11111111-1111-1111-1111-111111111111",
+        "trackId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "playedAt": "2025-08-04T10:05:00Z",
+        "device": "web",
+        "ip": "127.0.0.1"
+      }
+    ],
+    "comments": [
+      {
+        "id": "h1111111-1111-1111-1111-111111111111",
+        "userId": "11111111-1111-1111-1111-111111111111",
+        "trackId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "text": "Great track!",
+        "createdAt": "2025-08-04T10:06:00Z"
+      }
+    ],
+    "refreshTokens": [
+      {
+        "id": "i1111111-1111-1111-1111-111111111111",
+        "userId": "11111111-1111-1111-1111-111111111111",
+        "tokenHash": "<bcrypt-hash-of-refresh-token>",
+        "expiresAt": "2025-09-03T00:00:00Z",
+        "createdAt": "2025-08-04T10:07:00Z"
+      }
+    ],
+    "subscriptions": []
+  },
+  "notes": {
+    "security": [
+      "Passwords in seed are placeholders; store only bcrypt hashes in production.",
+      "Use httpOnly secure cookies for refresh tokens; do not store JWT in localStorage if possible."
+    ],
+    "howToUse": [
+      "Use this JSON as a spec to create migrations or to generate seed data.",
+      "Tools: write a small script to read seed and insert into Postgres (via Prisma or knex).",
+      "Adjust UUIDs, dates, and hashes before importing to production."
+    ]
+  }
+}

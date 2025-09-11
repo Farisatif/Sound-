@@ -10,13 +10,32 @@ import { MailIcon, CheckCircleIcon, ArrowLeftIcon } from 'lucide-react';
 
 export const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    const trimmed = value.trim();
+    if (trimmed.length > 0 && /^[0-9]/.test(trimmed)) {
+      setEmailError('Number cannot be the first character in the email.');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // validation
+    if (!email.trim()) {
+      setEmailError('Please enter your email.');
+      return;
+    }
+    if (emailError) return;
+
     setIsLoading(true);
 
+    // محاكاة إرسال (مثال)
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     setIsSubmitted(true);
@@ -52,15 +71,27 @@ export const ForgotPassword: React.FC = () => {
                         id="email"
                         type="email"
                         value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        className="pl-10 bg-transparent border-[#d9d9d9] text-white placeholder:text-white/50"
+                        onChange={e => handleEmailChange(e.target.value)}
+                        onBlur={e => handleEmailChange(e.target.value)}
+                        className={`pl-10 bg-transparent text-white placeholder:text-white/50 ${emailError ? 'border-red-500' : 'border-[#d9d9d9]'}`}
                         placeholder="Enter your email"
+                        aria-invalid={emailError ? 'true' : 'false'}
+                        aria-describedby={emailError ? 'forgot-email-error' : undefined}
                         required
                       />
                     </div>
+                    {emailError && (
+                      <p id="forgot-email-error" className="mt-2 text-sm text-red-500">
+                        {emailError}
+                      </p>
+                    )}
                   </div>
 
-                  <Button type="submit" disabled={isLoading} className="w-full bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white py-3 text-lg font-medium">
+                  <Button
+                    type="submit"
+                    disabled={isLoading || !!emailError}
+                    className="w-full bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white py-3 text-lg font-medium"
+                  >
                     {isLoading ? 'Sending...' : 'Send Reset Link'}
                   </Button>
                 </form>
@@ -81,3 +112,5 @@ export const ForgotPassword: React.FC = () => {
     </div>
   );
 };
+
+export default ForgotPassword;

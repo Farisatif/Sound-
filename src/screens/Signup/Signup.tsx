@@ -1,3 +1,4 @@
+// Signup.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -11,6 +12,7 @@ import { useAuth } from '../../context/AuthContext';
 export const Signup: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,10 +21,31 @@ export const Signup: React.FC = () => {
 
   const { signup, isLoading } = useAuth();
 
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    const trimmed = value.trim();
+    if (trimmed.length > 0 && /^[0-9]/.test(trimmed)) {
+      setEmailError('Number cannot be the first character in the email.');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    if (!name.trim()) {
+      setError('Please enter your full name.');
+      return;
+    }
+
+    if (!email.trim()) {
+      setEmailError('Please enter your email.');
+      return;
+    }
+    if (emailError) return;
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -47,12 +70,11 @@ export const Signup: React.FC = () => {
   return (
     <div className="mt-[3rem] min-h-screen bg-black flex justify-center items-center p-4 relative">
       {/* Background Blur */}
- <div
-  className="absolute inset-0 blur-[125px]
-  [background:conic-gradient(from_226deg_at_50%_50%,rgba(81,55,108,0.43)_6%,rgba(159,36,109,0.45)_42%,rgba(159,36,109,0.44)_44%,rgba(229,41,150,0.45)_58%,rgba(27,79,144,0.43)_75%,rgba(42,64,108,0.42)_87%)]
-  pointer-events-none -z-10"
-/>
-
+      <div
+        className="absolute inset-0 blur-[125px]
+        [background:conic-gradient(from_226deg_at_50%_50%,rgba(81,55,108,0.43)_6%,rgba(159,36,109,0.45)_42%,rgba(159,36,109,0.44)_44%,rgba(229,41,150,0.45)_58%,rgba(27,79,144,0.43)_75%,rgba(42,64,108,0.42)_87%)]
+        pointer-events-none -z-10"
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -97,11 +119,19 @@ export const Signup: React.FC = () => {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    className="pl-10 bg-transparent border-[#d9d9d9] text-white placeholder:text-white/50"
+                    onChange={e => handleEmailChange(e.target.value)}
+                    onBlur={e => handleEmailChange(e.target.value)}
+                    className={`pl-10 bg-transparent text-white placeholder:text-white/50 ${emailError ? 'border-red-500' : 'border-[#d9d9d9]'}`}
+                    aria-invalid={emailError ? 'true' : 'false'}
+                    aria-describedby={emailError ? 'email-error' : undefined}
                     required
                   />
                 </div>
+                {emailError && (
+                  <p id="email-error" className="mt-2 text-sm text-red-500">
+                    {emailError}
+                  </p>
+                )}
               </div>
 
               {/* Password */}
@@ -145,7 +175,7 @@ export const Signup: React.FC = () => {
 
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || !!emailError}
                 className="w-full bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white py-3 text-lg font-medium"
               >
                 {isLoading ? 'Creating Account...' : 'Create Account'}
@@ -162,3 +192,5 @@ export const Signup: React.FC = () => {
     </div>
   );
 };
+
+export default Signup;

@@ -1,3 +1,4 @@
+// Discover.tsx (معدّل/محسّن)
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "../../components/ui/card";
@@ -17,6 +18,7 @@ import { useFavorites } from "../../context/FavoritesContext";
 
 // constants
 const LS_PLAYLIST_KEY = "playlists";
+const LS_LOCAL_FAVS = "local_favorites"; // fallback storage for favorites when context absent
 const FALLBACK_IMG = "https://via.placeholder.com/300x300?text=No+Cover";
 
 // song type
@@ -31,21 +33,19 @@ interface Song {
   plays?: number;
   language?: string;
   path?: string;
+  album?: string;
 }
 
 export const Discover: React.FC = () => {
   // ====== hooks ======
-  const { songs, loading: songsLoading, error: songsError } = useSongs?.() || {
-    songs: null,
-    loading: false,
-    error: null,
-  };
+  const { songs, loading: songsLoading, error: songsError } =
+    useSongs?.() || { songs: null, loading: false, error: null };
   const { genres, loading: genresLoading } = useGenres?.() || {
     genres: [],
     loading: false,
   };
 
-  // favorites context (محمي لو مش موجود)
+  // favorites context (محمي لو مش موجود) — لكن نعمل fallback محلي
   let favCtx: any = {};
   try {
     favCtx = useFavorites?.() || {};
@@ -53,6 +53,19 @@ export const Discover: React.FC = () => {
     favCtx = {};
   }
   const { addToFavorites, removeFromFavorites, isFavorite } = favCtx;
+
+  // local fallback for favorites (ids)
+  const [localFavIds, setLocalFavIds] = useState<number[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(LS_LOCAL_FAVS) || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(LS_LOCAL_FAVS, JSON.stringify(localFavIds));
+  }, [localFavIds]);
 
   // local states
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,15 +76,40 @@ export const Discover: React.FC = () => {
 
   const navigate = useNavigate();
 
-  // ====== combine songs safely ======
+  // ====== combine songs safely & flexibly ======
   const allSongs: Song[] = useMemo(() => {
-    const list = [
+    // if songs is null -> fallback dummy handled below
+    if (!songs) return [];
+
+    // if songs is an array (some APIs return array)
+    if (Array.isArray(songs)) {
+      // ensure unique by id
+      const map = new Map<number, Song>();
+      songs.forEach((s: any) => {
+        if (!s || s.id == null) return;
+        map.set(Number(s.id), { ...s });
+      });
+      return Array.from(map.values());
+    }
+
+    // if songs is an object with sections (weeklyTopSongs, newReleaseSongs, trendingSongs)
+    const parts = [
       ...(songs?.weeklyTopSongs ?? []),
       ...(songs?.newReleaseSongs ?? []),
       ...(songs?.trendingSongs ?? []),
+      // also accept a generic songs list if present
+      ...(songs?.songs ?? []),
     ];
+    // dedupe by id
+    const map = new Map<number, Song>();
+    parts.forEach((s: any) => {
+      if (!s || s.id == null) return;
+      map.set(Number(s.id), { ...s });
+    });
 
-    // dummy data fallback لو API فاضي
+    const list = Array.from(map.values());
+
+    // dummy fallback لو API فاضي
     if (!list.length) {
       return [
         {
@@ -120,7 +158,7 @@ export const Discover: React.FC = () => {
   const filteredSongs = useMemo(() => {
     return allSongs
       .filter((song) => {
-        const query = searchQuery.toLowerCase();
+        const query = (searchQuery || "").toLowerCase();
         const matchesSearch =
           (song.title || "").toLowerCase().includes(query) ||
           (song.artist || "").toLowerCase().includes(query);
@@ -131,21 +169,20 @@ export const Discover: React.FC = () => {
 
         const matchesLang =
           selectedLanguage === "all" ||
-          (song.language || "").toLowerCase() === selectedLanguage.toLowerCase();
+          (song.language || "").toLowerCase() ===
+            selectedLanguage.toLowerCase();
 
         return matchesSearch && matchesGenre && matchesLang;
       })
       .sort((a, b) => {
+        const safeTime = (d?: string | number) =>
+          isNaN(new Date(String(d)).getTime())
+            ? 0
+            : new Date(String(d)).getTime();
         if (sortBy === "newest")
-          return (
-            new Date(b.releaseDate || 0).getTime() -
-            new Date(a.releaseDate || 0).getTime()
-          );
+          return safeTime(b.releaseDate) - safeTime(a.releaseDate);
         if (sortBy === "oldest")
-          return (
-            new Date(a.releaseDate || 0).getTime() -
-            new Date(b.releaseDate || 0).getTime()
-          );
+          return safeTime(a.releaseDate) - safeTime(b.releaseDate);
         if (sortBy === "likes") return (b.likes || 0) - (a.likes || 0);
         if (sortBy === "plays") return (b.plays || 0) - (a.plays || 0);
         return 0;
@@ -156,9 +193,33 @@ export const Discover: React.FC = () => {
   const goToPlayer = (id: number) => navigate(`/player/${id}`);
 
   const toggleFavorite = (song: Song) => {
-    if (!song || !addToFavorites || !removeFromFavorites || !isFavorite) return;
-    if (isFavorite(song.id)) removeFromFavorites(song.id);
-    else addToFavorites({ ...song, releaseDate: song.releaseDate ?? "" });
+    if (!song) return;
+
+    // if context provider exists -> use it (preferred)
+    if (addToFavorites && removeFromFavorites && isFavorite) {
+      if (isFavorite(song.id)) removeFromFavorites(song.id);
+      else addToFavorites({ ...song, releaseDate: song.releaseDate ?? "" });
+      return;
+    }
+
+    // fallback: localStorage-based favorites (store ids)
+    setLocalFavIds((prev) => {
+      const exists = prev.includes(song.id);
+      const next = exists ? prev.filter((id) => id !== song.id) : [...prev, song.id];
+      return next;
+    });
+  };
+
+  // determine whether a song is favorited (context first, then local fallback)
+  const songIsFavorited = (id: number) => {
+    if (isFavorite) {
+      try {
+        return Boolean(isFavorite(id));
+      } catch {
+        // ignore
+      }
+    }
+    return localFavIds.includes(id);
   };
 
   const togglePlaylist = (song: Song) => {
@@ -195,7 +256,9 @@ export const Discover: React.FC = () => {
   if (songsError) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-black">
-        <div className="text-red-500">Error loading songs: {String(songsError)}</div>
+        <div className="text-red-500">
+          Error loading songs: {String(songsError)}
+        </div>
       </div>
     );
   }
@@ -312,9 +375,7 @@ export const Discover: React.FC = () => {
 
         {/* songs grid */}
         <h2 className="text-2xl font-bold mt-8 mb-6">
-          {searchQuery
-            ? `Search Results (${filteredSongs.length})`
-            : "All Songs"}
+          {searchQuery ? `Search Results (${filteredSongs.length})` : "All Songs"}
         </h2>
 
         {filteredSongs.length === 0 ? (
@@ -322,7 +383,7 @@ export const Discover: React.FC = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {filteredSongs.map((song) => {
-              const fav = isFavorite?.(song.id);
+              const fav = songIsFavorited(song.id);
               const inPlaylist = playlistIds.includes(song.id);
               return (
                 <Card key={song.id} className="bg-[#1e1e1e]">
@@ -358,7 +419,9 @@ export const Discover: React.FC = () => {
                       <Button
                         size="sm"
                         variant="ghost"
-                        className={`text-sm ${fav ? "text-[#ee0faf]" : "text-white/70"}`}
+                        className={`text-sm ${
+                          fav ? "text-[#ee0faf]" : "text-white/70"
+                        }`}
                         onClick={(ev) => {
                           ev.stopPropagation();
                           toggleFavorite(song);
@@ -371,7 +434,9 @@ export const Discover: React.FC = () => {
                       <Button
                         size="sm"
                         variant="ghost"
-                        className={`text-sm ${inPlaylist ? "text-[#0d9eef]" : "text-white/70"}`}
+                        className={`text-sm ${
+                          inPlaylist ? "text-[#0d9eef]" : "text-white/70"
+                        }`}
                         onClick={(ev) => {
                           ev.stopPropagation();
                           togglePlaylist(song);

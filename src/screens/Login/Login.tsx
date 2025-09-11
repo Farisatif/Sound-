@@ -11,15 +11,39 @@ import { useAuth } from '../../context/AuthContext';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
 
+  // تحقق عند كل تغيير — يمكنك تغييره إلى onBlur لو تفضل التأخير
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    const trimmed = value.trim();
+    if (trimmed.length > 0 && /^[0-9]/.test(trimmed)) {
+      setEmailError('Number cannot be the first character in the email.');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // منع الإرسال إذا كان هناك خطأ في الإيميل أو حقل فارغ
+    if (!email) {
+      setEmailError('Please enter your email.');
+      return;
+    }
+    if (emailError) return;
+
+    if (!password) {
+      setError('Please enter your password.');
+      return;
+    }
 
     const success = await login(email, password);
     if (success) {
@@ -56,11 +80,20 @@ export const Login: React.FC = () => {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    className="pl-10 bg-transparent border-[#d9d9d9] text-white placeholder:text-white/50"
+                    onChange={e => handleEmailChange(e.target.value)}
+                    onBlur={e => handleEmailChange(e.target.value)}
+                    className={`pl-10 bg-transparent text-white placeholder:text-white/50 ${emailError ? 'border-red-500' : 'border-[#d9d9d9]'}`}
+                    aria-invalid={emailError ? 'true' : 'false'}
+                    aria-describedby={emailError ? 'email-error' : undefined}
                     required
                   />
                 </div>
+
+                {emailError && (
+                  <p id="email-error" className="mt-2 text-sm text-red-500">
+                    {emailError}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -96,7 +129,7 @@ export const Login: React.FC = () => {
 
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || !!emailError}
                 className="w-full bg-[#ee0faf] hover:bg-[#ee0faf]/90 text-white py-3 text-lg font-medium"
               >
                 {isLoading ? 'Signing In...' : 'Sign In'}
@@ -113,3 +146,5 @@ export const Login: React.FC = () => {
     </div>
   );
 };
+
+export default Login;
