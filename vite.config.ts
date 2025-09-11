@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins,
     publicDir: "./public",
-    base: "./",
+    base: "/Sound-/", 
     css: {
       postcss: {
         plugins: [tailwind()],
