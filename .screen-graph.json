@@ -1,6 +1,13 @@
 {
   "nodes": [
     {
+      "id": "src/screens/artists/Gallery.tsx",
+      "label": "Gallery",
+      "routes": [
+        "/gallery"
+      ]
+    },
+    {
       "id": "src/screens/Playlists/PlaylistPage.tsx",
       "label": "PlaylistPage",
       "routes": [

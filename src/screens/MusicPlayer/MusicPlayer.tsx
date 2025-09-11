@@ -210,7 +210,7 @@ export const MusicPlayer: React.FC = () => {
     const onEnded = () => {
       if (isRepeat) {
         audio.currentTime = 0;
-        audio.play().catch(() => {});
+        audio.play().catch(() => { });
       } else {
         playNext();
       }
@@ -247,7 +247,7 @@ export const MusicPlayer: React.FC = () => {
     audio.src = currentSong.path ?? "";
     audio.load();
 
-    if (wasPlaying) audio.play().catch(() => {});
+    if (wasPlaying) audio.play().catch(() => { });
 
     // Load comments from LS
     const savedComments = JSON.parse(
@@ -278,7 +278,7 @@ export const MusicPlayer: React.FC = () => {
     if (audio.paused) {
       try {
         await audio.play();
-      } catch {}
+      } catch { }
     } else {
       audio.pause();
     }
@@ -314,8 +314,8 @@ export const MusicPlayer: React.FC = () => {
     const prevIndex = isShuffle
       ? Math.floor(Math.random() * allSongs.length)
       : currentIndex === 0
-      ? allSongs.length - 1
-      : currentIndex - 1;
+        ? allSongs.length - 1
+        : currentIndex - 1;
     const prevId = allSongs[prevIndex]?.id;
     if (prevId !== undefined) navigate(`/player/${prevId}`);
   }, [allSongs, currentIndex, isShuffle, navigate]);
@@ -338,6 +338,7 @@ export const MusicPlayer: React.FC = () => {
         ...currentSong,
         releaseDate: currentSong.releaseDate ?? "",
         image: currentSong.image ?? "",
+        duration: currentSong.duration ?? "0:00",
       });
     }
   };
@@ -497,26 +498,23 @@ export const MusicPlayer: React.FC = () => {
               <div className="inline-flex rounded-xl overflow-hidden border border-white/10">
                 <button
                   onClick={() => setAgeFilter("all")}
-                  className={`px-3 py-1.5 text-xs transition ${
-                    ageFilter === "all" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
-                  }`}
+                  className={`px-3 py-1.5 text-xs transition ${ageFilter === "all" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
+                    }`}
                 >
                   All
                 </button>
                 <button
                   onClick={() => setAgeFilter("new")}
-                  className={`px-3 py-1.5 text-xs transition ${
-                    ageFilter === "new" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
-                  }`}
+                  className={`px-3 py-1.5 text-xs transition ${ageFilter === "new" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
+                    }`}
                   title={`>= ${cutOffDate}`}
                 >
                   New
                 </button>
                 <button
                   onClick={() => setAgeFilter("old")}
-                  className={`px-3 py-1.5 text-xs transition ${
-                    ageFilter === "old" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
-                  }`}
+                  className={`px-3 py-1.5 text-xs transition ${ageFilter === "old" ? "bg-pink-600 text-white" : "bg-black hover:bg-white/10 text-white/80"
+                    }`}
                   title={`< ${cutOffDate}`}
                 >
                   Old
@@ -915,8 +913,8 @@ export const MusicPlayer: React.FC = () => {
                 {ageFilter === "all"
                   ? "All"
                   : ageFilter === "new"
-                  ? `New (≥ ${cutOffDate})`
-                  : `Old (< ${cutOffDate})`}
+                    ? `New (≥ ${cutOffDate})`
+                    : `Old (< ${cutOffDate})`}
                 {selectedLanguage !== "All" ? ` • ${selectedLanguage}` : ""}
               </div>
             </div>
@@ -931,9 +929,8 @@ export const MusicPlayer: React.FC = () => {
                   return (
                     <li
                       key={song.id}
-                      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                        isCurrent ? "bg-pink-700/30" : "hover:bg-white/10"
-                      }`}
+                      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${isCurrent ? "bg-pink-700/30" : "hover:bg-white/10"
+                        }`}
                       onClick={() => navigate(`/player/${song.id}`)}
                       title={`${song.title} • ${song.artist}`}
                     >

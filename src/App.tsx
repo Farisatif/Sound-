@@ -1,8 +1,6 @@
 import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
-import { MusicPlayerProvider } from "./context/MusicPlayerContext";
-
 import { Layout } from "./components/Layout/Layout";
 import { Home } from "./screens/Home/Home";
 import { Login } from "./screens/Login/Login";
@@ -15,12 +13,12 @@ import { Favorites } from "./screens/Favorites/Favorites";
 import { About } from "./screens/About/About";
 import { Contact } from "./screens/Contact/Contact";
 import { MusicPlayer } from "./screens/MusicPlayer/MusicPlayer";
-import {Footer} from "./components/Layout/Footer"
+import { Footer } from "./components/Layout/Footer";
 import { SignUpSection } from "./screens/Home/sections/SignUpSection/SignUpSection";
 import { ArtistsPage } from "./screens/artists/ArtistsPage";
 import { ArtistPage } from "./screens/artists/ArtistPage";
 import { Trending } from "./screens/Trending/Trending";
-import { GenreSongs  } from "./screens/Genres/Genres";
+import { GenreSongs } from "./screens/Genres/Genres";
 import { GenreDetails } from "./screens/GenreDetails/GenreDetails";
 import { CreatePlaylist } from "./screens/Playlists/CreatePlaylist";
 import { PlaylistDetails } from "./screens/Playlists/PlaylistDetails/PlaylistDetails";
@@ -28,10 +26,8 @@ import { FooterSection } from "./screens/Home/sections/FooterSection/FooterSecti
 import { Feedback } from "./screens/FeedBack/FeedBack";
 import { Sitemap } from "./screens/Home/sections/Sitemap/Sitemap";
 import { PlaylistPage } from "./screens/Playlists/PlaylistPage";
-
-
-
-// حماية المسارات التي تتطلب تسجيل الدخول
+import { Gallery } from "./screens/artists/Gallery";
+// حماية المسارات
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   return user ? <>{children}</> : <Navigate to="/login" />;
@@ -41,14 +37,18 @@ export default function App() {
   return (
     <AuthProvider>
       <FavoritesProvider>
-        <MusicPlayerProvider>
+
+            
           <Router>
+            {/* Scroll to top عند تغيير المسار */}
+
             {/* Section SignUp أعلى الصفحة */}
             <SignUpSection />
 
             <Routes>
               {/* مسارات عامة */}
-              <Route path="/playlistpage" element={<PlaylistPage />} /> 
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/playlistpage" element={<PlaylistPage />} />
               <Route path="/playlists" element={<Playlists />} />
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/feedback" element={<Feedback />} />
@@ -81,10 +81,10 @@ export default function App() {
             </Routes>
 
             {/* Footer ثابت */}
-             <Footer />
-             <FooterSection/>
+            <Footer />
+            <FooterSection />
           </Router>
-        </MusicPlayerProvider>
+
       </FavoritesProvider>
     </AuthProvider>
   );

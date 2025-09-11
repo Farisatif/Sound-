@@ -9,8 +9,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          // خلفية متدرجة + نص أبيض + ظل ناعم
-          "bg-gradient-to-r from-[#ee0faf] to-[#0e9eef] text-white shadow-lg hover:opacity-90 hover:scale-[1.02]",
+          // خلفية وردية + نص أبيض + ظل ناعم
+          "bg-[#ee0faf] text-white shadow-lg hover:opacity-90 hover:scale-[1.02]",
         destructive:
           "bg-red-600 text-white shadow-md hover:bg-red-700 hover:scale-105",
         outline:
@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-[#1a1a1a] text-white shadow-sm hover:bg-[#2c2c2c] hover:scale-105",
         ghost:
           "text-white hover:bg-[#111111] hover:text-[#ee0faf] transition",
-        link: "text-[#ee0faf] underline-offset-4 hover:underline hover:text-[#0e9eef]",
+        link: "text-[#ee0faf] underline-offset-4 hover:underline hover:text-[#ee0faf]",
       },
       size: {
         default: "h-10 px-5 py-2",

@@ -11,7 +11,8 @@ const labelVariants = cva(
         default: "text-white",
         subtle: "text-white/70",
         gradient:
-          "bg-gradient-to-r from-[#ee0faf] to-[#0d9eef] bg-clip-text text-transparent",
+          // تدرج وردي فقط
+          "bg-gradient-to-r from-[#ee0faf] to-[#c00c88] bg-clip-text text-transparent",
       },
       size: {
         sm: "text-xs",
@@ -23,7 +24,7 @@ const labelVariants = cva(
       color: "default",
       size: "md",
     },
-  },
+  }
 );
 
 const Label = React.forwardRef<
