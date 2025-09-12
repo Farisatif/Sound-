@@ -1,7 +1,15 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
-import { PlayIcon, PlusIcon, ArrowLeftIcon, DownloadIcon, XIcon } from "lucide-react";
-import { useState } from "react";
+import {
+  PlayIcon,
+  PlusIcon,
+  ArrowLeftIcon,
+  DownloadIcon,
+  XIcon,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -19,7 +27,7 @@ export const ArtistPage: React.FC = () => {
     songs: any[];
   };
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   if (!artist) {
     return (
@@ -28,6 +36,11 @@ export const ArtistPage: React.FC = () => {
       </div>
     );
   }
+
+  const images = artist.songs.map((song) => ({
+    title: song.title,
+    url: song.image ?? "https://via.placeholder.com/300",
+  }));
 
   const addToPlaylist = () => {
     try {
@@ -53,6 +66,27 @@ export const ArtistPage: React.FC = () => {
     link.click();
     document.body.removeChild(link);
   };
+
+  const handlePrev = () =>
+    setCurrentIndex((prev) =>
+      prev !== null ? (prev > 0 ? prev - 1 : images.length - 1) : prev
+    );
+
+  const handleNext = () =>
+    setCurrentIndex((prev) =>
+      prev !== null ? (prev < images.length - 1 ? prev + 1 : 0) : prev
+    );
+
+  // إغلاق عند الضغط على Esc
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setCurrentIndex(null);
+      if (e.key === "ArrowLeft") handlePrev();
+      if (e.key === "ArrowRight") handleNext();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  });
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -99,13 +133,13 @@ export const ArtistPage: React.FC = () => {
       <div className="p-6">
         <h2 className="text-2xl font-semibold mb-4">Gallery</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {artist.songs.map((song, idx) => (
+          {images.map((img, idx) => (
             <img
               key={idx}
-              src={song.image ?? "https://via.placeholder.com/300"}
-              alt={song.title}
+              src={img.url}
+              alt={img.title}
               className="w-full h-40 object-cover rounded-xl cursor-pointer hover:scale-105 transition-transform shadow-md"
-              onClick={() => setSelectedImage(song.image)}
+              onClick={() => setCurrentIndex(idx)}
             />
           ))}
         </div>
@@ -113,38 +147,69 @@ export const ArtistPage: React.FC = () => {
 
       {/* Lightbox */}
       <Dialog
-        open={!!selectedImage}
-        onClose={() => setSelectedImage(null)}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+        open={currentIndex !== null}
+        onClose={() => setCurrentIndex(null)}
+        className="fixed inset-0 z-50 flex items-center justify-center"
       >
-        <Dialog.Panel className="relative">
-          {/* زر إغلاق */}
-          <button
-            onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 text-white/80 hover:text-white"
-          >
-            <XIcon className="w-7 h-7" />
-          </button>
+        {/* الخلفية */}
+        <div
+          className="fixed inset-0 bg-black/90"
+          aria-hidden="true"
+          onClick={() => setCurrentIndex(null)}
+        />
 
-          {/* الصورة */}
-          <img
-            src={selectedImage!}
-            alt="Selected"
-            className="max-h-[80vh] rounded-xl shadow-2xl"
-          />
+        {currentIndex !== null && (
+          <Dialog.Panel className="relative flex items-center justify-center">
+            {/* زر إغلاق */}
+            <button
+              onClick={() => setCurrentIndex(null)}
+              className="absolute top-6 right-6 text-white/80 hover:text-white"
+            >
+              <XIcon className="w-8 h-8" />
+            </button>
 
-          {/* زر التحميل فقط للمسجل */}
-          {user && (
-            <div className="absolute bottom-6 right-6">
-              <Button
-                onClick={() => downloadImage(selectedImage!, artist.name)}
-                className="bg-pink-600 hover:bg-pink-700"
-              >
-                <DownloadIcon className="w-5 h-5 mr-2" /> Download
-              </Button>
+            {/* زر السابق */}
+            <button
+              onClick={handlePrev}
+              className="absolute left-4 text-white/80 hover:text-white p-2"
+            >
+              <ChevronLeft className="w-10 h-10" />
+            </button>
+
+            {/* الصورة */}
+            <img
+              src={images[currentIndex].url}
+              alt={images[currentIndex].title}
+              className="max-h-[80vh] max-w-[90vw] rounded-lg shadow-2xl transition duration-300"
+            />
+
+            {/* زر التالي */}
+            <button
+              onClick={handleNext}
+              className="absolute right-4 text-white/80 hover:text-white p-2"
+            >
+              <ChevronRight className="w-10 h-10" />
+            </button>
+
+            {/* معلومات + زر تحميل */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+              <p className="text-sm text-white/70">
+                {currentIndex + 1} / {images.length} —{" "}
+                {images[currentIndex].title}
+              </p>
+              {user && (
+                <Button
+                  onClick={() =>
+                    downloadImage(images[currentIndex].url, artist.name)
+                  }
+                  className="bg-pink-600 hover:bg-pink-700"
+                >
+                  <DownloadIcon className="w-5 h-5 mr-2" /> Download
+                </Button>
+              )}
             </div>
-          )}
-        </Dialog.Panel>
+          </Dialog.Panel>
+        )}
       </Dialog>
 
       {/* Songs List */}

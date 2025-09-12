@@ -62,16 +62,21 @@ export const Footer: React.FC = () => {
       className="fixed bottom-0 left-0 w-full z-50 bg-black border-t border-white/10 text-white shadow-lg"
     >
       {/* شريط الأخبار العصري */}
-      <div className="w-full bg-gradient-to-r from-[#ee0faf] via-purple-700 to-[#0e9eef] text-white py-2 overflow-hidden">
-        <motion.div
-          animate={{ x: ["100%", "-100%"] }}
-          transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
-          className="whitespace-nowrap text-sm sm:text-base font-semibold tracking-wide"
-        >
-           Team Zerif will strive to reach the top no matter what
-          Stay tuned for more amazing updates!
-        </motion.div>
-      </div>
+<div className="w-full bg-gradient-to-r from-[#ee0faf] via-purple-700 to-[#0e9eef] text-white py-2 overflow-hidden">
+  <motion.div
+    animate={{ x: ["100%", "-100%"] }}
+    transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
+    className="flex whitespace-nowrap text-sm sm:text-base font-semibold tracking-wide"
+  >
+    <span className="px-4">
+      Team Zerif will strive to reach the top no matter what. Stay tuned for more amazing updates!
+    </span>
+    <span className="px-4">
+      Team Zerif will strive to reach the top no matter what. Stay tuned for more amazing updates!
+    </span>
+  </motion.div>
+</div>
+
 
       {/* الوقت والتاريخ */}
       <div className="flex flex-col md:flex-row items-center justify-between px-6 py-3 text-xs sm:text-sm">

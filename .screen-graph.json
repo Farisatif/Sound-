@@ -147,34 +147,18 @@
   ],
   "edges": [
     {
-      "id": "src\\screens\\Playlists\\Playlists.tsx:50:27-to-src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "id": "src\\screens\\Playlists\\Playlists.tsx:54:27-to-src\\screens\\Playlists\\CreatePlaylist.tsx",
       "source": "src\\screens\\Playlists\\Playlists.tsx",
       "target": "src\\screens\\Playlists\\CreatePlaylist.tsx",
       "data": {
         "viaRoute": "/playlists/create",
         "trigger": {
           "element": "navigate(\"/playlists/create\")",
-          "line": 50,
-          "endLine": 50,
+          "line": 54,
+          "endLine": 54,
           "column": 27,
           "endColumn": 56,
           "sourceFile": "src\\screens\\Playlists\\Playlists.tsx"
-        }
-      }
-    },
-    {
-      "id": "src\\screens\\Playlists\\PlaylistDetails\\PlaylistDetails.tsx:32:25-to-src\\screens\\Playlists\\Playlists.tsx",
-      "source": "src\\screens\\Playlists\\PlaylistDetails\\PlaylistDetails.tsx",
-      "target": "src\\screens\\Playlists\\Playlists.tsx",
-      "data": {
-        "viaRoute": "/playlists",
-        "trigger": {
-          "element": "navigate(\"/playlists\")",
-          "line": 32,
-          "endLine": 32,
-          "column": 25,
-          "endColumn": 47,
-          "sourceFile": "src\\screens\\Playlists\\PlaylistDetails\\PlaylistDetails.tsx"
         }
       }
     },

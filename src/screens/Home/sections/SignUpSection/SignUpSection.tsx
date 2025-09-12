@@ -99,9 +99,14 @@ export const SignUpSection = (): JSX.Element => {
               </h3>
         <div className=" h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                 {/* Top Bar: Back + Song Title/Artist */}
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} title="">
-          <ArrowLeftIcon className="absolute text-[#ee10b0] left-4 w-[2rem] h-[2rem]" />
-        </Button>
+           <Button
+             onClick={() => navigate(-1)}
+             variant="ghost"
+             size="icon"
+             className="absolute text-[#ee10b0] left-1 text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10 transition-all duration-300"
+           >
+             <ArrowLeftIcon className="w-4 h-4" />
+           </Button>
 
 
        
