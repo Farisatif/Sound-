@@ -1,0 +1,294 @@
+{
+  "nodes": [
+    {
+      "id": "src/screens/artists/Gallery.tsx",
+      "label": "Gallery",
+      "routes": [
+        "/gallery"
+      ]
+    },
+    {
+      "id": "src/screens/Playlists/PlaylistPage.tsx",
+      "label": "PlaylistPage",
+      "routes": [
+        "/playlistpage"
+      ]
+    },
+    {
+      "id": "src/screens/Playlists/Playlists.tsx",
+      "label": "Playlists",
+      "routes": [
+        "/playlists",
+        "playlists"
+      ]
+    },
+    {
+      "id": "src/screens/Home/sections/Sitemap/Sitemap.tsx",
+      "label": "Sitemap",
+      "routes": [
+        "/sitemap"
+      ]
+    },
+    {
+      "id": "src/screens/Playlists/PlaylistDetails/PlaylistDetails.tsx",
+      "label": "PlaylistDetails",
+      "routes": [
+        "/playlists/:id",
+        "/playlist/:id"
+      ]
+    },
+    {
+      "id": "src/screens/artists/ArtistsPage.tsx",
+      "label": "ArtistsPage",
+      "routes": [
+        "/artists"
+      ]
+    },
+    {
+      "id": "src/screens/artists/ArtistPage.tsx",
+      "label": "ArtistPage",
+      "routes": [
+        "/artist/:artistId"
+      ]
+    },
+    {
+      "id": "src/screens/Trending/Trending.tsx",
+      "label": "Trending",
+      "routes": [
+        "/trending"
+      ]
+    },
+    {
+      "id": "src/screens/GenreDetails/GenreDetails.tsx",
+      "label": "GenreDetails",
+      "routes": [
+        "/genres/:slug"
+      ]
+    },
+    {
+      "id": "src/screens/Login/Login.tsx",
+      "label": "Login",
+      "routes": [
+        "/login"
+      ]
+    },
+    {
+      "id": "src/screens/Signup/Signup.tsx",
+      "label": "Signup",
+      "routes": [
+        "/signup"
+      ]
+    },
+    {
+      "id": "src/screens/ForgotPassword/ForgotPassword.tsx",
+      "label": "ForgotPassword",
+      "routes": [
+        "/forgot-password"
+      ]
+    },
+    {
+      "id": "src/screens/About/About.tsx",
+      "label": "About",
+      "routes": [
+        "/about"
+      ]
+    },
+    {
+      "id": "src/screens/Contact/Contact.tsx",
+      "label": "Contact",
+      "routes": [
+        "/contact"
+      ]
+    },
+    {
+      "id": "src/screens/Playlists/CreatePlaylist.tsx",
+      "label": "CreatePlaylist",
+      "routes": [
+        "/playlists/create"
+      ]
+    },
+    {
+      "id": "src/screens/MusicPlayer/MusicPlayer.tsx",
+      "label": "MusicPlayer",
+      "routes": [
+        "/player/:songId",
+        "music-player"
+      ]
+    },
+    {
+      "id": "src/components/Layout/Layout.tsx",
+      "label": "Layout",
+      "routes": [
+        "/"
+      ],
+      "isRoot": true
+    },
+    {
+      "id": "src/screens/Discover/Discover.tsx",
+      "label": "Discover",
+      "routes": [
+        "discover"
+      ]
+    },
+    {
+      "id": "src/screens/Albums/Albums.tsx",
+      "label": "Albums",
+      "routes": [
+        "albums"
+      ]
+    },
+    {
+      "id": "src/screens/Favorites/Favorites.tsx",
+      "label": "Favorites",
+      "routes": [
+        "favorites"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "src\\screens\\Playlists\\Playlists.tsx:135:33-to-src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "source": "src\\screens\\Playlists\\Playlists.tsx",
+      "target": "src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "data": {
+        "viaRoute": "/playlists/create",
+        "trigger": {
+          "element": "navigate(\"/playlists/create\")",
+          "line": 135,
+          "endLine": 135,
+          "column": 33,
+          "endColumn": 62,
+          "sourceFile": "src\\screens\\Playlists\\Playlists.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Login\\Login.tsx:26:6-to-src\\components\\Layout\\Layout.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\components\\Layout\\Layout.tsx",
+      "data": {
+        "viaRoute": "/",
+        "trigger": {
+          "element": "navigate('/')",
+          "line": 26,
+          "endLine": 26,
+          "column": 6,
+          "endColumn": 19,
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Login\\Login.tsx:89:16-to-src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "data": {
+        "viaRoute": "/forgot-password",
+        "trigger": {
+          "element": "<Link\n                  to=\"/forgot-password\"\n                  className=\"text-[#ee0faf] hover:text-[#ee0faf]/80 text-sm font-medium\"\n                >\n                  Forgot Password?\n                </Link>",
+          "line": 89,
+          "endLine": 94,
+          "column": 16,
+          "endColumn": 23,
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Login\\Login.tsx:107:16-to-src\\screens\\Signup\\Signup.tsx",
+      "source": "src\\screens\\Login\\Login.tsx",
+      "target": "src\\screens\\Signup\\Signup.tsx",
+      "data": {
+        "viaRoute": "/signup",
+        "trigger": {
+          "element": "<Link to=\"/signup\" className=\"text-[#ee0faf] font-medium\">Sign up</Link>",
+          "line": 107,
+          "endLine": 107,
+          "column": 16,
+          "endColumn": 88,
+          "sourceFile": "src\\screens\\Login\\Login.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Signup\\Signup.tsx:156:16-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\Signup\\Signup.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
+      "data": {
+        "viaRoute": "/login",
+        "trigger": {
+          "element": "<Link to=\"/login\" className=\"text-[#ee0faf] font-medium\">Sign in</Link>",
+          "line": 156,
+          "endLine": 156,
+          "column": 16,
+          "endColumn": 87,
+          "sourceFile": "src\\screens\\Signup\\Signup.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:32:14-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
+      "data": {
+        "viaRoute": "/login",
+        "trigger": {
+          "element": "<Link to=\"/login\">\n                <Button variant=\"ghost\" size=\"icon\" className=\"text-white hover:text-[#ee0faf] hover:bg-[#ee0faf]/10\">\n                  <ArrowLeftIcon className=\"w-5 h-5\" />\n                </Button>\n              </Link>",
+          "line": 32,
+          "endLine": 36,
+          "column": 14,
+          "endColumn": 21,
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\ForgotPassword\\ForgotPassword.tsx:73:16-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\ForgotPassword\\ForgotPassword.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
+      "data": {
+        "viaRoute": "/login",
+        "trigger": {
+          "element": "<Link to=\"/login\">\n                  <Button variant=\"ghost\" className=\"w-full text-white hover:text-[#ee0faf]\">Back to Sign In</Button>\n                </Link>",
+          "line": 73,
+          "endLine": 75,
+          "column": 16,
+          "endColumn": 23,
+          "sourceFile": "src\\screens\\ForgotPassword\\ForgotPassword.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Playlists\\CreatePlaylist.tsx:85:89-to-src\\screens\\Login\\Login.tsx",
+      "source": "src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "target": "src\\screens\\Login\\Login.tsx",
+      "data": {
+        "viaRoute": "/login",
+        "trigger": {
+          "element": "navigate(\"/login\")",
+          "line": 85,
+          "endLine": 85,
+          "column": 89,
+          "endColumn": 107,
+          "sourceFile": "src\\screens\\Playlists\\CreatePlaylist.tsx"
+        }
+      }
+    },
+    {
+      "id": "src\\screens\\Playlists\\CreatePlaylist.tsx:185:8-to-src\\screens\\Playlists\\Playlists.tsx",
+      "source": "src\\screens\\Playlists\\CreatePlaylist.tsx",
+      "target": "src\\screens\\Playlists\\Playlists.tsx",
+      "data": {
+        "viaRoute": "/playlists",
+        "trigger": {
+          "element": "navigate(\"/playlists\")",
+          "line": 185,
+          "endLine": 185,
+          "column": 8,
+          "endColumn": 30,
+          "sourceFile": "src\\screens\\Playlists\\CreatePlaylist.tsx"
+        }
+      }
+    }
+  ]
+}
